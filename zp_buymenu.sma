@@ -13,8 +13,6 @@
 #define AUTHOR "Arwel"
 #define KNIFES "hammer"
 
-#define CONFIG_CFG_FILE "zp_buymenu.cfg"
-
 #define PRIMARY_WEAPON 0
 #define SECONDARY_WEAPON 1
 #define MAX_ITEMS 8
@@ -99,15 +97,6 @@ const SECONDARY_WEAPONS_BIT_SUM = (1<<CSW_P228)|(1<<CSW_ELITE)|(1<<CSW_FIVESEVEN
 
 new g_started, g_maxplayers, g_file
 
-enum _:iNums
-{
-	iFlag,
-	iLimit
-}
-
-new g_iFlags[10][iNums];
-new g_iCount = -1;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
@@ -181,8 +170,6 @@ public plugin_cfg()
 
 	g_file = fopen(path, "rt")
 
-	Load_Limits()
-
 	for(new i; i < MAX_ITEMS; i++)
 	{   
 		Load_Weapons(SETTINGS_NAMES[i], i)
@@ -195,9 +182,9 @@ public plugin_cfg()
 
 	fclose(g_file)
 	
-	formatex(path, charsmax(path), "%s/%s", confdir, CONFIG_CFG_FILE)
+	formatex(path, charsmax(path), "%s/zp_buymenu.cfg", confdir)
 	
-	server_cmd("exec", path)    
+	server_cmd("exec %s", path)    
 }
 
 public plugin_precache()
@@ -515,7 +502,7 @@ public main_menu_callback(id, menu, item)
 	if(zp_get_user_zombie(id)&&item!=ITEMS_HEXTRA)
 		return ITEM_DISABLED    
 		
-	if(item+1==ITEMS_KNIFES&&flag_get(g_players_choosed_knife, id-1))
+	if(item+1 == ITEMS_KNIFES && flag_get(g_players_choosed_knife, id-1))
 		return ITEM_DISABLED
 	
 	if(item!=ITEMS_HEXTRA&&g_started)
@@ -713,60 +700,6 @@ public register_item(weapon_name_lang[], weapon_name_real[], cost, flags[], type
 	ArrayPushCell(g_ItemsLevels[type], level)
 	ArrayPushCell(g_ItemsMinimumPlayers[type], min_players)
 	ArrayPushCell(g_ItemsBuyingOnOneRound[type], buy_in_round)
-}
-
-public Load_Limits()
-{    
-	new szLine[64],section[32], szLeft[5], szRight[10]
-	
-	fseek(g_file, 0 , SEEK_SET)
-	
-	while (!feof(g_file))
-	{    
-		fgets(g_file, szLine, charsmax(szLine))
-		
-		replace(szLine, charsmax(szLine), "^n", "")
-	
-		if(szLine[0] == '[')
-		{
-			copyc(section, charsmax(section), szLine[1], ']')        
-
-			if (equal(section, "LIMITS"))
-				break
-		}
-	}    
-	
-	while(!feof(g_file))
-	{
-		fgets(g_file,szLine,charsmax(szLine))
-		
-		trim(szLine)
-		
-		if(szLine[0] == '{'||szLine[0]==';'||szLine[0]=='/')
-			continue
-		
-		if(szLine[0] == '}')
-			break            
-		
-		g_iCount++
-		
-		parse(szLine, szLeft, charsmax(szLeft), szRight, charsmax(szRight))    
-		
-		g_iFlags[g_iCount][iFlag] = read_flags(szLeft)
-		g_iFlags[g_iCount][iLimit] = str_to_num(szRight)
-
-		//     for(new i; i <= g_iCount; i++)
-		//     {
-		//         if(get_user_flags(id)&g_iFlags[i][iFlag])
-		//         {
-		//             g_PlayerMoneyLimit[id]=g_iFlags[i][iLimit]
-					
-		//             break
-		//         }
-		//     }    
-	}
-	
-	return PLUGIN_HANDLED
 }
 
 public Load_Weapons(setting_section[], type)

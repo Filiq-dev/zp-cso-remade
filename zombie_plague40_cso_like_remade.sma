@@ -1062,14 +1062,6 @@ public plugin_precache()
 	if (g_ambience_rain) engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "env_rain"))
 	if (g_ambience_snow) engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "env_snow"))
 	
-	// Custom buyzone for all players
-	g_buyzone_ent = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "func_buyzone"))
-	if (pev_valid(g_buyzone_ent))
-	{
-		dllfunc(DLLFunc_Spawn, g_buyzone_ent)
-		set_pev(g_buyzone_ent, pev_solid, SOLID_NOT)
-	}
-	
 	// Prevent some entities from spawning
 	g_fwSpawn = register_forward(FM_Spawn, "fw_Spawn")
 	
@@ -1150,22 +1142,6 @@ public plugin_init()
 	// Menus
 	register_menu("Game Menu", KEYSMENU, "menu_game")
 	register_menu("Admin Menu", KEYSMENU, "menu_admin")
-	
-	// CS Buy Menus (to prevent zombies/survivor from buying)
-	register_menucmd(register_menuid("#Buy", 1), 511, "menu_cs_buy")
-	register_menucmd(register_menuid("BuyPistol", 1), 511, "menu_cs_buy")
-	register_menucmd(register_menuid("BuyShotgun", 1), 511, "menu_cs_buy")
-	register_menucmd(register_menuid("BuySub", 1), 511, "menu_cs_buy")
-	register_menucmd(register_menuid("BuyRifle", 1), 511, "menu_cs_buy")
-	register_menucmd(register_menuid("BuyMachine", 1), 511, "menu_cs_buy")
-	register_menucmd(register_menuid("BuyItem", 1), 511, "menu_cs_buy")
-	register_menucmd(-28, 511, "menu_cs_buy")
-	register_menucmd(-29, 511, "menu_cs_buy")
-	register_menucmd(-30, 511, "menu_cs_buy")
-	register_menucmd(-32, 511, "menu_cs_buy")
-	register_menucmd(-31, 511, "menu_cs_buy")
-	register_menucmd(-33, 511, "menu_cs_buy")
-	register_menucmd(-34, 511, "menu_cs_buy")
 	
 	// Admin commands
 	register_concmd("zp_zombie", "cmd_zombie", _, "<target> - Turn someone into a Zombie", 0)
@@ -4012,16 +3988,6 @@ public menu_player_list(id, menuid, item)
 	menu_destroy(menuid)
 	show_menu_player_list(id)
 	return PLUGIN_HANDLED;
-}
-
-// CS Buy Menus
-public menu_cs_buy(id, key)
-{
-	// Prevent buying if zombie/survivor (bugfix)
-	if (g_zombie[id] || g_survivor[id])
-		return PLUGIN_HANDLED;
-	
-	return PLUGIN_CONTINUE;
 }
 
 /*================================================================================

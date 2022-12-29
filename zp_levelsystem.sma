@@ -115,6 +115,8 @@ public plugin_cfg()
 		ArrayPushCell(g_Levels, str_to_num(level))   
 	}
 
+	formatex(path, charsmax(path), "%s/zp_buymenu.cfg", confdir)
+	server_cmd("exec %s", path)
 }
 
 public plugin_natives()
