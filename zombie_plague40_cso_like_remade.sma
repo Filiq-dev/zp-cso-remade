@@ -1,374 +1,4 @@
 /*================================================================================
-	
-		*****************************************************
-		************** [Zombie Plague Mod 4.3] **************
-		*****************************************************
-	
-	----------------------
-	-*- Licensing Info -*-
-	----------------------
-	
-	Zombie Plague Mod
-	Copyright (C) 2008-2009 by MeRcyLeZZ
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-	
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	In addition, as a special exception, the author gives permission to
-	link the code of this program with the Half-Life Game Engine ("HL
-	Engine") and Modified Game Libraries ("MODs") developed by Valve,
-	L.L.C ("Valve"). You must obey the GNU General Public License in all
-	respects for all of the code used other than the HL Engine and MODs
-	from Valve. If you modify this file, you may extend this exception
-	to your version of the file, but you are not obligated to do so. If
-	you do not wish to do so, delete this exception statement from your
-	version.
-	
-	-------------------
-	-*- Description -*-
-	-------------------
-	
-	Zombie Plague is a Counter-Strike server side modification, developed as
-	an AMX Mod X plugin, which completely revamps the gameplay, turning the
-	game into an intense "Humans vs Zombies" survival experience.
-	
-	Even though it's strongly based on the classic zombie infection mods, it
-	takes the concept to a new level by introducing:
-	
-	* New Gameplay Modes: Nemesis, Survivor, Multi Infection, Swarm, Plague
-	* Zombie Classes System: allows addding unlimited custom zombie classes
-	* Ammo Packs: awarded to skilled players, can be exchanged for goods
-	* Extra Items System: allows adding unlimited custom items to buy
-	* Custom Grenades: Napalms, Frost Nades, Flares, and Infection Bombs
-	* Deathmatch Mode: where zombies or humans can continually respawn
-	* Admin Menus: to easily perform the included console commands
-	* Special Effects: from the HL Engine, such as dynamic lighting and fog
-	
-	There is plenty of customization as well, which enables you to create
-	several different styles of gameplay. You can:
-	
-	* Set zombies and humans' health, speed, models, rewards, and more
-	* Toggle unlimited ammo and adjustable knockback for weapons
-	* Separately enable and customize the new gameplay modes to your liking
-	* Change overall map lighting (lightnings available for the dark settings)
-	* Set different colors and sizes for flashlight and nightvision
-	* Toggle leap (long jumping) and pain shock free (no damage slowdowns)
-	* Toggle various infection effects, such as sparks and screen shakes
-	* Enable random spawning (CSDM-spawn friendly)
-	* Replace sounds or add some background themes
-	* And many more...
-	
-	-------------
-	-*- Media -*-
-	-------------
-	
-	* Gameplay Video 1: http://www.youtube.com/watch?v=HFUyF7-_uzw
-	* Gameplay Video 2: http://www.youtube.com/watch?v=XByif6Mti-w
-	
-	--------------------
-	-*- Requirements -*-
-	--------------------
-	
-	* Mods: Counter-Strike 1.6 or Condition-Zero
-	* AMXX: Version 1.8.0 or later
-	
-	--------------------
-	-*- Installation -*-
-	--------------------
-	
-	Extract the contents from the .zip file to your server's mod directory
-	("cstrike" or "czero"). Make sure to keep folder structure.
-	
-	-----------------------
-	-*- Official Forums -*-
-	-----------------------
-	
-	For the official Zombie Plague forums visit:
-	http://forums.alliedmods.net/forumdisplay.php?f=126
-	
-	There you can:
-	
-	* Get the latest releases and early betas
-	* Discuss new features and suggestions
-	* Share sub-plugins (expansions) for the mod
-	* Find the support and help you need
-	* Report any bugs you might find
-	* And all that sort of stuff...
-	
-	-------------------------------
-	-*- CVARS and Customization -*-
-	-------------------------------
-	
-	For a complete and in-depth cvar list, look at the zombieplague.cfg file
-	located in the amxmodx\configs directory.
-	
-	Additionally, you can change player models, sounds, weather effects,
-	and some other stuff from the configuration file zombieplague.ini.
-	
-	As for editing attributes of zombie classes or custom extra items, you'll
-	find a zp_zombieclasses.ini and zp_extraitems.ini. These files will be
-	automatically updated as you install new custom classes or items with
-	new entries for you to edit conveniently.
-	
-	---------------
-	-*- History -*-
-	---------------
-	
-	This project started back on late 2007, when the free infection mods
-	around were quite buggy and I wanted to make one on my own. With little
-	to no experience at AMXX scripting, I had to start from the very scratch.
-	
-	Not after spending over a week looking at many plugins (mainly Zombie
-	Swarm) and scarce tutorials, I somehow managed to have all the basic
-	stuff working quite well (even though the code was a real mess). The
-	following months were spent polishing things up and trying to fulfill
-	new original ideas, most of them quite worth the hard work.
-	
-	In the meantime, I got the chance to try the plugin out on a 32 man
-	server. This meant a huge progress on development, and after lots of
-	testing and bug fixing, the mod turned out to be more than the simple
-	infection plugin I had originally planned it to be.
-	
-	The project has come a long way since, and I'm glad to say I'm finally
-	making it freely available. All I'm asking in return is to keep my
-	name in the plugin.
-	
-	-Enjoy!
-	
-	----------------------
-	-*- Infection Mode -*-
-	----------------------
-	
-	On every round players start out as humans, equip themselves with a few
-	weapons and grenades, and head to the closest cover they find, knowing
-	that one of them is infected with the T-Virus, and will suddenly turn
-	into a vicious brain eating creature.
-	
-	Only little time after, the battle for survival begins. The first zombie
-	has to infect as many humans as possible to cluster a numerous zombie
-	horde and take over the world.
-	
-	Maps are set in the dark by default. Humans must use flashlights to light
-	their way and spot any enemies. Zombies, on the other hand, have night
-	vision but can only attack melee.
-	
-	--------------------------
-	-*- New Gameplay Modes -*-
-	--------------------------
-	
-	* Nemesis:
-	   The first zombie may turn into a Nemesis, a powerful fast-moving
-	   beast. His goal is to kill every human while sustaining the gunfire.
-	
-	* Survivor:
-	   Everyone became a zombie except him. The survivor gets a machinegun
-	   with unlimited ammo and has to stop the never-ending army of undead.
-	
-	* Multiple Infection:
-	   The round starts with many humans infected, so the remaining players
-	   will have to act quickly in order to control the situation.
-	
-	* Swarm Mode:
-	   Half of the players turn into zombies, the rest become immune and
-	   cannot be infected. It's a battle to death.
-	
-	* Plague Mode: [bonus]
-	   A full armed Survivor and his soldiers are to face Nemesis and
-	   his zombie minions. The future of the world is in their hands.
-	
-	--------------------
-	-*- In-Game Menu -*-
-	--------------------
-	
-	Players can access the mod menu by typing "zpmenu" on chat, or by
-	pressing the M ("chooseteam") key. The menu allows players to choose
-	their zombie class, buy extra items, get unstuck, or see the ingame
-	help. Admins will find an additional option to easily perform all
-	console commands.
-	
-	----------------------
-	-*- Admin Commands -*-
-	----------------------
-	
-	The following console commands are available:
-	
-	* zp_zombie <target> - Turn someone into a Zombie
-	* zp_human <target> - Turn someone back to Human
-	* zp_nemesis <target> - Turn someone into a Nemesis
-	* zp_survivor <target> - Turn someone into a Survivor
-	* zp_respawn <target> - Respawn someone
-	* zp_swarm - Start Swarm Mode (*)
-	* zp_multi - Start Multi Infection (*)
-	* zp_plague - Start Plague Mode (*)
-	
-	(*) - These commands can only be used at round start, that is, when the
-	T-Virus notice is shown on screen. 
-	
-	------------------
-	-*- Plugin API -*-
-	------------------
-	
-	From version 3.6, some natives and forwards have been added to ease the
-	development of sub-plugins, though you may also find them useful to work
-	out compatibility issues with existing plugins.
-	
-	Look for the zombieplague.inc file in your amxmodx\scripting\include
-	folder for the full documented list.
-	
-	----------------------
-	-*- Zombie Classes -*-
-	----------------------
-	
-	From version 4.0 it is possible to create and add an unlimited number of
-	zombie classes to the main mod. They can be made as separate plugins,
-	by using the provided zombie class API, and easily distributed.
-	
-	By default, five zombie classes are included:
-	
-	* Classic Zombie: well balanced zombie for beginners.
-	* Raptor Zombie: fast moving zombie, but also the weakest.
-	* Poison Zombie: light weighed zombie, jumps higher.
-	* Big Zombie: slow but strong zombie, with lots of hit points.
-	* Leech Zombie: regains additional health when infecting.
-	
-	-------------------
-	-*- Extra Items -*-
-	-------------------
-	
-	From version 4.0 it is possible to add an unlimited number of items
-	which can be purchased through the Extra Items menu. All you need
-	to do is use the provided item registration natives on your custom
-	plugins. You can set the name, the cost in ammo packs, and the team
-	the extra item should be available for.
-	
-	By default there is a number of items already included, listed here:
-	
-	* Night Vision: makes you able to see in the dark for a single round [Human]
-	* T-Virus Antidote: makes you turn back to your human form [Zombie]
-	* Zombie Madness: you develop a powerful shield for a short time [Zombie]
-	* Infection Bomb: infects anyone within its explosion radius [Zombie]
-	
-	You are also able to choose some weapons to act as extra items, and change
-	ammo packs costs in the customization file (zombieplague.ini).
-	
-	---------------
-	-*- Credits -*-
-	---------------
-	
-	* AMXX Dev Team: for all the hard work which made this possible
-	* Imperio LNJ Community: for providing the first server where I
-	   could really test the plugin and for everyone's support
-	* Mini_Midget: for his Zombie Swarm plugin which I used for reference
-	   on earliest stages of development
-	* Avalanche: for the random spawning code I got from GunGame and the
-	   original Frostnades concept that I ported in here
-	* cheap_suit: for some modelchange and knockback codes that I got from
-	   Biohazard
-	* Simon Logic/ConnorMcLeod: for the Pain Shock Free feature
-	* KRoT@L: for some code from Follow the Wounded, used to make the zombie
-	   bleeding feature
-	* VEN: for Fakemeta Utilities and some useful stocks
-	* RaaPuar and Goltark: for the custom grenade models
-	* Orangutanz: for finding the precached modelindex offset
-	* ML Translations: DKs/nunoabc/DarkMarcos (bp), JahMan/KWo (pl), DA (de),
-	   Zombie Lurker (ls), DoPe^ (da), k1nny (fr), NeWbiE' (cz), skymoon (tc),
-	   SUPER MATRIX/Shidla/zDemon/4eRT (ru), zsy314 (cn), lOlIl/Seehank (sk),
-	   Bridgestone (sv), crazyeffect.net/Mave/Wesley (nl), hleV/aaarnas (lt),
-	   darkbad945 (bg), decongamco (vn), beckham9224 (mn), TehGeorge (gr),
-	   shadoww_ro/tuty/georgik57/EastSider (ro)
-	* Beta testers: for all the feedback, bug reports, and suggestions which
-	   constantly help improve this mod further
-	* And to all zombie-mod supporters out there!
-	
-	-----------------
-	-*- Changelog -*-
-	-----------------
-	
-	* v1.0: (Dec 2007)
-	   - First Release: most of the basic stuff done.
-	   - Added: random spawning, HP display on hud, lighting setting,
-	      simple buy menu, custom nightvision, admin commands, Nemesis
-	      and Survivor modes, glow and leap settings for them.
-	
-	* v2.2: (Jan 2008)
-	   - Added: zombie classes, ammo packs system, buying ammo for weapons,
-	      custom flashlight, admin skins setting, zombieplague.cfg file
-	   - Upgraded: weapons menu improved, flashlight and nightvision colors
-	      now customizable, HamSandwich module used to handle damage.
-	   - Fixed various bugs.
-	
-	* v3.0: (Mar 2008)
-	   - Added: door removal setting, unstuck feature, human cvars, armor
-	      cvar for zombies, weapon knockback, zombie bleeding, flares,
-	      extra items (weapons, antidote, infection bomb), pain shock
-	      free setting, Multiple Infection and Swarm modes.
-	   - Upgraded: dumped Engine, Fun and Cstrike modules, code optimized,
-	      new model change method, new gfx effects for zombie infections.
-	   - Fixed a bunch of gameplay bugs.
-	
-	* v3.5: (May 2008)
-	   - Added: deathmatch setting with spawn protection, unlimited ammo
-	      setting, fire and frost grenades, additional customization cvars,
-	      new extra items, help menu.
-	   - Upgraded: better objectives removal method, dropped weapons now
-	      keep their bpammo, code optimized a lot.
-	   - Fixed: no more game commencing bug when last zombie/human leaves,
-	      no more hegrenade infection bug, reduced svc_bad errors, and
-	      many more.
-	
-	* v3.6: (Jun 2008)
-	   - Added: a few natives and forwards for sub-plugins support,
-	      zombie classes can now have their own models, additional
-	      knockback customization, bot support, various CVARs.
-	   - Upgraded: extra items now supporting grenades and pistols, changed
-	      bomb removal method, players can join on survivor/swarm rounds,
-	      extended lightnings support to other dark settings.
-	   - Fixed: a bunch of minor bugs, and a server crash with CZ bots.
-	
-	* v4.0: (Aug 2008)
-	   - Added: new gameplay mode (Plague Mode), option to remember weapon
-	      selection, command to enable/disable the plugin, more CVARs.
-	   - Upgraded: redid all the menus, extra items and zombie classes now
-	      support external additions, survivor can now have its own model,
-	      upgraded model changing method.
-	   - Fixed: some bugs with bots, win sounds not being precached.
-	
-	* v4.1: (Oct 2008)
-	   - Added: more CVARs, more customization, more natives, custom
-	      leap system, admin zombie models support, and more.
-	   - Upgraded: custom grenades compatible with Nade Modes, ambience
-	      sounds specific game mode support, optimized bandwidth usage
-	      for temp ents, admin commands logged with IP and SteamID.
-	   - Fixed: lots of bugs (some minor, some not)
-	
-	* v4.2: (Feb 2009)
-	   - Added various CVARs for customization, improved prevention of
-	      svc_bad in some cases, optimized ammo handling code.
-	   - Fixed server crash with 'msg 35 has not been sent yet' error,
-	      fixed client overflow issues with ambience sounds, resolved
-	      many gameplay bugs.
-	
-	* v4.3: (Apr 2009)
-	   - Customization settings can now be edited through external files,
-	      added support for global and multiple random zombie models,
-	      added even more CVARs for tweaking stuff, extended admin commands'
-	      functionality, greatly extended API capabilities, implemented a
-	      more efficient Pain Shock Free code, reworked some menus.
-	   - Fixed pretty much all reported bugs to the date.
-	
-=================================================================================*/
-
-/*================================================================================
  [Plugin Customization]
 =================================================================================*/
 
@@ -393,13 +23,14 @@ const MAX_STATS_SAVED = 64
 #include <fakemeta>
 #include <hamsandwich>
 #include <xs>
+#include <dhudmessage>
 
 /*================================================================================
  [Constants, Offsets, Macros]
 =================================================================================*/
 
 // Plugin Version
-new const PLUGIN_VERSION[] = "4.3 Fix5a"
+new const PLUGIN_VERSION[] = "4.3"
 
 // Customization file sections
 enum
@@ -411,7 +42,6 @@ enum
 	SECTION_GRENADE_SPRITES,
 	SECTION_SOUNDS,
 	SECTION_AMBIENCE_SOUNDS,
-	SECTION_BUY_MENU_WEAPONS,
 	SECTION_EXTRA_ITEMS_WEAPONS,
 	SECTION_HARD_CODED_ITEMS_COSTS,
 	SECTION_WEATHER_EFFECTS,
@@ -477,14 +107,6 @@ enum (+= 100)
 
 // BP Ammo Refill task
 #define REFILL_WEAPONID args[0]
-
-// For weapon buy menu handlers
-#define WPN_STARTID g_menu_data[id][1]
-#define WPN_MAXIDS ArraySize(g_primary_items)
-#define WPN_SELECTION (g_menu_data[id][1]+key)
-#define WPN_AUTO_ON g_menu_data[id][2]
-#define WPN_AUTO_PRI g_menu_data[id][3]
-#define WPN_AUTO_SEC g_menu_data[id][4]
 
 // For player list menu handlers
 #define PL_ACTION g_menu_data[id][0]
@@ -622,13 +244,6 @@ new const AMMOTYPE[][] = { "", "357sig", "", "762nato", "", "buckshot", "", "45a
 new const AMMOWEAPON[] = { 0, CSW_AWP, CSW_SCOUT, CSW_M249, CSW_AUG, CSW_XM1014, CSW_MAC10, CSW_FIVESEVEN, CSW_DEAGLE,
 			CSW_P228, CSW_ELITE, CSW_FLASHBANG, CSW_HEGRENADE, CSW_SMOKEGRENADE, CSW_C4 }
 
-// Primary and Secondary Weapon Names
-new const WEAPONNAMES[][] = { "", "P228 Compact", "", "Schmidt Scout", "", "XM1014 M4", "", "Ingram MAC-10", "Steyr AUG A1",
-			"", "Dual Elite Berettas", "FiveseveN", "UMP 45", "SG-550 Auto-Sniper", "IMI Galil", "Famas",
-			"USP .45 ACP Tactical", "Glock 18C", "AWP Magnum Sniper", "MP5 Navy", "M249 Para Machinegun",
-			"M3 Super 90", "M4A1 Carbine", "Schmidt TMP", "G3SG1 Auto-Sniper", "", "Desert Eagle .50 AE",
-			"SG-552 Commando", "AK-47 Kalashnikov", "", "ES P90" }
-
 // Weapon entity names
 new const WEAPONENTNAMES[][] = { "", "weapon_p228", "", "weapon_scout", "weapon_hegrenade", "weapon_xm1014", "weapon_c4", "weapon_mac10",
 			"weapon_aug", "weapon_smokegrenade", "weapon_elite", "weapon_fiveseven", "weapon_ump45", "weapon_sg550",
@@ -701,6 +316,7 @@ const ZP_PLUGIN_HANDLED = 97
 =================================================================================*/
 
 // Player vars
+new amount[33] = 0
 new g_zombie[33] // is zombie
 new g_nemesis[33] // is nemesis
 new g_survivor[33] // is survivor
@@ -748,9 +364,8 @@ new g_lights_cycle[32] // current lightning cycle
 new g_lights_cycle_len // lightning cycle length
 new Float:g_models_targettime // for adding delays between Model Change messages
 new Float:g_teams_targettime // for adding delays between Team Change messages
-new g_MsgSync, g_MsgSync2 // message sync objects
+new g_MsgSync // message sync objects
 new g_trailSpr, g_exploSpr, g_flameSpr, g_smokeSpr, g_glassSpr // grenade sprites
-new g_modname[32] // for formatting the mod name
 new g_freezetime // whether CS's freeze time is on
 new g_maxplayers // max players counter
 new g_czero // whether we are running on a CZ server
@@ -833,8 +448,7 @@ Array:sound_ambience5, Array:sound_ambience1_duration, Array:sound_ambience2_dur
 Array:sound_ambience3_duration, Array:sound_ambience4_duration,
 Array:sound_ambience5_duration, Array:sound_ambience1_ismp3, Array:sound_ambience2_ismp3,
 Array:sound_ambience3_ismp3, Array:sound_ambience4_ismp3, Array:sound_ambience5_ismp3,
-Array:g_primary_items, Array:g_secondary_items, Array:g_additional_items,
-Array:g_primary_weaponids, Array:g_secondary_weaponids, Array:g_extraweapon_names,
+Array:g_extraweapon_names,
 Array:g_extraweapon_items, Array:g_extraweapon_costs, g_extra_costs2[EXTRA_WEAPONS_STARTID],
 g_ambience_snow, g_ambience_fog, g_fog_density[10], g_fog_color[12], g_sky_enable,
 Array:g_sky_names, Array:lights_thunder, Array:zombie_decals, Array:g_objective_ents,
@@ -858,7 +472,7 @@ cvar_flashdist, cvar_flarecolor, cvar_survignorefrags, cvar_fireduration, cvar_f
 cvar_flaregrenades, cvar_knockbackducking, cvar_knockbackdamage, cvar_knockbackzvel,
 cvar_multiratio, cvar_flaresize, cvar_spawndelay, cvar_extraantidote, cvar_extramadness,
 cvar_extraweapons, cvar_extranvision, cvar_nvggive, cvar_preventconsecutive, cvar_botquota,
-cvar_buycustom, cvar_zombiepainfree, cvar_fireslowdown, cvar_survbasehp, cvar_survaura,
+cvar_zombiepainfree, cvar_fireslowdown, cvar_survbasehp, cvar_survaura,
 cvar_nemignoreammo, cvar_survignoreammo, cvar_nemaura, cvar_extrainfbomb, cvar_knockback,
 cvar_fragsinfect, cvar_fragskill, cvar_humanarmor, cvar_zombiesilent, cvar_removedropped,
 cvar_plagueratio, cvar_blocksuicide, cvar_knockbackdist, cvar_nemdamage, cvar_leapzombies,
@@ -874,10 +488,12 @@ cvar_infectionsparkle, cvar_infectiontracers, cvar_infectionparticles, cvar_infb
 cvar_allowrespawnsurv, cvar_flashshowall, cvar_allowrespawninfection, cvar_allowrespawnnem,
 cvar_allowrespawnswarm, cvar_allowrespawnplague, cvar_survinfammo, cvar_nemknockback,
 cvar_nvgcolor[3], cvar_nemnvgcolor[3], cvar_humnvgcolor[3], cvar_flashcolor[3],
-cvar_hudicons, cvar_respawnzomb, cvar_respawnhum, cvar_respawnnem, cvar_respawnsurv,
-cvar_startammopacks, cvar_randweapons, cvar_antidotelimit, cvar_madnesslimit,
+cvar_hudicons, cvar_respawnzomb, cvar_respawnhum, cvar_respawnnem, cvar_respawnsurv, cvar_respawnamont,
+cvar_startammopacks, cvar_antidotelimit, cvar_madnesslimit,
 cvar_adminknifemodelshuman, cvar_adminknifemodelszombie, cvar_keephealthondisconnect,
 cvar_buyzonetime, cvar_huddisplay
+
+// cso
 
 // Cached stuff for players
 new g_isconnected[33] // whether player is connected
@@ -1018,12 +634,7 @@ public plugin_precache()
 	sound_ambience2_ismp3 = ArrayCreate(1, 1)
 	sound_ambience3_ismp3 = ArrayCreate(1, 1)
 	sound_ambience4_ismp3 = ArrayCreate(1, 1)
-	sound_ambience5_ismp3 = ArrayCreate(1, 1)
-	g_primary_items = ArrayCreate(32, 1)
-	g_secondary_items = ArrayCreate(32, 1)
-	g_additional_items = ArrayCreate(32, 1)
-	g_primary_weaponids = ArrayCreate(1, 1)
-	g_secondary_weaponids = ArrayCreate(1, 1)
+	sound_ambience5_ismp3 = ArrayCreate(1, 1) 
 	g_extraweapon_names = ArrayCreate(32, 1)
 	g_extraweapon_items = ArrayCreate(32, 1)
 	g_extraweapon_costs = ArrayCreate(1, 1)
@@ -1538,9 +1149,6 @@ public plugin_init()
 	
 	// Menus
 	register_menu("Game Menu", KEYSMENU, "menu_game")
-	register_menu("Buy Menu 1", KEYSMENU, "menu_buy1")
-	register_menu("Buy Menu 2", KEYSMENU, "menu_buy2")
-	register_menu("Mod Info", KEYSMENU, "menu_info")
 	register_menu("Admin Menu", KEYSMENU, "menu_admin")
 	
 	// CS Buy Menus (to prevent zombies/survivor from buying)
@@ -1616,9 +1224,7 @@ public plugin_init()
 	cvar_respawnworldspawnkill = register_cvar("zp_respawn_on_worldspawn_kill", "1")
 	cvar_removedropped = register_cvar("zp_remove_dropped", "0")
 	cvar_removemoney = register_cvar("zp_remove_money", "1")
-	cvar_buycustom = register_cvar("zp_buy_custom", "1")
 	cvar_buyzonetime = register_cvar("zp_buyzone_time", "0.0")
-	cvar_randweapons = register_cvar("zp_random_weapons", "0")
 	cvar_adminmodelshuman = register_cvar("zp_admin_models_human", "1")
 	cvar_adminknifemodelshuman = register_cvar("zp_admin_knife_models_human", "0")
 	cvar_adminmodelszombie = register_cvar("zp_admin_models_zombie", "1")
@@ -1630,8 +1236,9 @@ public plugin_init()
 	cvar_keephealthondisconnect = register_cvar("zp_keep_health_on_disconnect", "1")
 	cvar_huddisplay = register_cvar("zp_hud_display", "1")
 	
+	
 	// CVARS - Deathmatch
-	cvar_deathmatch = register_cvar("zp_deathmatch", "0")
+	cvar_deathmatch = register_cvar("zp_deathmatch", "1")
 	cvar_spawndelay = register_cvar("zp_spawn_delay", "5")
 	cvar_spawnprotection = register_cvar("zp_spawn_protection", "5")
 	cvar_respawnonsuicide = register_cvar("zp_respawn_on_suicide", "0")
@@ -1639,12 +1246,13 @@ public plugin_init()
 	cvar_allowrespawninfection = register_cvar("zp_infection_allow_respawn", "1")
 	cvar_allowrespawnnem = register_cvar("zp_nem_allow_respawn", "0")
 	cvar_allowrespawnsurv = register_cvar("zp_surv_allow_respawn", "0")
-	cvar_allowrespawnswarm = register_cvar("zp_swarm_allow_respawn", "0")
-	cvar_allowrespawnplague = register_cvar("zp_plague_allow_respawn", "0")
+	cvar_allowrespawnswarm = register_cvar("zp_swarm_allow_respawn", "1")
+	cvar_allowrespawnplague = register_cvar("zp_plague_allow_respawn", "1")
 	cvar_respawnzomb = register_cvar("zp_respawn_zombies", "1")
-	cvar_respawnhum = register_cvar("zp_respawn_humans", "1")
-	cvar_respawnnem = register_cvar("zp_respawn_nemesis", "1")
-	cvar_respawnsurv = register_cvar("zp_respawn_survivors", "1")
+	cvar_respawnhum = register_cvar("zp_respawn_humans", "0")
+	cvar_respawnnem = register_cvar("zp_respawn_nemesis", "0")
+	cvar_respawnsurv = register_cvar("zp_respawn_survivors", "0")
+	cvar_respawnamont = register_cvar("zp_respawn_amont", "1")
 	
 	// CVARS - Extra Items
 	cvar_extraitems = register_cvar("zp_extra_items", "1")
@@ -1838,10 +1446,6 @@ public plugin_init()
 	
 	// Create the HUD Sync Objects
 	g_MsgSync = CreateHudSyncObj()
-	g_MsgSync2 = CreateHudSyncObj()
-	
-	// Format mod name
-	formatex(g_modname, charsmax(g_modname), "Zombie Plague %s", PLUGIN_VERSION)
 	
 	// Get Max Players
 	g_maxplayers = get_maxplayers()
@@ -1853,7 +1457,35 @@ public plugin_init()
 	new mymod[6]
 	get_modname(mymod, charsmax(mymod))
 	if (equal(mymod, "czero")) g_czero = 1
+
+	register_clcmd( "radio1","radioblock")
+	register_clcmd( "radio2","radioblock")
+	register_clcmd( "radio3","radioblock")
+	register_clcmd( "coverme","radioblock")
+	register_clcmd( "takepoint","radioblock")
+	register_clcmd( "holdpos","radioblock")
+	register_clcmd( "regroup","radioblock")
+	register_clcmd( "followme","radioblock")
+	register_clcmd( "takingfire","radioblock")
+	register_clcmd( "go","radioblock")
+	register_clcmd( "fallback","radioblock")
+	register_clcmd( "sticktog","radioblock")
+	register_clcmd( "getinpos","radioblock")
+	register_clcmd( "stormfront","radioblock")
+	register_clcmd( "report","radioblock")
+	register_clcmd( "roger","radioblock")
+	register_clcmd( "enemyspot","radioblock")
+	register_clcmd( "needbackup","radioblock")
+	register_clcmd( "sectorclear","radioblock")
+	register_clcmd( "inposition","radioblock")
+	register_clcmd( "reportingin","radioblock")
+	register_clcmd( "getout","radioblock")
+	register_clcmd( "negative","radioblock")
+	register_clcmd( "enemydown","radioblock")
 }
+
+public radioblock(id)
+	return PLUGIN_HANDLED
 
 public plugin_cfg()
 {
@@ -1949,7 +1581,8 @@ public logevent_round_end()
 			// Not playing
 			if (team == FM_CS_TEAM_SPECTATOR || team == FM_CS_TEAM_UNASSIGNED)
 				continue;
-			
+
+			amount[id] = 0
 			save_stats(id)
 		}
 	}
@@ -1973,8 +1606,8 @@ public logevent_round_end()
 	if (!fnGetZombies())
 	{
 		// Human team wins
-		set_hudmessage(0, 0, 200, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 3.0, 2.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "WIN_HUMAN")
+		set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
 		
 		// Play win sound and increase score, unless game commencing
 		ArrayGetString(sound_win_humans, random_num(0, ArraySize(sound_win_humans) - 1), sound, charsmax(sound))
@@ -1987,8 +1620,8 @@ public logevent_round_end()
 	else if (!fnGetHumans())
 	{
 		// Zombie team wins
-		set_hudmessage(200, 0, 0, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 3.0, 2.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "WIN_ZOMBIE")
+		set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
 		
 		// Play win sound and increase score, unless game commencing
 		ArrayGetString(sound_win_zombies, random_num(0, ArraySize(sound_win_zombies) - 1), sound, charsmax(sound))
@@ -2001,8 +1634,8 @@ public logevent_round_end()
 	else
 	{
 		// No one wins
-		set_hudmessage(0, 200, 0, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 3.0, 2.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "WIN_NO_ONE")
+		set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
 		
 		// Play win sound
 		ArrayGetString(sound_win_no_one, random_num(0, ArraySize(sound_win_no_one) - 1), sound, charsmax(sound))
@@ -2155,10 +1788,6 @@ public fw_PlayerSpawn_Post(id)
 	// Reset player vars
 	reset_vars(id, 0)
 	g_buytime[id] = get_gametime()
-	
-	// Show custom buy menu?
-	if (get_pcvar_num(cvar_buycustom))
-		set_task(0.2, "show_menu_buy1", id+TASK_SPAWN)
 	
 	// Set health and gravity
 	fm_set_user_health(id, get_pcvar_num(cvar_humanhp))
@@ -2818,6 +2447,8 @@ public fw_ClientDisconnect(id)
 	g_isconnected[id] = false
 	g_isbot[id] = false
 	g_isalive[id] = false
+
+	amount[id] = 0
 }
 
 // Client left
@@ -2949,7 +2580,7 @@ public fw_ClientUserInfoChanged(id)
 public fw_GetGameDescription()
 {
 	// Return the mod name so it can be easily identified
-	forward_return(FMV_STRING, g_modname)
+	forward_return(FMV_STRING, "CSO Mod Remade")
 	
 	return FMRES_SUPERCEDE;
 }
@@ -3231,7 +2862,7 @@ public fw_CmdStart(id, handle)
 	
 	// This logic looks kinda weird, but it should work in theory...
 	// p = g_zombie[id], q = g_survivor[id], r = g_cached_customflash
-	// ¬(p v q v (¬p ^ r)) <==> ¬p ^ ¬q ^ (p v ¬r)
+	// ï¿½(p v q v (ï¿½p ^ r)) <==> ï¿½p ^ ï¿½q ^ (p v ï¿½r)
 	if (!g_zombie[id] && !g_survivor[id] && (g_zombie[id] || !g_cached_customflash))
 		return;
 	
@@ -3503,46 +3134,48 @@ show_menu_game(id)
 	userflags = get_user_flags(id)
 	
 	// Title
-	len += formatex(menu[len], charsmax(menu) - len, "\y%s^n^n", g_modname)
+	len += formatex(menu[len], charsmax(menu) - len, "\yZombie-Plague | CSO Mod^n^n")
 	
 	// 1. Buy weapons
-	if (get_pcvar_num(cvar_buycustom))
-		len += formatex(menu[len], charsmax(menu) - len, "\r1.\w %L^n", id, "MENU_BUY")
-	else
-		len += formatex(menu[len], charsmax(menu) - len, "\d1. %L^n", id, "MENU_BUY")
+	// if (get_pcvar_num(cvar_buycustom))
+	// 	len += formatex(menu[len], charsmax(menu) - len, "\r1.\w %L^n", id, "MENU_BUY")
+	// else
+	// 	len += formatex(menu[len], charsmax(menu) - len, "\d1. %L^n", id, "MENU_BUY")
 	
-	// 2. Extra items
-	if (get_pcvar_num(cvar_extraitems) && g_isalive[id])
-		len += formatex(menu[len], charsmax(menu) - len, "\r2.\w %L^n", id, "MENU_EXTRABUY")
-	else
-		len += formatex(menu[len], charsmax(menu) - len, "\d2. %L^n", id, "MENU_EXTRABUY")
+	// // 2. Extra items
+	// if (get_pcvar_num(cvar_extraitems) && g_isalive[id])
+	// 	len += formatex(menu[len], charsmax(menu) - len, "\r2.\w %L^n", id, "MENU_EXTRABUY")
+	// else
+	// 	len += formatex(menu[len], charsmax(menu) - len, "\d2. %L^n", id, "MENU_EXTRABUY")
 	
-	// 3. Zombie class
+	// 1. Zombie class
 	if (get_pcvar_num(cvar_zclasses))
-		len += formatex(menu[len], charsmax(menu) - len, "\r3.\w %L^n", id,"MENU_ZCLASS")
+		len += formatex(menu[len], charsmax(menu) - len, "\r1.\w %L^n", id,"MENU_ZCLASS")
 	else
-		len += formatex(menu[len], charsmax(menu) - len, "\d3. %L^n", id,"MENU_ZCLASS")
-	
-	// 4. Unstuck
-	if (g_isalive[id])
-		len += formatex(menu[len], charsmax(menu) - len, "\r4.\w %L^n", id, "MENU_UNSTUCK")
-	else
-		len += formatex(menu[len], charsmax(menu) - len, "\d4. %L^n", id, "MENU_UNSTUCK")
-	
-	// 5. Help
-	len += formatex(menu[len], charsmax(menu) - len, "\r5.\w %L^n^n", id, "MENU_INFO")
-	
-	// 6. Join spec
+		len += formatex(menu[len], charsmax(menu) - len, "\d1. %L^n", id,"MENU_ZCLASS")
+
+	// 2. Join spec
 	if (!g_isalive[id] || !get_pcvar_num(cvar_blocksuicide) || (userflags & g_access_flag[ACCESS_ADMIN_MENU]))
-		len += formatex(menu[len], charsmax(menu) - len, "\r6.\w %L^n^n", id, "MENU_SPECTATOR")
+		len += formatex(menu[len], charsmax(menu) - len, "\r2.\w %L^n", id, "MENU_SPECTATOR")
 	else
-		len += formatex(menu[len], charsmax(menu) - len, "\d6. %L^n^n", id, "MENU_SPECTATOR")
+		len += formatex(menu[len], charsmax(menu) - len, "\d2. %L^n", id, "MENU_SPECTATOR")
 	
-	// 9. Admin menu
-	if (userflags & g_access_flag[ACCESS_ADMIN_MENU])
-		len += formatex(menu[len], charsmax(menu) - len, "\r9.\w %L", id, "MENU_ADMIN")
+	// 3. Unstuck
+	if (g_isalive[id])
+		len += formatex(menu[len], charsmax(menu) - len, "\r3.\w %L^n", id, "MENU_UNSTUCK")
 	else
-		len += formatex(menu[len], charsmax(menu) - len, "\d9. %L", id, "MENU_ADMIN")
+		len += formatex(menu[len], charsmax(menu) - len, "\d3. %L^n", id, "MENU_UNSTUCK")
+	
+	len += formatex(menu[len], charsmax(menu) - len, "\r4.\w %L^n", id, "MENU_RESPAWN")
+	len += formatex(menu[len], charsmax(menu) - len, "\r5.\w %L^n", id, "MENU_VIP")
+	len += formatex(menu[len], charsmax(menu) - len, "\r6.\w %L^n", id, "MENU_LANG")
+	len += formatex(menu[len], charsmax(menu) - len, "\r7.\w %L^n^n", id, "MENU_DONATE")
+	
+	// 8. Admin menu
+	if (userflags & g_access_flag[ACCESS_ADMIN_MENU])
+		len += formatex(menu[len], charsmax(menu) - len, "\r8.\w %L", id, "MENU_ADMIN")
+	else
+		len += formatex(menu[len], charsmax(menu) - len, "\d8. %L", id, "MENU_ADMIN")
 	
 	// 0. Exit
 	len += formatex(menu[len], charsmax(menu) - len, "^n^n\r0.\w %L", id, "MENU_EXIT")
@@ -3552,178 +3185,6 @@ show_menu_game(id)
 		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
 	
 	show_menu(id, KEYSMENU, menu, -1, "Game Menu")
-}
-
-// Buy Menu 1
-public show_menu_buy1(taskid)
-{
-	// Get player's id
-	static id
-	(taskid > g_maxplayers) ? (id = ID_SPAWN) : (id = taskid);
-	
-	// Player dead?
-	if (!g_isalive[id])
-		return;
-	
-	// Zombies or survivors get no guns
-	if (g_zombie[id] || g_survivor[id])
-		return;
-	
-	// Bots pick their weapons randomly / Random weapons setting enabled
-	if (get_pcvar_num(cvar_randweapons) || g_isbot[id])
-	{
-		buy_primary_weapon(id, random_num(0, ArraySize(g_primary_items) - 1))
-		menu_buy2(id, random_num(0, ArraySize(g_secondary_items) - 1))
-		return;
-	}
-	
-	// Automatic selection enabled for player and menu called on spawn event
-	if (WPN_AUTO_ON && taskid > g_maxplayers)
-	{
-		buy_primary_weapon(id, WPN_AUTO_PRI)
-		menu_buy2(id, WPN_AUTO_SEC)
-		return;
-	}
-	
-	static menu[300], len, weap, maxloops
-	len = 0
-	maxloops = min(WPN_STARTID+7, WPN_MAXIDS)
-	
-	// Title
-	len += formatex(menu[len], charsmax(menu) - len, "\y%L \r[%d-%d]^n^n", id, "MENU_BUY1_TITLE", WPN_STARTID+1, min(WPN_STARTID+7, WPN_MAXIDS))
-	
-	// 1-7. Weapon List
-	for (weap = WPN_STARTID; weap < maxloops; weap++)
-		len += formatex(menu[len], charsmax(menu) - len, "\r%d.\w %s^n", weap-WPN_STARTID+1, WEAPONNAMES[ArrayGetCell(g_primary_weaponids, weap)])
-	
-	// 8. Auto Select
-	len += formatex(menu[len], charsmax(menu) - len, "^n\r8.\w %L \y[%L]", id, "MENU_AUTOSELECT", id, (WPN_AUTO_ON) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-	
-	// 9. Next/Back - 0. Exit
-	len += formatex(menu[len], charsmax(menu) - len, "^n^n\r9.\w %L/%L^n^n\r0.\w %L", id, "MENU_NEXT", id, "MENU_BACK", id, "MENU_EXIT")
-	
-	// Fix for AMXX custom menus
-	if (pev_valid(id) == PDATA_SAFE)
-		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
-	
-	show_menu(id, KEYSMENU, menu, -1, "Buy Menu 1")
-}
-
-// Buy Menu 2
-show_menu_buy2(id)
-{
-	// Player dead?
-	if (!g_isalive[id])
-		return;
-	
-	static menu[250], len, weap, maxloops
-	len = 0
-	maxloops = ArraySize(g_secondary_items)
-	
-	// Title
-	len += formatex(menu[len], charsmax(menu) - len, "\y%L^n", id, "MENU_BUY2_TITLE")
-	
-	// 1-6. Weapon List
-	for (weap = 0; weap < maxloops; weap++)
-		len += formatex(menu[len], charsmax(menu) - len, "^n\r%d.\w %s", weap+1, WEAPONNAMES[ArrayGetCell(g_secondary_weaponids, weap)])
-	
-	// 8. Auto Select
-	len += formatex(menu[len], charsmax(menu) - len, "^n^n\r8.\w %L \y[%L]", id, "MENU_AUTOSELECT", id, (WPN_AUTO_ON) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-	
-	// 0. Exit
-	len += formatex(menu[len], charsmax(menu) - len, "^n^n\r0.\w %L", id, "MENU_EXIT")
-	
-	// Fix for AMXX custom menus
-	if (pev_valid(id) == PDATA_SAFE)
-		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
-	
-	show_menu(id, KEYSMENU, menu, -1, "Buy Menu 2")
-}
-
-// Extra Items Menu
-show_menu_extras(id)
-{
-	// Player dead?
-	if (!g_isalive[id])
-		return;
-	
-	static menuid, menu[128], item, team, buffer[32]
-	
-	// Title
-	formatex(menu, charsmax(menu), "%L [%L]\r", id, "MENU_EXTRA_TITLE", id, g_zombie[id] ? g_nemesis[id] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE" : g_survivor[id] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
-	menuid = menu_create(menu, "menu_extras")
-	
-	// Item List
-	for (item = 0; item < g_extraitem_i; item++)
-	{
-		// Retrieve item's team
-		team = ArrayGetCell(g_extraitem_team, item)
-		
-		// Item not available to player's team/class
-		if ((g_zombie[id] && !g_nemesis[id] && !(team & ZP_TEAM_ZOMBIE)) || (!g_zombie[id] && !g_survivor[id] && !(team & ZP_TEAM_HUMAN)) || (g_nemesis[id] && !(team & ZP_TEAM_NEMESIS)) || (g_survivor[id] && !(team & ZP_TEAM_SURVIVOR)))
-			continue;
-		
-		// Check if it's one of the hardcoded items, check availability, set translated caption
-		switch (item)
-		{
-			case EXTRA_NVISION:
-			{
-				if (!get_pcvar_num(cvar_extranvision)) continue;
-				formatex(buffer, charsmax(buffer), "%L", id, "MENU_EXTRA1")
-			}
-			case EXTRA_ANTIDOTE:
-			{
-				if (!get_pcvar_num(cvar_extraantidote) || g_antidotecounter >= get_pcvar_num(cvar_antidotelimit)) continue;
-				formatex(buffer, charsmax(buffer), "%L", id, "MENU_EXTRA2")
-			}
-			case EXTRA_MADNESS:
-			{
-				if (!get_pcvar_num(cvar_extramadness) || g_madnesscounter >= get_pcvar_num(cvar_madnesslimit)) continue;
-				formatex(buffer, charsmax(buffer), "%L", id, "MENU_EXTRA3")
-			}
-			case EXTRA_INFBOMB:
-			{
-				if (!get_pcvar_num(cvar_extrainfbomb) || g_infbombcounter >= get_pcvar_num(cvar_infbomblimit)) continue;
-				formatex(buffer, charsmax(buffer), "%L", id, "MENU_EXTRA4")
-			}
-			default:
-			{
-				if (item >= EXTRA_WEAPONS_STARTID && item <= EXTRAS_CUSTOM_STARTID-1 && !get_pcvar_num(cvar_extraweapons)) continue;
-				ArrayGetString(g_extraitem_name, item, buffer, charsmax(buffer))
-			}
-		}
-		
-		// Add Item Name and Cost
-		formatex(menu, charsmax(menu), "%s \y%d %L", buffer, ArrayGetCell(g_extraitem_cost, item), id, "AMMO_PACKS2")
-		buffer[0] = item
-		buffer[1] = 0
-		menu_additem(menuid, menu, buffer)
-	}
-	
-	// No items to display?
-	if (menu_items(menuid) <= 0)
-	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id ,"CMD_NOT_EXTRAS")
-		menu_destroy(menuid)
-		return;
-	}
-	
-	// Back - Next - Exit
-	formatex(menu, charsmax(menu), "%L", id, "MENU_BACK")
-	menu_setprop(menuid, MPROP_BACKNAME, menu)
-	formatex(menu, charsmax(menu), "%L", id, "MENU_NEXT")
-	menu_setprop(menuid, MPROP_NEXTNAME, menu)
-	formatex(menu, charsmax(menu), "%L", id, "MENU_EXIT")
-	menu_setprop(menuid, MPROP_EXITNAME, menu)
-		
-	// If remembered page is greater than number of pages, clamp down the value
-	MENU_PAGE_EXTRAS = min(MENU_PAGE_EXTRAS, menu_pages(menuid)-1)
-	
-	// Fix for AMXX custom menus
-	if (pev_valid(id) == PDATA_SAFE)
-		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
-	
-	menu_display(id, menuid, MENU_PAGE_EXTRAS)
 }
 
 // Zombie Class Menu
@@ -3780,24 +3241,6 @@ public show_menu_zclass(id)
 		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
 	
 	menu_display(id, menuid, MENU_PAGE_ZCLASS)
-}
-
-// Help Menu
-show_menu_info(id)
-{
-	// Player disconnected?
-	if (!g_isconnected[id])
-		return;
-	
-	static menu[150]
-	
-	formatex(menu, charsmax(menu), "\y%L^n^n\r1.\w %L^n\r2.\w %L^n\r3.\w %L^n\r4.\w %L^n^n\r0.\w %L", id, "MENU_INFO_TITLE", id, "MENU_INFO1", id,"MENU_INFO2", id,"MENU_INFO3", id,"MENU_INFO4", id, "MENU_EXIT")
-	
-	// Fix for AMXX custom menus
-	if (pev_valid(id) == PDATA_SAFE)
-		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
-	
-	show_menu(id, KEYSMENU, menu, -1, "Mod Info")
 }
 
 // Admin Menu
@@ -3983,36 +3426,36 @@ public menu_game(id, key)
 	
 	switch (key)
 	{
-		case 0: // Buy Weapons
-		{
-			// Custom buy menus enabled?
-			if (get_pcvar_num(cvar_buycustom))
-			{
-				// Disable the remember selection setting
-				WPN_AUTO_ON = 0
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "BUY_ENABLED")
+		// case 0: // Buy Weapons
+		// {
+		// 	// Custom buy menus enabled?
+		// 	if (get_pcvar_num(cvar_buycustom))
+		// 	{
+		// 		// Disable the remember selection setting
+		// 		WPN_AUTO_ON = 0
+		// 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "BUY_ENABLED")
 				
-				// Show menu if player hasn't yet bought anything
-				if (g_canbuy[id]) show_menu_buy1(id)
-			}
-			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
-		}
-		case 1: // Extra Items
-		{
-			// Extra items enabled?
-			if (get_pcvar_num(cvar_extraitems))
-			{
-				// Check whether the player is able to buy anything
-				if (g_isalive[id])
-					show_menu_extras(id)
-				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
-			}
-			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_EXTRAS")
-		}
-		case 2: // Zombie Classes
+		// 		// Show menu if player hasn't yet bought anything
+		// 		if (g_canbuy[id]) show_menu_buy1(id)
+		// 	}
+		// 	else
+		// 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		// }
+		// case 1: // Extra Items
+		// {
+		// 	// Extra items enabled?
+		// 	if (get_pcvar_num(cvar_extraitems))
+		// 	{
+		// 		// Check whether the player is able to buy anything
+		// 		if (g_isalive[id])
+		// 			show_menu_extras(id)
+		// 		else
+		// 			zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		// 	}
+		// 	else
+		// 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_EXTRAS")
+		// }
+		case 0: // Zombie Classes
 		{
 			// Zombie classes enabled?
 			if (get_pcvar_num(cvar_zclasses))
@@ -4020,30 +3463,7 @@ public menu_game(id, key)
 			else
 				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ZCLASSES")
 		}
-		case 3: // Unstuck
-		{
-			// Check if player is stuck
-			if (g_isalive[id])
-			{
-				if (is_player_stuck(id))
-				{
-					// Move to an initial spawn
-					if (get_pcvar_num(cvar_randspawn))
-						do_random_spawn(id) // random spawn (including CSDM)
-					else
-						do_random_spawn(id, 1) // regular spawn
-				}
-				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_STUCK")
-			}
-			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
-		}
-		case 4: // Help Menu
-		{
-			show_menu_info(id)
-		}
-		case 5: // Join Spectator
+		case 1: // Join Spectator
 		{
 			// Player alive?
 			if (g_isalive[id])
@@ -4079,7 +3499,31 @@ public menu_game(id, key)
 			fm_cs_set_user_team(id, FM_CS_TEAM_SPECTATOR)
 			fm_user_team_update(id)
 		}
-		case 8: // Admin Menu
+		case 2: // Unstuck
+		{
+			// Check if player is stuck
+			if (g_isalive[id])
+			{
+				if (is_player_stuck(id))
+				{
+					// Move to an initial spawn
+					if (get_pcvar_num(cvar_randspawn))
+						do_random_spawn(id) // random spawn (including CSDM)
+					else
+						do_random_spawn(id, 1) // regular spawn
+				}
+				else
+					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_STUCK")
+			}
+			else
+				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		}
+		case 3..6: 
+		{
+			
+		}
+		
+		case 7: // Admin Menu
 		{
 			// Check if player has the required access
 			if (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MENU])
@@ -4088,131 +3532,6 @@ public menu_game(id, key)
 				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
 		}
 	}
-	
-	return PLUGIN_HANDLED;
-}
-
-// Buy Menu 1
-public menu_buy1(id, key)
-{
-	// Player dead?
-	if (!g_isalive[id])
-		return PLUGIN_HANDLED;
-	
-	// Zombies or survivors get no guns
-	if (g_zombie[id] || g_survivor[id])
-		return PLUGIN_HANDLED;
-	
-	// Special keys / weapon list exceeded
-	if (key >= MENU_KEY_AUTOSELECT || WPN_SELECTION >= WPN_MAXIDS)
-	{
-		switch (key)
-		{
-			case MENU_KEY_AUTOSELECT: // toggle auto select
-			{
-				WPN_AUTO_ON = 1 - WPN_AUTO_ON
-			}
-			case MENU_KEY_NEXT: // next/back
-			{
-				if (WPN_STARTID+7 < WPN_MAXIDS)
-					WPN_STARTID += 7
-				else
-					WPN_STARTID = 0
-			}
-			case MENU_KEY_EXIT: // exit
-			{
-				return PLUGIN_HANDLED;
-			}
-		}
-		
-		// Show buy menu again
-		show_menu_buy1(id)
-		return PLUGIN_HANDLED;
-	}
-	
-	// Store selected weapon id
-	WPN_AUTO_PRI = WPN_SELECTION
-	
-	// Buy primary weapon
-	buy_primary_weapon(id, WPN_AUTO_PRI)
-	
-	// Show pistols menu
-	show_menu_buy2(id)
-	
-	return PLUGIN_HANDLED;
-}
-
-// Buy Primary Weapon
-buy_primary_weapon(id, selection)
-{
-	// Drop previous weapons
-	drop_weapons(id, 1)
-	drop_weapons(id, 2)
-	
-	// Strip off from weapons
-	fm_strip_user_weapons(id)
-	fm_give_item(id, "weapon_knife")
-	
-	// Get weapon's id and name
-	static weaponid, wname[32]
-	weaponid = ArrayGetCell(g_primary_weaponids, selection)
-	ArrayGetString(g_primary_items, selection, wname, charsmax(wname))
-	
-	// Give the new weapon and full ammo
-	fm_give_item(id, wname)
-	ExecuteHamB(Ham_GiveAmmo, id, MAXBPAMMO[weaponid], AMMOTYPE[weaponid], MAXBPAMMO[weaponid])
-	
-	// Weapons bought
-	g_canbuy[id] = false
-	
-	// Give additional items
-	static i
-	for (i = 0; i < ArraySize(g_additional_items); i++)
-	{
-		ArrayGetString(g_additional_items, i, wname, charsmax(wname))
-		fm_give_item(id, wname)
-	}
-}
-
-// Buy Menu 2
-public menu_buy2(id, key)
-{
-	// Player dead?
-	if (!g_isalive[id])
-		return PLUGIN_HANDLED;
-	
-	// Zombies or survivors get no guns
-	if (g_zombie[id] || g_survivor[id])
-		return PLUGIN_HANDLED;
-	
-	// Special keys / weapon list exceeded
-	if (key >= ArraySize(g_secondary_items))
-	{
-		// Toggle autoselect
-		if (key == MENU_KEY_AUTOSELECT)
-			WPN_AUTO_ON = 1 - WPN_AUTO_ON
-		
-		// Reshow menu unless user exited
-		if (key != MENU_KEY_EXIT)
-			show_menu_buy2(id)
-		
-		return PLUGIN_HANDLED;
-	}
-	
-	// Store selected weapon
-	WPN_AUTO_SEC = key
-	
-	// Drop secondary gun again, in case we picked another (bugfix)
-	drop_weapons(id, 2)
-	
-	// Get weapon's id
-	static weaponid, wname[32]
-	weaponid = ArrayGetCell(g_secondary_weaponids, key)
-	ArrayGetString(g_secondary_items, key, wname, charsmax(wname))
-	
-	// Give the new weapon and full ammo
-	fm_give_item(id, wname)
-	ExecuteHamB(Ham_GiveAmmo, id, MAXBPAMMO[weaponid], AMMOTYPE[weaponid], MAXBPAMMO[weaponid])
 	
 	return PLUGIN_HANDLED;
 }
@@ -4468,147 +3787,6 @@ public menu_zclass(id, menuid, item)
 	menu_destroy(menuid)
 	return PLUGIN_HANDLED;
 }
-
-// Info Menu
-public menu_info(id, key)
-{
-	// Player disconnected?
-	if (!g_isconnected[id])
-		return PLUGIN_HANDLED;
-	
-	static motd[1500], len
-	len = 0
-	
-	switch (key)
-	{
-		case 0: // General
-		{
-			static weather, lighting[2]
-			weather = 0
-			get_pcvar_string(cvar_lighting, lighting, charsmax(lighting))
-			strtolower(lighting)
-			
-			len += formatex(motd[len], charsmax(motd) - len, "%L ", id, "MOTD_INFO11", "Zombie Plague", PLUGIN_VERSION, "MeRcyLeZZ")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO12")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_A")
-			
-			if (g_ambience_fog)
-			{
-				len += formatex(motd[len], charsmax(motd) - len, (weather < 1) ? " %L" : ". %L", id, "MOTD_FOG")
-				weather++
-			}
-			if (g_ambience_rain)
-			{
-				len += formatex(motd[len], charsmax(motd) - len, (weather < 1) ? " %L" : ". %L", id, "MOTD_RAIN")
-				weather++
-			}
-			if (g_ambience_snow)
-			{
-				len += formatex(motd[len], charsmax(motd) - len, (weather < 1) ? " %L" : ". %L", id, "MOTD_SNOW")
-				weather++
-			}
-			if (weather < 1) len += formatex(motd[len], charsmax(motd) - len, " %L", id, "MOTD_DISABLED")
-			
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_B", lighting)
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_C", id, get_pcvar_num(cvar_triggered) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			if (lighting[0] >= 'a' && lighting[0] <= 'd' && get_pcvar_float(cvar_thunder) > 0.0) len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_D", floatround(get_pcvar_float(cvar_thunder)))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_E", id, get_pcvar_num(cvar_removedoors) > 0 ? get_pcvar_num(cvar_removedoors) > 1 ? "MOTD_DOORS" : "MOTD_ROTATING" : "MOTD_ENABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_F", id, get_pcvar_num(cvar_deathmatch) > 0 ? get_pcvar_num(cvar_deathmatch) > 1 ? get_pcvar_num(cvar_deathmatch) > 2 ? "MOTD_ENABLED" : "MOTD_DM_ZOMBIE" : "MOTD_DM_HUMAN" : "MOTD_DISABLED")
-			if (get_pcvar_num(cvar_deathmatch)) len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_G", floatround(get_pcvar_float(cvar_spawnprotection)))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_H", id, get_pcvar_num(cvar_randspawn) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_I", id, get_pcvar_num(cvar_extraitems) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_J", id, get_pcvar_num(cvar_zclasses) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_K", id, get_pcvar_num(cvar_customnvg) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO1_L", id, g_cached_customflash ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			
-			show_motd(id, motd)
-		}
-		case 1: // Humans
-		{
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_A", get_pcvar_num(cvar_humanhp))
-			if (get_pcvar_num(cvar_humanlasthp) > 0) len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_B", get_pcvar_num(cvar_humanlasthp))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_C", get_pcvar_num(cvar_humanspd))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_D", floatround(get_pcvar_float(cvar_humangravity) * 800.0))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_E", id, get_pcvar_num(cvar_infammo) > 0 ? get_pcvar_num(cvar_infammo) > 1 ? "MOTD_AMMO_CLIP" : "MOTD_AMMO_BP" : "MOTD_LIMITED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_F", get_pcvar_num(cvar_ammodamage_human))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_G", id, get_pcvar_num(cvar_firegrenades) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_H", id, get_pcvar_num(cvar_frostgrenades) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_I", id, get_pcvar_num(cvar_flaregrenades) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO2_J", id, get_pcvar_num(cvar_knockback) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			
-			show_motd(id, motd)
-		}
-		case 2: // Zombies
-		{
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_A", ArrayGetCell(g_zclass_hp, 0))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_B", floatround(float(ArrayGetCell(g_zclass_hp, 0)) * get_pcvar_float(cvar_zombiefirsthp)))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_C", floatround(get_pcvar_float(cvar_zombiearmor) * 100.0))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_D", ArrayGetCell(g_zclass_spd, 0))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_E", floatround(Float:ArrayGetCell(g_zclass_grav, 0) * 800.0))
-			if (get_pcvar_num(cvar_zombiebonushp)) len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_F", get_pcvar_num(cvar_zombiebonushp))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_G", id, get_pcvar_num(cvar_zombiepainfree) > 0 ? get_pcvar_num(cvar_zombiepainfree) > 1 ? "MOTD_LASTZOMBIE" : "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_H", id, get_pcvar_num(cvar_zombiebleeding) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO3_I", get_pcvar_num(cvar_ammoinfect))
-			
-			show_motd(id, motd)
-		}
-		case 3: // Gameplay Modes
-		{
-			static nemhp[5], survhp[5]
-			
-			// Get nemesis and survivor health
-			num_to_str(get_pcvar_num(cvar_nemhp), nemhp, charsmax(nemhp))
-			num_to_str(get_pcvar_num(cvar_survhp), survhp, charsmax(survhp))
-			
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4")
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_A", id, get_pcvar_num(cvar_nem) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			if (get_pcvar_num(cvar_nem))
-			{
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_B", get_pcvar_num(cvar_nemchance))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_C", get_pcvar_num(cvar_nemhp) > 0 ? nemhp : "[Auto]")
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_D", get_pcvar_num(cvar_nemspd))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_E", floatround(get_pcvar_float(cvar_nemgravity) * 800.0))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_F", id, g_cached_leapnemesis ? "MOTD_ENABLED" : "MOTD_DISABLED")
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_G", id, get_pcvar_num(cvar_nempainfree) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			}
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_H", id, get_pcvar_num(cvar_surv) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			if (get_pcvar_num(cvar_surv))
-			{
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_I", get_pcvar_num(cvar_survchance))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_J", get_pcvar_num(cvar_survhp) > 0 ? survhp : "[Auto]")
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_K", get_pcvar_num(cvar_survspd))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_L", floatround(get_pcvar_float(cvar_survgravity) * 800.0))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_M", id, g_cached_leapsurvivor ? "MOTD_ENABLED" : "MOTD_DISABLED")
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_N", id, get_pcvar_num(cvar_survpainfree) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			}
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_O", id, get_pcvar_num(cvar_swarm) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			if (get_pcvar_num(cvar_swarm)) len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_P", get_pcvar_num(cvar_swarmchance))
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_Q", id, get_pcvar_num(cvar_multi) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			if (get_pcvar_num(cvar_multi))
-			{
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_R", get_pcvar_num(cvar_multichance))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_S", floatround(get_pcvar_float(cvar_multiratio) * 100.0))
-			}
-			len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_T", id, get_pcvar_num(cvar_plague) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-			if (get_pcvar_num(cvar_plague))
-			{
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_U", get_pcvar_num(cvar_plaguechance))
-				len += formatex(motd[len], charsmax(motd) - len, "%L", id, "MOTD_INFO4_V", floatround(get_pcvar_float(cvar_plagueratio) * 100.0))
-			}
-			
-			show_motd(id, motd)
-		}
-		default: return PLUGIN_HANDLED;
-	}
-	
-	// Show help menu again if user wishes to read another topic
-	show_menu_info(id)
-	
-	return PLUGIN_HANDLED;
-}
-
 // Admin Menu
 public menu_admin(id, key)
 {
@@ -5430,8 +4608,8 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Survivor HUD notice
-		set_hudmessage(20, 20, 255, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_SURVIVOR", g_playername[forward_id])
+		set_dhudmessage(20, 20, 255, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_SURVIVOR", g_playername[forward_id])
 		
 		// Mode fully started!
 		g_modestarted = true
@@ -5483,8 +4661,8 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Swarm HUD notice
-		set_hudmessage(20, 255, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_SWARM")
+		set_dhudmessage(20, 255, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_SWARM")
 		
 		// Mode fully started!
 		g_modestarted = true
@@ -5541,8 +4719,8 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Multi Infection HUD notice
-		set_hudmessage(200, 50, 0, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_MULTI")
+		set_dhudmessage(200, 50, 0, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_MULTI")
 		
 		// Mode fully started!
 		g_modestarted = true
@@ -5645,8 +4823,8 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Plague HUD notice
-		set_hudmessage(0, 50, 200, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, -1)
-		ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_PLAGUE")
+		set_dhudmessage(0, 50, 200, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_PLAGUE")
 		
 		// Mode fully started!
 		g_modestarted = true
@@ -5710,8 +4888,8 @@ make_a_zombie(mode, id)
 			PlaySound(sound);
 			
 			// Show Nemesis HUD notice
-			set_hudmessage(255, 20, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, -1)
-			ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_NEMESIS", g_playername[forward_id])
+			set_dhudmessage(255, 20, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+			show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_NEMESIS", g_playername[forward_id])
 			
 			// Mode fully started!
 			g_modestarted = true
@@ -5722,8 +4900,8 @@ make_a_zombie(mode, id)
 		else
 		{
 			// Show First Zombie HUD notice
-			set_hudmessage(255, 0, 0, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 5.0, 1.0, 1.0, -1)
-			ShowSyncHudMsg(0, g_MsgSync, "%L",LANG_PLAYER, "NOTICE_FIRST", g_playername[forward_id])
+			set_dhudmessage(255, 0, 0, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 5.0, 1.0, 1.0, false)
+			show_dhudmessage(0, "%L",LANG_PLAYER, "NOTICE_FIRST", g_playername[forward_id])
 			
 			// Mode fully started!
 			g_modestarted = true
@@ -5864,12 +5042,12 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 			emit_sound(id, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			
 			// Show Infection HUD notice
-			set_hudmessage(255, 0, 0, HUD_INFECT_X, HUD_INFECT_Y, 0, 0.0, 5.0, 1.0, 1.0, -1)
+			set_dhudmessage(255, 0, 0, HUD_INFECT_X, HUD_INFECT_Y, 0, 0.00, 5.00, 1.00, 1.00, false);
 			
 			if (infector) // infected by someone?
-				ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_INFECT2", g_playername[id], g_playername[infector])
+				show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_INFECT2", g_playername[id], g_playername[infector])
 			else
-				ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_INFECT", g_playername[id])
+				show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_INFECT", g_playername[id])
 		}
 	}
 	else
@@ -6227,11 +5405,7 @@ humanme(id, survivor, silentmode)
 		else g_frozen_gravity[id] = get_pcvar_float(cvar_humangravity)
 		
 		// Set human maxspeed
-		ExecuteHamB(Ham_Player_ResetMaxSpeed, id)
-		
-		// Show custom buy menu?
-		if (get_pcvar_num(cvar_buycustom))
-			set_task(0.2, "show_menu_buy1", id+TASK_SPAWN)
+		ExecuteHamB(Ham_Player_ResetMaxSpeed, id) 
 		
 		// Silent mode = no HUD messages, no antidote sound
 		if (!silentmode)
@@ -7170,50 +6344,6 @@ load_customization_from_files()
 					}
 				}
 			}
-			case SECTION_BUY_MENU_WEAPONS:
-			{
-				if (equal(key, "PRIMARY"))
-				{
-					// Parse weapons
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to weapons array
-						ArrayPushString(g_primary_items, key)
-						ArrayPushCell(g_primary_weaponids, cs_weapon_name_to_id(key))
-					}
-				}
-				else if (equal(key, "SECONDARY"))
-				{
-					// Parse weapons
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to weapons array
-						ArrayPushString(g_secondary_items, key)
-						ArrayPushCell(g_secondary_weaponids, cs_weapon_name_to_id(key))
-					}
-				}
-				else if (equal(key, "ADDITIONAL ITEMS"))
-				{
-					// Parse weapons
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to weapons array
-						ArrayPushString(g_additional_items, key)
-					}
-				}
-			}
 			case SECTION_EXTRA_ITEMS_WEAPONS:
 			{
 				if (equal(key, "NAMES"))
@@ -7787,13 +6917,13 @@ balance_teams()
 public welcome_msg()
 {
 	// Show mod info
-	zp_colored_print(0, "^x01**** ^x04%s^x01 ****", g_modname)
-	zp_colored_print(0, "^x04[ZP]^x01 %L", LANG_PLAYER, "NOTICE_INFO1")
-	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[ZP]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
+	zp_colored_print(0, "^x01**** ^x04ZOMBIE-PLAGUE | CSO Mod remade by Filiq_ with the help from cTm # oNe^x01 ****")
+	zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO1")
+	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
 	
 	// Show T-virus HUD notice
-	set_hudmessage(0, 125, 200, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 3.0, 2.0, 1.0, -1)
-	ShowSyncHudMsg(0, g_MsgSync, "%L", LANG_PLAYER, "NOTICE_VIRUS_FREE")
+	set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00, false);
+	show_dhudmessage(0, "%L", -1, "NOTICE_VIRUS_FREE");
 }
 
 // Respawn Player Task (deathmatch)
@@ -7808,7 +6938,7 @@ public respawn_player_task(taskid)
 	team = fm_cs_get_user_team(ID_SPAWN)
 	
 	// Player moved to spectators
-	if (team == FM_CS_TEAM_SPECTATOR || team == FM_CS_TEAM_UNASSIGNED)
+	if (team == FM_CS_TEAM_SPECTATOR || team == FM_CS_TEAM_UNASSIGNED || amount[ID_SPAWN] > get_pcvar_num(cvar_respawnamont))
 		return;
 	
 	// Respawn player automatically if allowed on current round
@@ -7829,6 +6959,8 @@ public respawn_player_task(taskid)
 		// Override respawn as zombie setting on nemesis and survivor rounds
 		if (g_survround) g_respawn_as_zombie[ID_SPAWN] = true
 		else if (g_nemround) g_respawn_as_zombie[ID_SPAWN] = false
+
+		amount[ID_SPAWN] ++
 		
 		respawn_player_manually(ID_SPAWN)
 	}
@@ -8053,7 +7185,7 @@ public ambience_sound_effects(taskid)
 	{
 		iRand = random_num(0, ArraySize(sound_ambience1) - 1)
 		ArrayGetString(sound_ambience1, iRand, sound, charsmax(sound))
-		duration = ArrayGetCell(sound_ambience1_duration, iRand)
+		duration = 50
 	}
 	
 	// Play it on clients
@@ -8626,8 +7758,6 @@ reset_vars(id, resetall)
 		g_zombieclassnext[id] = ZCLASS_NONE
 		g_damagedealt_human[id] = 0
 		g_damagedealt_zombie[id] = 0
-		WPN_AUTO_ON = 0
-		WPN_STARTID = 0
 		PL_ACTION = 0
 		MENU_PAGE_ZCLASS = 0
 		MENU_PAGE_EXTRAS = 0
@@ -8681,14 +7811,10 @@ public ShowHUD(taskid)
 	}
 	
 	// Format classname
-	static class[32], red, green, blue
+	static class[32]
 	
 	if (g_zombie[id]) // zombies
 	{
-		red = 200
-		green = 250
-		blue = 0
-		
 		if (g_nemesis[id])
 			formatex(class, charsmax(class), "%L", ID_SHOWHUD, "CLASS_NEMESIS")
 		else
@@ -8696,10 +7822,6 @@ public ShowHUD(taskid)
 	}
 	else // humans
 	{
-		red = 0
-		green = 0
-		blue = 255
-		
 		if (g_survivor[id])
 			formatex(class, charsmax(class), "%L", ID_SHOWHUD, "CLASS_SURVIVOR")
 		else
@@ -8710,14 +7832,14 @@ public ShowHUD(taskid)
 	if (id != ID_SHOWHUD)
 	{
 		// Show name, health, class, and ammo packs
-		set_hudmessage(255, 255, 255, HUD_SPECT_X, HUD_SPECT_Y, 0, 6.0, 1.1, 0.0, 0.0, -1)
-		ShowSyncHudMsg(ID_SHOWHUD, g_MsgSync2, "%L %s^nHP: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", g_playername[id], pev(id, pev_health), ID_SHOWHUD, "CLASS_CLASS", class, ID_SHOWHUD, "AMMO_PACKS1", g_ammopacks[id])
+		set_dhudmessage(192, 192, 192, HUD_SPECT_X, HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00, false);
+		show_dhudmessage(ID_SHOWHUD, "%L %s^nHP: %d - %L %s", ID_SHOWHUD, "SPECTATING", g_playername[id], pev(id, pev_health), ID_SHOWHUD, "CLASS_CLASS", class)
 	}
 	else
 	{
 		// Show health, class and ammo packs
-		set_hudmessage(red, green, blue, HUD_STATS_X, HUD_STATS_Y, 0, 6.0, 1.1, 0.0, 0.0, -1)
-		ShowSyncHudMsg(ID_SHOWHUD, g_MsgSync2, "%L: %d - %L %s - %L %d", id, "ZOMBIE_ATTRIB1", pev(ID_SHOWHUD, pev_health), ID_SHOWHUD, "CLASS_CLASS", class, ID_SHOWHUD, "AMMO_PACKS1", g_ammopacks[ID_SHOWHUD])
+		set_dhudmessage(245, 255, 250, HUD_STATS_X, HUD_STATS_Y, 0, 6.00, 1.10, 0.00, 0.00, false);
+		show_dhudmessage(ID_SHOWHUD, "[%L: %d] [%L: %s]", id, "ZOMBIE_ATTRIB1", pev(ID_SHOWHUD, pev_health), ID_SHOWHUD, "CLASS_CLASS", class)
 	}
 }
 
