@@ -3110,7 +3110,7 @@ show_menu_game(id)
 	userflags = get_user_flags(id)
 	
 	// Title
-	len += formatex(menu[len], charsmax(menu) - len, "\yZombie-Plague | CSO Mod^n^n")
+	len += formatex(menu[len], charsmax(menu) - len, "Main Menu | Zombie-Plague \w[\rCSO\w]^n^n")
 	
 	// 1. Buy weapons
 	// if (get_pcvar_num(cvar_buycustom))

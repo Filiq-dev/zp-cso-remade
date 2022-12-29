@@ -3,38 +3,18 @@
 #include <dhudmessage>
 #include <hamsandwich>
 #include <zombieplague>
+#include <zp_cso_custom>
 
 #define PLUGIN "[ZP] Money System"
 #define VERSION "1.0"
 #define AUTHOR "Arwel & Filiq_"
 
-new g_PlayerMoney[33], g_PlayerMoneyLimit[33]
-new g_msgMoney, g_msgMoneyBlink
-
-#define VIP_LEVEL ADMIN_LEVEL_H
-#define ADMIN_LEVEL ADMIN_IMMUNITY
-
-#define LIMIT 100000
-#define LIMIT_VIP 300000
-#define LIMIT_ADMIN 500000
-
-#define COLOR_HUMAN_WIN {0, 255, 0}
-#define COLOR_HUMAN_LOSE {255, 0, 0}
-
-#define COLOR_ZOMBIE_WIN {255, 0, 0}
-#define COLOR_ZOMBIE_LOSE {255, 0, 0}
-
-#define COLOR_DRAW {255, 255, 255}
-
-new pcvar_default
-
-new pcvar_humans_reward_win, pcvar_humans_reward_lose, pcvar_humans_reward_no_one
-new pcvar_humans_dmg_reward, pcvar_humans_kill_reward
-
-new pcvar_zombies_reward_win, pcvar_zombies_reward_lose, pcvar_zombies_reward_no_one
-new  pcvar_zombies_kill_reward
-
-new g_MaxPlayers, g_First
+new g_PlayerMoney[33], g_PlayerMoneyLimit[33],
+	g_msgMoney, g_msgMoneyBlink,
+	pcvar_humans_reward_win, pcvar_humans_reward_lose, pcvar_humans_reward_no_one,
+	pcvar_humans_dmg_reward, pcvar_humans_kill_reward,
+	pcvar_zombies_reward_win, pcvar_zombies_reward_lose, pcvar_zombies_reward_no_one,
+	pcvar_zombies_kill_reward, g_MaxPlayers, g_First = 0
 
 enum _:iNums
 {
@@ -42,8 +22,8 @@ enum _:iNums
 	iLimit
 }
 
-new g_iFlags[10][iNums];
-new g_iCount = -1;
+new g_iFlags[10][iNums],
+	g_iCount = -1
 
 public plugin_init()
 {
@@ -60,21 +40,22 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "fwTakeDamage", 1)
 	RegisterHam(Ham_Killed, "player", "fwKilled", 1)
 	
-	pcvar_default=register_cvar("ms_default_money", "3200")
+	register_cvar("ms_default_money", "3200")
 	
-	pcvar_humans_reward_win=register_cvar("ms_human_win_reward", "3000")
-	pcvar_humans_reward_lose=register_cvar("ms_human_lose_reward", "1500")
-	pcvar_humans_reward_no_one=register_cvar("ms_human_no_one_reward", "2000")
-	pcvar_humans_dmg_reward=register_cvar("ms_human_damage_reward_divide", "2")
-	pcvar_humans_kill_reward=register_cvar("ms_human_kill_reward", "300")
+	pcvar_humans_reward_win = register_cvar("ms_human_win_reward", "3000")
+	pcvar_humans_reward_lose = register_cvar("ms_human_lose_reward", "1500")
+	pcvar_humans_reward_no_one = register_cvar("ms_human_no_one_reward", "2000")
+	pcvar_humans_dmg_reward = register_cvar("ms_human_damage_reward_divide", "2")
+	pcvar_humans_kill_reward = register_cvar("ms_human_kill_reward", "300")
 	
-	pcvar_zombies_reward_win=register_cvar("ms_zombie_win_reward", "3000")
-	pcvar_zombies_reward_lose=register_cvar("ms_zombie_lose_reward", "1500")
-	pcvar_zombies_reward_no_one=register_cvar("ms_zombie_no_one_reward", "2000")	
-	pcvar_zombies_kill_reward=register_cvar("ms_zombie_kill_reward", "300")	
+	pcvar_zombies_reward_win = register_cvar("ms_zombie_win_reward", "3000")
+	pcvar_zombies_reward_lose = register_cvar("ms_zombie_lose_reward", "1500")
+	pcvar_zombies_reward_no_one = register_cvar("ms_zombie_no_one_reward", "2000")	
+	pcvar_zombies_kill_reward = register_cvar("ms_zombie_kill_reward", "300")	
+
+	register_cvar("ms_money_allow_donate", "1")
 	
 	g_MaxPlayers=get_maxplayers()
-	g_First=0
 }
 
 public plugin_cfg()
@@ -126,15 +107,6 @@ public plugin_cfg()
 		g_iFlags[g_iCount][iFlag] = read_flags(szLeft)
 		g_iFlags[g_iCount][iLimit] = str_to_num(szRight)
 
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("asdasdsssssss")
-		server_print("am incarcat flagul: %s cu limita %s", szLeft, szRight)
 	}
 
 	set_cvar_num("zp_remove_money", 0)
@@ -150,10 +122,6 @@ public plugin_natives()
 
 public client_connect(id)
 {
-	if(!get_user_money(id)) {
-		set_user_money(id, get_pcvar_num(pcvar_default))
-	}
-
 	for(new i; i <= g_iCount; i++)
 	{
 		if(get_user_flags(id) & g_iFlags[i][iFlag])
@@ -280,10 +248,10 @@ public set_user_money(id, value)
 {
 	new money = clamp(value, 0, g_PlayerMoneyLimit[id])
 
-	g_PlayerMoney[id] = money
+	g_PlayerMoney[id] = value
 		
 	if(is_user_alive(id))
-		sent_money(id, money)
+		sent_money(id, value)
 }
 
 public sent_money(id, num)
