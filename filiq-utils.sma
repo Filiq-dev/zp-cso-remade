@@ -1,5 +1,7 @@
 #include <amxmodx>
 #include <engine>
+#include <hamsandwich>
+#include <zombieplague>
 
 new gmsgSayText
 
@@ -7,7 +9,8 @@ public plugin_init()
 {
 	register_plugin("Some util plugins in one", "1.0", "Filiq_")
 	register_message((gmsgSayText = get_user_msgid("SayText")), "Message_SayText")
-
+    
+	RegisterHam(Ham_TakeDamage, "player", "fwTakeDamage", 1)
 }
 
 // https://forums.alliedmods.net/showpost.php?p=1088050&postcount=5
@@ -62,25 +65,14 @@ public client_PreThink(id)
 	}
 }
 
-public client_infochanged(id)
+public fwTakeDamage(id, weapon, attacker, Float:damage)
 {
-	if(is_user_connected(id))
-	{
-		new 
-			newname[32],
-			oldname[32]
-
-		get_user_info(id, "name", newname, 31)
-		get_user_name(id, oldname, 31)
-
-		if(!equal(oldname, newname))
-		{
-			ChatColor(id, "!y[!gCSO!y] You can't change your name.");
-			set_user_info(id, "name", oldname);
-		}
-	}
-	return false;
-}
+	if(!is_user_alive(id) || !is_user_alive(attacker))
+		return
+	
+	if(zp_get_user_zombie(id)) client_print(attacker, print_center, "HP: %d", get_user_health(id))
+	else client_print(attacker, print_center, "Armor: %d", get_user_armor(id))
+} 
 
 stock ChatColor(const id, const input[], any:...) 
 { 
