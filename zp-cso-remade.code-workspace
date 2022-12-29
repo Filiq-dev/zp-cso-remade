@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "E:/SteamLibrary/steamapps/common/Half-Life/cstrike/addons/amxmodx/configs"
+		}
+	],
+	"settings": {
+		"amxxpawn.compiler.executablePath": "E:\\SteamLibrary\\steamapps\\common\\Half-Life\\cstrike\\addons\\amxmodx\\scripting\\amxxpc.exe",
+		"amxxpawn.compiler.outputPath": "E:\\SteamLibrary\\steamapps\\common\\Half-Life\\cstrike\\addons\\amxmodx\\plugins",
+		"amxxpawn.compiler.includePaths": [
+
+			"E:/SteamLibrary/steamapps/common/Half-Life/cstrike/addons/amxmodx/scripting/include"
+			"F:/zp-cso-remade/include"
+		],
+		"amxxpawn.compiler.outputType": "path"
+	}
+}

@@ -260,8 +260,8 @@ public native_exp_get(id) {
 
 public native_level_set(id, value)
 {
-	g_PlayerLevel[id]=value
-	g_PlayerExpCurrent[id]=ArrayGetCell(g_Levels, g_PlayerLevel[id])
+	g_PlayerLevel[id] = value
+	g_PlayerExpCurrent[id] = ArrayGetCell(g_Levels, g_PlayerLevel[id])
 }
 
 public native_levels_max() {

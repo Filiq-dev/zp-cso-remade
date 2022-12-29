@@ -8,7 +8,7 @@
 
 #include <zp_cso_custom>
 
-#define PLUGIN "[ZP]BuyMenu&MoneySystem"
+#define PLUGIN "[ZP] BuyMenu System"
 #define VERSION "7.4"
 #define AUTHOR "Arwel"
 #define KNIFES "hammer"
@@ -49,8 +49,6 @@ new const SETTINGS_NAMES[MAX_ITEMS][]=
 	"KNIFES"
 }
 
-
-
 #define FLAGS_ROUND 0
 #define FLAGS_NEM 1
 #define FLAGS_FIRST_ZOMBIE 2
@@ -85,10 +83,7 @@ new Array:g_WeaponKeys[2]
 
 new g_Callback, g_CallbackFlags
 
-new g_fwSpawn, g_BuyzoneEnt
-
-new g_PlayerMoney[33], g_PlayerSpentMoney[33], Float:g_PlayerLastSpawnTime[33]
-new g_PlayerMoneyLimit[33]
+new g_fwSpawn, g_BuyzoneEnt, Float:g_PlayerLastSpawnTime[33], g_PlayerSpentMoney[33]
 
 new g_players_in_menu, g_players_choosed_knife
 
@@ -102,7 +97,6 @@ CSW_MP5NAVY)|(1<<CSW_M249)|(1<<CSW_M3)|(1<<CSW_M4A1)|(1<<CSW_TMP)|(1<<CSW_G3SG1)
 
 const SECONDARY_WEAPONS_BIT_SUM = (1<<CSW_P228)|(1<<CSW_ELITE)|(1<<CSW_FIVESEVEN)|(1<<CSW_USP)|(1<<CSW_GLOCK18)|(1<<CSW_DEAGLE) 
 
-new g_msgMoney, g_msgMoneyBlink
 new g_started, g_maxplayers, g_file
 
 enum _:iNums
@@ -174,12 +168,6 @@ public plugin_init()
 	
 	g_WeaponKeys[0]=ArrayCreate(1)
 	g_WeaponKeys[1]=ArrayCreate(1)
-	
-	g_msgMoney=get_user_msgid("Money")
-	g_msgMoneyBlink=get_user_msgid("BlinkAcct")
-	
-	register_message(g_msgMoney, "Msg_Money")
-	register_message(get_user_msgid("StatusIcon"), "Msg_StatusIcon")
 
 	g_maxplayers=get_maxplayers()    
 }
@@ -210,8 +198,6 @@ public plugin_cfg()
 	formatex(path, charsmax(path), "%s/%s", confdir, CONFIG_CFG_FILE)
 	
 	server_cmd("exec", path)    
-	
-	set_cvar_num("zp_remove_money", 0)
 }
 
 public plugin_precache()
@@ -222,13 +208,6 @@ public plugin_precache()
 	set_pev(g_BuyzoneEnt, pev_solid, SOLID_NOT)    
 	
 	g_fwSpawn=register_forward(FM_Spawn, "fw_Spawn")
-}
-
-public plugin_natives()
-{
-	register_native("zp_cs_set_user_money", "set_user_money", 1)
-	register_native("zp_cs_get_user_money", "get_user_money", 1)
-	register_native("zp_cs_get_user_limit", "get_user_limit", 1)  
 }
 
 public client_authorized(id)
@@ -294,7 +273,7 @@ public EventRoundStart(id)
 		{
 			if(zp_get_user_zombie(i)||zp_get_user_survivor(i)) //get_user_zombie work with nemesis
 			{
-				set_user_money(i, g_PlayerMoney[i]+g_PlayerSpentMoney[i])
+				zp_set_user_money(i, zp_get_user_money(i) + g_PlayerSpentMoney[i])
 			}
 			
 			if(flag_get(g_players_in_menu, i-1))
@@ -305,34 +284,6 @@ public EventRoundStart(id)
 	g_started=false
 }
 
-
-public Msg_Money(msg_id, msg_dest, msg_entity)
-{
-	if(get_msg_arg_int(2)) 
-		return PLUGIN_HANDLED
-	
-	set_msg_arg_int(1, ARG_LONG, g_PlayerMoney[msg_entity])    
-	
-	return PLUGIN_CONTINUE
-}
-
-public Msg_StatusIcon(msg_id, msg_dest, msg_entity)
-{
-	if (!is_user_alive(msg_entity) || get_msg_arg_int(1)!= 1)
-		return
-	
-	static sprite[10]
-	
-	get_msg_arg_string(2, sprite, charsmax(sprite))
-	
-	if (!equal(sprite, "buyzone"))
-		return
-	
-	set_msg_arg_int(3, get_msg_argtype(1), 0)
-	set_msg_arg_int(4, get_msg_argtype(1), 0)
-	set_msg_arg_int(5, get_msg_argtype(1), 0)
-}
-
 public zp_round_started(gamemode, id)
 {    
 	for(new i=1; i<=g_maxplayers; i++)
@@ -341,7 +292,7 @@ public zp_round_started(gamemode, id)
 		{
 			if(zp_get_user_zombie(i) || zp_get_user_survivor(i)) //get_user_zombie work with nemesis
 			{
-				set_user_money(i, g_PlayerMoney[i] + g_PlayerSpentMoney[i])
+				zp_set_user_money(i, zp_get_user_money(i) + g_PlayerSpentMoney[i])
 			}
 			
 			if(flag_get(g_players_in_menu, i-1))
@@ -587,7 +538,7 @@ public flags_callback(id, menu, item)
 			index=i    
 	}
 
-	if(ArrayGetCell(g_ItemsCosts[index], item)>g_PlayerMoney[id])
+	if(ArrayGetCell(g_ItemsCosts[index], item) > zp_get_user_money(id))
 		return ITEM_DISABLED    
 	
 	if(get_cvar_num("ms_lvl_system_active") && ArrayGetCell(g_ItemsLevels[index], item) > zp_get_user_level(id))
@@ -657,9 +608,9 @@ public weapons_menus_handler(id, menu, item)
 	ArrayGetString(g_Items[index], item, PistolRealName, charsmax(PistolRealName))
 	cost=ArrayGetCell(g_ItemsCosts[index], item)
 		
-	if(g_PlayerMoney[id]<cost)
+	if(zp_get_user_money(id) < cost)
 	{
-		make_blink(id, 5)
+		zp_alert_nomoney(id, 5)
 		
 		client_print(id, print_center, "%L", id, "NO_MONEY")
 		
@@ -728,9 +679,9 @@ public weapons_menus_handler(id, menu, item)
 		case ITEMS_KNIFES: flag_set(g_players_choosed_knife, id-1) 
 	}
 	
-	set_user_money(id, g_PlayerMoney[id]-cost)
+	zp_set_user_money(id, zp_get_user_money(id) - cost)
 	
-	g_PlayerSpentMoney[id]+=cost
+	g_PlayerSpentMoney[id] += cost
 	
 	zp_force_buy_extra_item(id, itemid, 1)
 	
@@ -892,38 +843,6 @@ public Load_Weapons(setting_section[], type)
 	return PLUGIN_CONTINUE
 }
 
-public get_user_limit(id)
-	return g_PlayerMoneyLimit[id]
-
-
-public get_user_money(id)
-	return g_PlayerMoney[id]
-
-public set_user_money(id, value)
-{
-	g_PlayerMoney[id]=value
-		
-	if(!is_user_alive(id))
-		return
-
-	sent_money(id, value)
-}
-
-stock sent_money(id, num)
-{    
-	message_begin(MSG_ONE, g_msgMoney, _, id)
-	write_long(num)
-	write_byte(1)
-	message_end()
-}
-
-stock make_blink(id, num)
-{
-	message_begin(MSG_ONE, g_msgMoneyBlink, _, id)
-	write_byte(num)
-	message_end()    
-}
- 
 stock drop_weapons(id, dropwhat)
 {
 	static weapons[32], num, i
