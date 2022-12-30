@@ -26,12 +26,15 @@ public client_putinserver(id)
 	if(is_user_bot(id))
 		return
 
-	set_task(1.0, "load", id)
+	set_task(0.5, "load", id)
 }
 
 public client_disconnect(id)
 {
 	if(is_user_bot(id))
+		return
+
+	if(zp_get_user_level(id) == 0)
 		return
 
 	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), getName(id))
