@@ -9,6 +9,7 @@ native zp_get_user_money(id)
 native zp_alert_nomoney(id, num)
 native show_hud_menu(id)
 native zp_get_user_limit(id)
+native zp_knife_menu(id)
 
 stock getName(id)
 {

@@ -17,20 +17,8 @@ public plugin_precache(){
 }
 
 public sql_init(){
-	new host[128]
-	new user[64]
-	new pass[64]
-	new database[64]
-	new db_type[16]
 
-	get_cvar_string("amx_sql_type", db_type, 15)
-	SQL_SetAffinity(db_type)
-	get_cvar_string("amx_sql_db", database, 63)
-	get_cvar_string("amx_sql_host", host, 127)
-	get_cvar_string("amx_sql_user", user, 63)
-	get_cvar_string("amx_sql_pass", pass, 63)
-
-	g_SqlTuple = SQL_MakeDbTuple(host, user, pass, database)
+	g_SqlTuple = SQL_MakeDbTuple("localhost", "root", "", "server")
 }
 
 public client_putinserver(id)

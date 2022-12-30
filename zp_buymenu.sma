@@ -420,7 +420,7 @@ public main_menu_build(id)
 	menu_additem(menu, temp, temp2, 0, g_Callback)
 	
 	formatex(temp, 127, "%L", id, "KNIFES")
-	menu_additem(menu, temp, "7", 0, g_Callback)    
+	menu_additem(menu, temp, "7", 0)    
 	
 	formatex(temp, 127, "%L", id, "EXIT")
 	menu_setprop(menu, MPROP_EXITNAME, temp )
@@ -461,16 +461,14 @@ public main_menu_handler(id, menu, item)
 	if(item>=ITEMS_ZEXTRA)
 		item++
 	
-	#if defined KNIFES
 	
-	//if(item==ITEMS_KNIFES)
-  //  {
-	//    client_cmd(id, KNIFES)
-		
-  //      return PLUGIN_HANDLED
-   // }
+	if(item == ITEMS_KNIFES)
+	{
+		zp_knife_menu(id)
 
-	#endif
+		return PLUGIN_HANDLED
+	}
+
 
 	new name[64]
 	
@@ -505,8 +503,8 @@ public main_menu_callback(id, menu, item)
 	if(zp_get_user_zombie(id) && item != ITEMS_HEXTRA)
 		return ITEM_DISABLED    
 		
-	if(item+1 == ITEMS_KNIFES && flag_get(g_players_choosed_knife, id-1))
-		return ITEM_DISABLED
+	// if(item+1 == ITEMS_KNIFES && flag_get(g_players_choosed_knife, id-1))
+	// 	return ITEM_DISABLED
 	
 	if(item != ITEMS_HEXTRA && g_started)
 	{
