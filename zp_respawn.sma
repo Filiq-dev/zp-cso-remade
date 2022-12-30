@@ -61,8 +61,10 @@ public respawnMenuHandler(id, menu, item)
 	if(cs_get_user_team(id) == CS_TEAM_SPECTATOR) 
 		cs_set_user_team(id, CS_TEAM_CT)
 
+	new money = item ? 3000 : 6000
+
 	zp_respawn_user(id, item ? ZP_TEAM_HUMAN : ZP_TEAM_ZOMBIE)
-	zp_set_user_money(id, zp_get_user_money(id) - item ? 3000 : 6000)
+	zp_set_user_money(id, zp_get_user_money(id) - money)
 
 	return PLUGIN_CONTINUE
 }
