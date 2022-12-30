@@ -138,19 +138,19 @@ public hudMenu(id)
 	new string[50],
 		menu = menu_create("Hud Menu | Zombie-Plague \w[\rCSO\w]", "hudMenuHandler")
 
-	formatex(string, 30, "Score [\y%s\w]", hudScore[id] ? "hide" : "show")
+	formatex(string, 30, "Score [%s\w]", hudScore[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
-	formatex(string, 30, "Stats [\y%s\w]", hudStats[id] ? "hide" : "show")
+	formatex(string, 30, "Stats [%s\w]", hudStats[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
-	formatex(string, 30, "Level [\y%s\w]", hudLevel[id] ? "hide" : "show")
+	formatex(string, 30, "Level [%s\w]", hudLevel[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
-	formatex(string, 30, "Messages [\y%s\w]", hudMessages[id] ? "hide" : "show")
+	formatex(string, 30, "Messages [%s\w]", hudMessages[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
-	formatex(string, 30, "Damage [\y%s\w]", hudDamage[id] ? "hide" : "show")
+	formatex(string, 30, "Damage [%s\w]", hudDamage[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
 	menu_display (id, menu)

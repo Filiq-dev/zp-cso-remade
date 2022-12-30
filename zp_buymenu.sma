@@ -648,15 +648,34 @@ public weapons_menus_handler(id, menu, item)
 	
 	}
 
-	new itemid=zp_get_extra_item_id(PistolRealName)
+	
+	if(equal(PistolRealName, "weapon_fashbang")) 
+	{
+		fm_give_item(id, "weapon_fashbang")
 
-	if(itemid==-1)
+		zp_set_user_money(id, zp_get_user_money(id) - cost)
+		g_PlayerSpentMoney[id] += cost
+
+		return PLUGIN_CONTINUE
+	}
+	if(equal(PistolRealName, "weapon_smokegrenade")) 
+	{
+		fm_give_item(id, "weapon_smokegrenade")
+
+		zp_set_user_money(id, zp_get_user_money(id) - cost)
+		g_PlayerSpentMoney[id] += cost
+
+		return PLUGIN_CONTINUE
+	}
+
+	new itemid=zp_get_extra_item_id(PistolRealName)
+	if(itemid == -1)
 	{
 		log_amx("Item not found: %s", PistolRealName)
 		
 		return PLUGIN_CONTINUE
 	}
-	
+
 	switch(index)
 	{
 		case ITEMS_PISTOLS: drop_weapons(id, 2)
@@ -667,11 +686,10 @@ public weapons_menus_handler(id, menu, item)
 	}
 	
 	zp_set_user_money(id, zp_get_user_money(id) - cost)
-	
 	g_PlayerSpentMoney[id] += cost
 	
 	zp_force_buy_extra_item(id, itemid, 1)
-	
+
 	return PLUGIN_CONTINUE
 }
 

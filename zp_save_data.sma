@@ -1,6 +1,7 @@
 #include <amxmodx>
 #include <sqlx>
 #include <zp_cso_custom>
+#include <hamsandwich>
 
 #define PLUGIN "[CSO] Save data to SQL"
 #define VERSION "1.0"
@@ -19,14 +20,8 @@ public plugin_precache(){
 public sql_init(){
 
 	g_SqlTuple = SQL_MakeDbTuple("localhost", "root", "", "server")
-}
 
-public client_putinserver(id)
-{
-	if(is_user_bot(id))
-		return
-
-	set_task(2.5, "load", id)
+	RegisterHam(Ham_Spawn, "player", "fw_PlayerSpawn")
 }
 
 public client_disconnect(id)
@@ -42,6 +37,15 @@ public client_disconnect(id)
 
 	zp_level_reset(id)
 	zp_money_reset(id)
+}
+
+public fw_PlayerSpawn(id)
+{
+	if(is_user_bot(id))
+		return
+
+	if(zp_get_user_level(id) == 0)
+		load(id)
 }
 
 public load(id)
