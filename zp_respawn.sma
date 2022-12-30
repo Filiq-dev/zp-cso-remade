@@ -20,6 +20,11 @@ public plugin_init()
 	register_clcmd("say /respawn", "showRespawnMenu")
 }	
 
+public plugin_natives()
+{
+	register_native("show_respawn_menu", "showRespawnMenu")
+}
+
 public showRespawnMenu(id)
 {
 	if(verification(id) != PLUGIN_CONTINUE)

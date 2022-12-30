@@ -3485,8 +3485,9 @@ public menu_game(id, key)
 			else
 				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		}
+		case 3: show_respawn_menu(id)
 		case 4: show_hud_menu(id)
-		case 3,5,6: 
+		case 5,6: 
 		{
 			
 		}
