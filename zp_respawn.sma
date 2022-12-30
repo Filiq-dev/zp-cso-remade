@@ -22,7 +22,7 @@ public plugin_init()
 
 public plugin_natives()
 {
-	register_native("show_respawn_menu", "showRespawnMenu")
+	register_native("show_respawn_menu", "showRespawnMenu", 1)
 }
 
 public showRespawnMenu(id)
