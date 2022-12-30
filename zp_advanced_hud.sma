@@ -106,7 +106,7 @@ public client_putinserver(id)
 	hudStats[id] = true
 	hudLevel[id] = true
 	hudMessages[id] = true
-	hudDamage[id] = true
+	hudDamage[id] = false
 
 	if(!is_user_bot(id)) 
 		set_task(1.0, "ShowHUD", id , _, _, "b")

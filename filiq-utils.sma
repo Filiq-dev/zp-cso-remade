@@ -53,7 +53,7 @@ public cmdSay(id) {
 
 			return PLUGIN_HANDLED_MAIN
 		}
-		ChatColor(id,"!t[CSO] !yStop!g[%d/2]",Count[id])
+		ChatColor(id,"!g[CSO] !yStop !g[%d/2]",Count[id])
 		
 		return PLUGIN_HANDLED_MAIN
 	}

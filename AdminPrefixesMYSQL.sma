@@ -24,6 +24,8 @@ new g_host, g_user, g_pass, g_db
 new Handle:g_sqltuple;
 new query[512];
 
+new bool:wantLevel[33], bool:wantTag[33];
+
 new const say_team_info[2][CsTeams][] =
 {
 	{"*SPEC* ", "*DEAD* ", "*DEAD* ", "*SPEC* "},
@@ -62,7 +64,7 @@ new const in_prefix[] = "[AdminPrefixes]"
 
 public plugin_init()
 {
-	register_plugin("Admin Prefixes", VERSION, "m0skVi4a ;]")
+	register_plugin("[CSO] Admin Prefixes", VERSION, "m0skVi4a ;] & Filiq_")
 	
 	g_host = register_cvar("ap_host", "localhost")
 	g_user = register_cvar("ap_user", "root")
@@ -274,6 +276,9 @@ public QueryLoadBadPrefixes(FailState, Handle:Query, error[], errorcode, data[],
 public client_putinserver(id)
 {
 	g_toggle[id] = true
+	wantTag[id] = true
+	wantLevel[id] = true
+
 	num_to_str(id, str_id, charsmax(str_id))
 	TrieSetString(client_prefix, str_id, "")
 	PutPrefix(id)
@@ -289,6 +294,8 @@ public HookSay(id)
 
 	if(equal(g_typed, "/prefix"))
 	{
+		showPrefixMenu(id)
+		
 		if(g_toggle[id])
 		{
 			g_toggle[id] = false
@@ -320,11 +327,11 @@ public HookSay(id)
 
 	if(temp_prefix[0])
 	{
-		formatex(g_message, charsmax(g_message), "^1%s^4[Level: %d] %s^3 %s :^4 %s", say_team_info[is_user_alive(id)][g_team], zp_get_user_level(id), temp_prefix, g_name, g_typed)
+		formatex(g_message, charsmax(g_message), "^1%s^4%s^3 %s :^4 %s", say_team_info[is_user_alive(id)][g_team], getUserTag(id), g_name, g_typed)
 	}
 	else
 	{
-		formatex(g_message, charsmax(g_message), "^1%s^3%s :^1 %s", say_team_info[is_user_alive(id)][g_team], g_name, g_typed)
+		formatex(g_message, charsmax(g_message), "^1%s^4[Level: %d] ^3%s :^1 %s", say_team_info[is_user_alive(id)][g_team], zp_get_user_level(id), g_name, g_typed)
 	}
 
 	get_pcvar_string(g_listen_flag, temp_cvar, charsmax(temp_cvar))
@@ -384,11 +391,11 @@ public HookSayTeam(id)
 
 	if(temp_prefix[0])
 	{
-		formatex(g_message, charsmax(g_message), "^1%s^4%s^3 %s :^4 %s", sayteam_team_info[is_user_alive(id)][g_team], temp_prefix, g_name, g_typed)
+		formatex(g_message, charsmax(g_message), "^1%s^4%s^3 %s :^4 %s", sayteam_team_info[is_user_alive(id)][g_team], getUserTag(id), g_name, g_typed)
 	}
 	else
 	{
-		formatex(g_message, charsmax(g_message), "^1%s^3%s :^1 %s", sayteam_team_info[is_user_alive(id)][g_team], g_name, g_typed)
+		formatex(g_message, charsmax(g_message), "^1%s^4[Level: %d] ^3%s :^1 %s", sayteam_team_info[is_user_alive(id)][g_team], zp_get_user_level(id), g_name, g_typed)
 	}
 
 	get_pcvar_string(g_listen_flag, temp_cvar, charsmax(temp_cvar))
@@ -408,6 +415,40 @@ public HookSayTeam(id)
 	}
 
 	return PLUGIN_HANDLED_MAIN
+}
+
+public showPrefixMenu(id)
+{
+	new 
+		string[40],
+		menu = menu_create("Prefix Menu | Zombie-Plague \w[\rCSO\w]", "prefixMenuHandler")
+
+	formatex(string, charsmax(string), "Level \y[%d]", wantLevel[id] ? "ON" : "OFF")
+	menu_additem(menu, string)
+
+	formatex(string, charsmax(string), "Tag \y[%d]", wantTag[id] ? "ON" : "OFF")
+	menu_additem(menu, string)
+	
+	menu_display (id, menu)
+
+	return PLUGIN_CONTINUE
+}
+
+public prefixMenuHandler(id, menu, item)
+{
+	if(item == MENU_EXIT)
+	{
+		menu_destroy(menu)
+		return PLUGIN_HANDLED
+	}
+	
+	switch(item)
+	{
+		case 0: wantLevel[id] = !wantLevel[id]
+		case 1: wantTag[id] = !wantTag[id]
+	}
+
+	return PLUGIN_CONTINUE
 }
 
 public SetPlayerPrefix(id)
@@ -671,4 +712,17 @@ bool:is_bad_prefix(const check_prefix[])
 		return true
 	}
 	return false
+}
+
+public getUserTag(id)
+{
+	new tag[30]
+
+	if(wantLevel[id])
+		formatex(tag, charsmax(tag), "[Level: %d]", zp_get_user_level(id))
+
+	if(temp_prefix[0] && wantTag[id])
+		formatex(tag, charsmax(tag), "%s %s", tag, zp_get_user_level(id), temp_prefix)
+
+	return tag
 }
