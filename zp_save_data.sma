@@ -38,7 +38,7 @@ public client_putinserver(id)
 	if(is_user_bot(id))
 		return
 
-	set_task(2.0, "load", id)
+	set_task(1.0, "load", id)
 }
 
 public client_disconnect(id)

@@ -24,6 +24,7 @@ const MAX_STATS_SAVED = 64
 #include <hamsandwich>
 #include <xs>
 #include <dhudmessage>
+#include <zp_cso_custom>
 
 /*================================================================================
  [Constants, Offsets, Macros]
@@ -85,7 +86,6 @@ enum (+= 100)
 	TASK_NVISION,
 	TASK_FLASH,
 	TASK_CHARGE,
-	TASK_SHOWHUD,
 	TASK_MAKEZOMBIE,
 	TASK_WELCOMEMSG,
 	TASK_THUNDER_PRE,
@@ -103,7 +103,6 @@ enum (+= 100)
 #define ID_NVISION (taskid - TASK_NVISION)
 #define ID_FLASH (taskid - TASK_FLASH)
 #define ID_CHARGE (taskid - TASK_CHARGE)
-#define ID_SHOWHUD (taskid - TASK_SHOWHUD)
 
 // BP Ammo Refill task
 #define REFILL_WEAPONID args[0]
@@ -168,10 +167,6 @@ const Float:HUD_EVENT_X = -1.0
 const Float:HUD_EVENT_Y = 0.17
 const Float:HUD_INFECT_X = 0.05
 const Float:HUD_INFECT_Y = 0.45
-const Float:HUD_SPECT_X = 0.6
-const Float:HUD_SPECT_Y = 0.8
-const Float:HUD_STATS_X = 0.02
-const Float:HUD_STATS_Y = 0.9
 
 // Hack to be able to use Ham_Player_ResetMaxSpeed (by joaquimandrade)
 new Ham:Ham_Player_ResetMaxSpeed = Ham_Item_PreFrame
@@ -217,7 +212,6 @@ const STEPTIME_SILENT = 999
 const BREAK_GLASS = 0x01
 const FFADE_IN = 0x0000
 const FFADE_STAYOUT = 0x0004
-const PEV_SPEC_TARGET = pev_iuser2
 
 // Max BP ammo for weapons
 new const MAXBPAMMO[] = { -1, 52, -1, 90, 1, 32, 1, 100, 90, 1, 120, 100, 100, 90, 90, 90, 100, 120,
@@ -491,7 +485,7 @@ cvar_nvgcolor[3], cvar_nemnvgcolor[3], cvar_humnvgcolor[3], cvar_flashcolor[3],
 cvar_hudicons, cvar_respawnzomb, cvar_respawnhum, cvar_respawnnem, cvar_respawnsurv, cvar_respawnamont,
 cvar_startammopacks, cvar_antidotelimit, cvar_madnesslimit,
 cvar_adminknifemodelshuman, cvar_adminknifemodelszombie, cvar_keephealthondisconnect,
-cvar_buyzonetime, cvar_huddisplay
+cvar_buyzonetime
 
 // cso
 
@@ -543,6 +537,8 @@ public plugin_natives()
 	register_native("zp_respawn_user", "native_respawn_user", 1)
 	register_native("zp_force_buy_extra_item", "native_force_buy_extra_item", 1)
 	register_native("zp_override_user_model", "native_override_user_model", 1)
+
+	register_native("zp_get_class_name", "native_get_class_name")
 	
 	// Round natives
 	register_native("zp_has_round_started", "native_has_round_started", 1)
@@ -1210,7 +1206,6 @@ public plugin_init()
 	cvar_startammopacks = register_cvar("zp_starting_ammo_packs", "5")
 	cvar_preventconsecutive = register_cvar("zp_prevent_consecutive_modes", "1")
 	cvar_keephealthondisconnect = register_cvar("zp_keep_health_on_disconnect", "1")
-	cvar_huddisplay = register_cvar("zp_hud_display", "1")
 	
 	
 	// CVARS - Deathmatch
@@ -2370,10 +2365,6 @@ public client_putinserver(id)
 	// Set some tasks for humans only
 	if (!is_user_bot(id))
 	{
-		// Set the custom HUD display task if enabled
-		if (get_pcvar_num(cvar_huddisplay))
-			set_task(1.0, "ShowHUD", id+TASK_SHOWHUD, _, _, "b")
-		
 		// Disable minmodels for clients to see zombies properly
 		set_task(5.0, "disable_minmodels", id)
 	}
@@ -2411,7 +2402,6 @@ public fw_ClientDisconnect(id)
 	remove_task(id+TASK_AURA)
 	remove_task(id+TASK_BURN)
 	remove_task(id+TASK_NVISION)
-	remove_task(id+TASK_SHOWHUD)
 	
 	if (g_handle_models_on_separate_ent)
 	{
@@ -3036,7 +3026,7 @@ public clcmd_buyammo(id)
 		return PLUGIN_CONTINUE;
 	
 	// Not enough ammo packs
-	if (g_ammopacks[id] < 1)
+	if ((zp_get_user_money(id) - 100) < 1)
 	{
 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "NOT_ENOUGH_AMMO")
 		return PLUGIN_HANDLED;
@@ -3072,7 +3062,8 @@ public clcmd_buyammo(id)
 	if (!refilled) return PLUGIN_HANDLED;
 	
 	// Deduce ammo packs, play clip purchase sound, and notify player
-	g_ammopacks[id]--
+	zp_set_user_money(id, zp_get_user_money(id) - 100)
+
 	emit_sound(id, CHAN_ITEM, sound_buyammo, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	zp_colored_print(id, "^x04[ZP]^x01 %L", id, "AMMO_BOUGHT")
 	
@@ -3143,7 +3134,7 @@ show_menu_game(id)
 		len += formatex(menu[len], charsmax(menu) - len, "\d3. %L^n", id, "MENU_UNSTUCK")
 	
 	len += formatex(menu[len], charsmax(menu) - len, "\r4.\w %L^n", id, "MENU_RESPAWN")
-	len += formatex(menu[len], charsmax(menu) - len, "\r5.\w %L^n", id, "MENU_VIP")
+	len += formatex(menu[len], charsmax(menu) - len, "\r5.\w Hud^n")
 	len += formatex(menu[len], charsmax(menu) - len, "\r6.\w %L^n", id, "MENU_LANG")
 	len += formatex(menu[len], charsmax(menu) - len, "\r7.\w %L^n^n", id, "MENU_DONATE")
 	
@@ -3494,7 +3485,8 @@ public menu_game(id, key)
 			else
 				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
 		}
-		case 3..6: 
+		case 4: show_hud_menu(id)
+		case 3,5,6: 
 		{
 			
 		}
@@ -7760,55 +7752,6 @@ public spec_nvision(id)
 	}
 }
 
-// Show HUD Task
-public ShowHUD(taskid)
-{
-	static id
-	id = ID_SHOWHUD;
-	
-	// Player died?
-	if (!g_isalive[id])
-	{
-		// Get spectating target
-		id = pev(id, PEV_SPEC_TARGET)
-		
-		// Target not alive
-		if (!g_isalive[id]) return;
-	}
-	
-	// Format classname
-	static class[32]
-	
-	if (g_zombie[id]) // zombies
-	{
-		if (g_nemesis[id])
-			formatex(class, charsmax(class), "%L", ID_SHOWHUD, "CLASS_NEMESIS")
-		else
-			copy(class, charsmax(class), g_zombie_classname[id])
-	}
-	else // humans
-	{
-		if (g_survivor[id])
-			formatex(class, charsmax(class), "%L", ID_SHOWHUD, "CLASS_SURVIVOR")
-		else
-			formatex(class, charsmax(class), "%L", ID_SHOWHUD, "CLASS_HUMAN")
-	}
-	
-	// Spectating someone else?
-	if (id != ID_SHOWHUD)
-	{
-		// Show name, health, class, and ammo packs
-		set_dhudmessage(192, 192, 192, HUD_SPECT_X, HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00, false);
-		show_dhudmessage(ID_SHOWHUD, "%L %s^nHP: %d - %L %s", ID_SHOWHUD, "SPECTATING", g_playername[id], pev(id, pev_health), ID_SHOWHUD, "CLASS_CLASS", class)
-	}
-	else
-	{
-		// Show health, class and ammo packs
-		set_dhudmessage(245, 255, 250, HUD_STATS_X, HUD_STATS_Y, 0, 6.00, 1.10, 0.00, 0.00, false);
-		show_dhudmessage(ID_SHOWHUD, "[%L: %d] [%L: %s]", id, "ZOMBIE_ATTRIB1", pev(ID_SHOWHUD, pev_health), ID_SHOWHUD, "CLASS_CLASS", class)
-	}
-}
-
 // Play idle zombie sounds
 public zombie_play_idle(taskid)
 {
@@ -8504,6 +8447,20 @@ set_player_maxspeed(id)
 /*================================================================================
  [Custom Natives]
 =================================================================================*/
+
+public native_get_class_name(plugin, params)
+{
+	new id = get_param(1);
+	if (!is_user_valid(id))
+	{
+		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		return -1;
+	}
+
+	set_string(2, g_zombie_classname[id], get_param(3));
+
+	return true;
+}
 
 // Native: zp_get_user_zombie
 public native_get_user_zombie(id)

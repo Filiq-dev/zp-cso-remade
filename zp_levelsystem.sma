@@ -8,14 +8,11 @@
 #define VERSION "1.0"
 #define AUTHOR "Arwel & Filiq_"
 
-#define UPDATE_HUD_TIME 0.3
-#define TASKID_SHOW 7773338201
-
 new g_LevelsNum, g_PlayerExp[33], g_PlayerExpCurrent[33], g_PlayerLevel[33], Array:g_Levels
 new pcvar_lvl_system,pcvar_xp_given, pcvar_xp_given_nem, pcvar_xp_given_surv
 new pcvar_damage_for_xp, pcvar_xp_for_damage
 new pcvar_lvl_for_zomb, pcvar_lvl_for_nem, pcvar_lvl_for_surv, pcvar_xp_given_infect, pcvar_xp_given_kill_lhuman
-new pcvar_hud, Float:g_PlayerDamage[33], g_maxplayers
+new Float:g_PlayerDamage[33]
 
 public plugin_init()
 {
@@ -39,19 +36,12 @@ public plugin_init()
 	pcvar_damage_for_xp = register_cvar("ms_lvl_system_damage_for_xp", "1000")
 	pcvar_xp_for_damage = register_cvar("ms_lvl_system_given_xp_damage", "2")
 
-	pcvar_hud = register_cvar("ms_lvl_system_show_hud","1")
-
-	g_maxplayers = get_maxplayers()    
-
 	g_Levels=ArrayCreate(1)
 	
 	RegisterHam(Ham_Killed, "player", "fwKilled")
 	
 	if(get_pcvar_num(pcvar_damage_for_xp))
 		RegisterHam(Ham_TakeDamage, "player", "fwTakeDamage")
-
-	if(get_pcvar_num(pcvar_hud))
-		set_task(UPDATE_HUD_TIME, "ShowInfo", TASKID_SHOW, _, _, "b")  
 }
 
 public plugin_cfg()
@@ -221,18 +211,6 @@ public ExpUp(id, xp)
 		return
 	
 	g_PlayerExp[id] += xp
-}
-
-public ShowInfo(TASKID)
-{
-	for(new i=1; i<=g_maxplayers; i++)
-	{
-		if(!is_user_alive(i))
-			continue
-		
-		set_hudmessage(0, 255, 0, -1.0, 0.9, 0, 0.0, UPDATE_HUD_TIME+0.1, 0.0, 0.0)
-		show_hudmessage(i, "%L", i, "HUD_MESSAGE_DOWN", g_PlayerLevel[i], g_PlayerExp[i], g_PlayerExpCurrent[i])
-	}
 }
 
 public zp_user_infected_pre(id, infector)

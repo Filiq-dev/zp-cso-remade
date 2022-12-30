@@ -357,12 +357,15 @@ public fw_SetModelPre(ent, model[])
 
 public fwTouch(ent, id)
 {
-	if(!zp_get_max_levels())
-		return HAM_IGNORED
-	
 	if(!is_user_alive(id))
 		return HAM_IGNORED
 		
+	if(zp_get_user_zombie(id))
+		return HAM_IGNORED
+
+	if(!zp_get_max_levels())
+		return HAM_IGNORED
+	
 	if(pev(ent, pev_level) > zp_get_user_level(id))
 		return HAM_SUPERCEDE
 
@@ -499,16 +502,15 @@ public main_menu_callback(id, menu, item)
 	if(g_LockedItem[item])
 		return ITEM_DISABLED
 	
-	if(zp_get_user_zombie(id)&&item!=ITEMS_HEXTRA)
+	if(zp_get_user_zombie(id) && item != ITEMS_HEXTRA)
 		return ITEM_DISABLED    
 		
 	if(item+1 == ITEMS_KNIFES && flag_get(g_players_choosed_knife, id-1))
 		return ITEM_DISABLED
 	
-	if(item!=ITEMS_HEXTRA&&g_started)
+	if(item != ITEMS_HEXTRA && g_started)
 	{
-		if(get_gametime()-g_PlayerLastSpawnTime[id]>get_pcvar_float(pcvar_time_spawn_for_buy)
-		&&get_pcvar_num(pcvar_off_menu_when_mode_start))
+		if(get_gametime() - g_PlayerLastSpawnTime[id] > get_pcvar_float(pcvar_time_spawn_for_buy) && get_pcvar_num(pcvar_off_menu_when_mode_start))
 			return ITEM_DISABLED
 	}
 		
