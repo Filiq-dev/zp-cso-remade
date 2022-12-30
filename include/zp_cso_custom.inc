@@ -11,6 +11,8 @@ native show_hud_menu(id)
 native zp_get_user_limit(id)
 native zp_knife_menu(id)
 native show_respawn_menu(id)
+native zp_level_reset(id)
+native zp_money_reset(id)
 
 stock getName(id)
 {

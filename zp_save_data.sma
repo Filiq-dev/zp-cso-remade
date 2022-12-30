@@ -26,7 +26,7 @@ public client_putinserver(id)
 	if(is_user_bot(id))
 		return
 
-	set_task(0.5, "load", id)
+	set_task(2.5, "load", id)
 }
 
 public client_disconnect(id)
@@ -39,6 +39,9 @@ public client_disconnect(id)
 
 	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), getName(id))
 	SQL_ThreadQuery(g_SqlTuple, "burnQuery", gQuery)
+
+	zp_level_reset(id)
+	zp_money_reset(id)
 }
 
 public load(id)

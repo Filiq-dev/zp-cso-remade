@@ -14,7 +14,7 @@ new g_PlayerMoney[33], g_PlayerMoneyLimit[33],
 	pcvar_humans_reward_win, pcvar_humans_reward_lose, pcvar_humans_reward_no_one,
 	pcvar_humans_dmg_reward, pcvar_humans_kill_reward,
 	pcvar_zombies_reward_win, pcvar_zombies_reward_lose, pcvar_zombies_reward_no_one,
-	pcvar_zombies_kill_reward, g_MaxPlayers, g_First = 0
+	pcvar_zombies_kill_reward, g_MaxPlayers, g_First = 0, defaultmoney
 
 enum _:iNums
 {
@@ -40,7 +40,7 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage, "player", "fwTakeDamage", 1)
 	RegisterHam(Ham_Killed, "player", "fwKilled", 1)
 	
-	register_cvar("ms_default_money", "3200")
+	defaultmoney = register_cvar("ms_default_money", "3200")
 	
 	pcvar_humans_reward_win = register_cvar("ms_human_win_reward", "3000")
 	pcvar_humans_reward_lose = register_cvar("ms_human_lose_reward", "1500")
@@ -118,6 +118,7 @@ public plugin_natives()
 	register_native("zp_get_user_money", "get_user_money", 1)
 	register_native("zp_get_user_limit", "get_user_limit", 1)  
 	register_native("zp_alert_nomoney", "make_blink", 1)  
+	register_native("zp_money_reset", "money_reset_data", 1)  
 }
 
 public client_connect(id)
@@ -267,4 +268,9 @@ public make_blink(id, num)
 	message_begin(MSG_ONE, g_msgMoneyBlink, _, id)
 	write_byte(num)
 	message_end()    
+}
+
+public money_reset_data(id)
+{
+	g_PlayerMoney[id] = get_pcvar_num(defaultmoney)
 }

@@ -117,6 +117,7 @@ public plugin_natives()
 	register_native("zp_set_user_level", "native_level_set", 1)    
 	register_native("zp_set_user_exp", "native_exp_set", 1)    
 	register_native("zp_get_max_levels", "native_levels_max", 1)
+	register_native("zp_level_reset", "native_reset_data", 1)
 }
 
 public fwKilled(id, killer)
@@ -254,4 +255,11 @@ public native_exp_set(id, value) {
 	
 public native_current(id) {
 	return g_PlayerExpCurrent[id] = ArrayGetCell(g_Levels, g_PlayerLevel[id])
+}
+
+public native_reset_data(id)
+{
+	g_PlayerExp[id] = 0
+	g_PlayerLevel[id] = 1
+	g_PlayerExpCurrent[id] = ArrayGetCell(g_Levels, 1)
 }
