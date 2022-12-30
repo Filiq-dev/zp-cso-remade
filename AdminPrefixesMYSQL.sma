@@ -17,7 +17,6 @@ new g_saytxt, g_maxplayers, CsTeams:g_team;
 new g_typed[192], g_message[192], g_name[32];
 new Trie:pre_flags_collect, Trie:bad_prefixes_collect, Trie:client_prefix;
 new str_id[16], temp_key[35], temp_prefix[32], temp_flag_key[2], temp_value, id;
-new bool:g_toggle[33];
 
 new bool:mysql_connected = false, bool:data_ready = false, bool:data_badp_ready = false;
 new g_host, g_user, g_pass, g_db
@@ -275,7 +274,6 @@ public QueryLoadBadPrefixes(FailState, Handle:Query, error[], errorcode, data[],
 
 public client_putinserver(id)
 {
-	g_toggle[id] = true
 	wantTag[id] = true
 	wantLevel[id] = true
 
@@ -295,23 +293,9 @@ public HookSay(id)
 	if(equal(g_typed, "/prefix"))
 	{
 		showPrefixMenu(id)
-		
-		if(g_toggle[id])
-		{
-			g_toggle[id] = false
-			client_print(id, print_chat, "%L", LANG_SERVER, "PREFIX_OFF", in_prefix)
-		}
-		else
-		{
-			g_toggle[id] = true
-			client_print(id, print_chat, "%L", LANG_SERVER, "PREFIX_ON", in_prefix)
-		}
 
 		return PLUGIN_HANDLED_MAIN
 	}
-
-	if(!g_toggle[id])
-		return PLUGIN_CONTINUE
 
 	num_to_str(id, str_id, charsmax(str_id))
 
@@ -327,7 +311,7 @@ public HookSay(id)
 
 	if(temp_prefix[0])
 	{
-		formatex(g_message, charsmax(g_message), "^1%s^4%s^3 %s :^4 %s", say_team_info[is_user_alive(id)][g_team], getUserTag(id), g_name, g_typed)
+		formatex(g_message, charsmax(g_message), "^1%s%s^3 %s :^4 %s", say_team_info[is_user_alive(id)][g_team], getUserTag(id), g_name, g_typed)
 	}
 	else
 	{
@@ -360,22 +344,10 @@ public HookSayTeam(id)
 
 	if(equal(g_typed, "/prefix"))
 	{
-		if(g_toggle[id])
-		{
-			g_toggle[id] = false
-			client_print(id, print_chat, "%L", LANG_SERVER, "PREFIX_OFF", in_prefix)
-		}
-		else
-		{
-			g_toggle[id] = true
-			client_print(id, print_chat, "%L", LANG_SERVER, "PREFIX_ON", in_prefix)
-		}
+		showPrefixMenu(id)
 
 		return PLUGIN_HANDLED_MAIN
 	}
-
-	if(!g_toggle[id])
-		return PLUGIN_CONTINUE
 
 	num_to_str(id, str_id, charsmax(str_id))
 
@@ -423,10 +395,10 @@ public showPrefixMenu(id)
 		string[40],
 		menu = menu_create("Prefix Menu | Zombie-Plague \w[\rCSO\w]", "prefixMenuHandler")
 
-	formatex(string, charsmax(string), "Level \y[%d]", wantLevel[id] ? "ON" : "OFF")
+	formatex(string, charsmax(string), "Level \y[%s]", wantLevel[id] ? "ON" : "OFF")
 	menu_additem(menu, string)
 
-	formatex(string, charsmax(string), "Tag \y[%d]", wantTag[id] ? "ON" : "OFF")
+	formatex(string, charsmax(string), "Tag \y[%s]", wantTag[id] ? "ON" : "OFF")
 	menu_additem(menu, string)
 	
 	menu_display (id, menu)
@@ -447,6 +419,8 @@ public prefixMenuHandler(id, menu, item)
 		case 0: wantLevel[id] = !wantLevel[id]
 		case 1: wantTag[id] = !wantTag[id]
 	}
+
+	showPrefixMenu(id)
 
 	return PLUGIN_CONTINUE
 }
@@ -716,13 +690,21 @@ bool:is_bad_prefix(const check_prefix[])
 
 public getUserTag(id)
 {
-	new tag[30]
+	new tag[30], prefix[30], level[30]
 
-	if(wantLevel[id])
-		formatex(tag, charsmax(tag), "[Level: %d]", zp_get_user_level(id))
+	if(wantLevel[id]) 
+	{
+		formatex(level, charsmax(level), "^4[Level: %d]", zp_get_user_level(id))
+		add(tag, charsmax(tag), level)
+	}
 
-	if(temp_prefix[0] && wantTag[id])
-		formatex(tag, charsmax(tag), "%s %s", tag, zp_get_user_level(id), temp_prefix)
+	server_print(tag)
+
+	if(temp_prefix[0] && wantTag[id]) 
+	{
+		formatex(prefix, charsmax(prefix), "^4 %s", temp_prefix)
+		add(tag, charsmax(tag), prefix)
+	}
 
 	return tag
 }
