@@ -562,7 +562,7 @@ public plugin_natives()
 public plugin_precache()
 {
 	// Register earlier to show up in plugins list properly after plugin disable/error at loading
-	register_plugin("Zombie Plague", PLUGIN_VERSION, "MeRcyLeZZ")
+	register_plugin("Zombie Plague [CSO]", PLUGIN_VERSION, "MeRcyLeZZ")
 	
 	// To switch plugin on/off
 	register_concmd("zp_toggle", "cmd_toggle", _, "<1/0> - Enable/Disable Zombie Plague (will restart the current map)", 0)
@@ -3017,7 +3017,7 @@ public clcmd_buyammo(id)
 	// Not human
 	if (g_zombie[id])
 	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_HUMAN_ONLY")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_HUMAN_ONLY")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -3028,7 +3028,7 @@ public clcmd_buyammo(id)
 	// Not enough ammo packs
 	if ((zp_get_user_money(id) - 100) < 1)
 	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "NOT_ENOUGH_AMMO")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "NOT_ENOUGH_AMMO")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -3065,7 +3065,7 @@ public clcmd_buyammo(id)
 	zp_set_user_money(id, zp_get_user_money(id) - 100)
 
 	emit_sound(id, CHAN_ITEM, sound_buyammo, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	zp_colored_print(id, "^x04[ZP]^x01 %L", id, "AMMO_BOUGHT")
+	zp_colored_print(id, "^x04[CSO]^x01 %L", id, "AMMO_BOUGHT")
 	
 	return PLUGIN_HANDLED;
 }
@@ -3400,13 +3400,13 @@ public menu_game(id, key)
 		// 	{
 		// 		// Disable the remember selection setting
 		// 		WPN_AUTO_ON = 0
-		// 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "BUY_ENABLED")
+		// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "BUY_ENABLED")
 				
 		// 		// Show menu if player hasn't yet bought anything
 		// 		if (g_canbuy[id]) show_menu_buy1(id)
 		// 	}
 		// 	else
-		// 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		// }
 		// case 1: // Extra Items
 		// {
@@ -3417,10 +3417,10 @@ public menu_game(id, key)
 		// 		if (g_isalive[id])
 		// 			show_menu_extras(id)
 		// 		else
-		// 			zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		// 			zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		// 	}
 		// 	else
-		// 		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_EXTRAS")
+		// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_EXTRAS")
 		// }
 		case 0: // Zombie Classes
 		{
@@ -3428,7 +3428,7 @@ public menu_game(id, key)
 			if (get_pcvar_num(cvar_zclasses))
 				show_menu_zclass(id)
 			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ZCLASSES")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ZCLASSES")
 		}
 		case 1: // Join Spectator
 		{
@@ -3438,7 +3438,7 @@ public menu_game(id, key)
 				// Prevent abuse by non-admins if block suicide setting is enabled
 				if (get_pcvar_num(cvar_blocksuicide) && !(get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MENU]))
 				{
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 					return PLUGIN_HANDLED;
 				}
 				
@@ -3480,10 +3480,10 @@ public menu_game(id, key)
 						do_random_spawn(id, 1) // regular spawn
 				}
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_STUCK")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_STUCK")
 			}
 			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		}
 		case 4: show_hud_menu(id)
 		case 3,5,6: 
@@ -3497,7 +3497,7 @@ public menu_game(id, key)
 			if (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MENU])
 				show_menu_admin(id)
 			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 		}
 	}
 	
@@ -3528,7 +3528,7 @@ public menu_extras(id, menuid, item)
 	// Dead players are not allowed to buy items
 	if (!g_isalive[id])
 	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		menu_destroy(menuid)
 		return PLUGIN_HANDLED;
 	}
@@ -3554,7 +3554,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 	// Check for team/class specific items
 	if ((g_zombie[id] && !g_nemesis[id] && !(team & ZP_TEAM_ZOMBIE)) || (!g_zombie[id] && !g_survivor[id] && !(team & ZP_TEAM_HUMAN)) || (g_nemesis[id] && !(team & ZP_TEAM_NEMESIS)) || (g_survivor[id] && !(team & ZP_TEAM_SURVIVOR)))
 	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		return;
 	}
 	
@@ -3565,7 +3565,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 	|| (itemid == EXTRA_INFBOMB && (!get_pcvar_num(cvar_extrainfbomb) || g_infbombcounter >= get_pcvar_num(cvar_infbomblimit)))
 	|| (itemid >= EXTRA_WEAPONS_STARTID && itemid <= EXTRAS_CUSTOM_STARTID-1 && !get_pcvar_num(cvar_extraweapons)))
 	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		return;
 	}
 	
@@ -3573,7 +3573,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 	if ((itemid == EXTRA_ANTIDOTE && (g_endround || g_swarmround || g_nemround || g_survround || g_plagueround || fnGetZombies() <= 1 || (get_pcvar_num(cvar_deathmatch) && !get_pcvar_num(cvar_respawnafterlast) && fnGetHumans() == 1)))
 	|| (itemid == EXTRA_MADNESS && g_nodamage[id]) || (itemid == EXTRA_INFBOMB && (g_endround || g_swarmround || g_nemround || g_survround || g_plagueround)))
 	{
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_CANTUSE")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_CANTUSE")
 		return;
 	}
 	
@@ -3583,7 +3583,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 		// Check that we have enough ammo packs
 		if (g_ammopacks[id] < ArrayGetCell(g_extraitem_cost, itemid))
 		{
-			zp_colored_print(id, "^x04[ZP]^x01 %L", id, "NOT_ENOUGH_AMMO")
+			zp_colored_print(id, "^x04[CSO]^x01 %L", id, "NOT_ENOUGH_AMMO")
 			return;
 		}
 		
@@ -3748,8 +3748,8 @@ public menu_zclass(id, menuid, item)
 	ArrayGetString(g_zclass_name, g_zombieclassnext[id], name, charsmax(name))
 	
 	// Show selected zombie class info and stats
-	zp_colored_print(id, "^x04[ZP]^x01 %L: %s", id, "ZOMBIE_SELECT", name)
-	zp_colored_print(id, "^x04[ZP]^x01 %L: %d %L: %d %L: %d %L: %d%%", id, "ZOMBIE_ATTRIB1", ArrayGetCell(g_zclass_hp, g_zombieclassnext[id]), id, "ZOMBIE_ATTRIB2", ArrayGetCell(g_zclass_spd, g_zombieclassnext[id]),
+	zp_colored_print(id, "^x04[CSO]^x01 %L: %s", id, "ZOMBIE_SELECT", name)
+	zp_colored_print(id, "^x04[CSO]^x01 %L: %d %L: %d %L: %d %L: %d%%", id, "ZOMBIE_ATTRIB1", ArrayGetCell(g_zclass_hp, g_zombieclassnext[id]), id, "ZOMBIE_ATTRIB2", ArrayGetCell(g_zclass_spd, g_zombieclassnext[id]),
 	id, "ZOMBIE_ATTRIB3", floatround(Float:ArrayGetCell(g_zclass_grav, g_zombieclassnext[id]) * 800.0), id, "ZOMBIE_ATTRIB4", floatround(Float:ArrayGetCell(g_zclass_kb, g_zombieclassnext[id]) * 100.0))
 	
 	menu_destroy(menuid)
@@ -3777,7 +3777,7 @@ public menu_admin(id, key)
 			}
 			else
 			{
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 				show_menu_admin(id)
 			}
 		}
@@ -3791,7 +3791,7 @@ public menu_admin(id, key)
 			}
 			else
 			{
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 				show_menu_admin(id)
 			}
 		}
@@ -3805,7 +3805,7 @@ public menu_admin(id, key)
 			}
 			else
 			{
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 				show_menu_admin(id)
 			}
 		}
@@ -3819,7 +3819,7 @@ public menu_admin(id, key)
 			}
 			else
 			{
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 				show_menu_admin(id)
 			}
 		}
@@ -3830,10 +3830,10 @@ public menu_admin(id, key)
 				if (allowed_swarm())
 					command_swarm(id)
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 			}
 			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 			
 			show_menu_admin(id)
 		}
@@ -3844,10 +3844,10 @@ public menu_admin(id, key)
 				if (allowed_multi())
 					command_multi(id)
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 			}
 			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 			
 			show_menu_admin(id)
 		}
@@ -3858,10 +3858,10 @@ public menu_admin(id, key)
 				if (allowed_plague())
 					command_plague(id)
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 			}
 			else
-				zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 			
 			show_menu_admin(id)
 		}
@@ -3918,10 +3918,10 @@ public menu_player_list(id, menuid, item)
 						if (allowed_human(playerid))
 							command_human(id, playerid)
 						else
-							zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+							zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 					}
 					else
-						zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+						zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 				}
 				else
 				{
@@ -3930,10 +3930,10 @@ public menu_player_list(id, menuid, item)
 						if (allowed_zombie(playerid))
 							command_zombie(id, playerid)
 						else
-							zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+							zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 					}
 					else
-						zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+						zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 				}
 			}
 			case ACTION_MAKE_NEMESIS: // Nemesis command
@@ -3943,10 +3943,10 @@ public menu_player_list(id, menuid, item)
 					if (allowed_nemesis(playerid))
 						command_nemesis(id, playerid)
 					else
-						zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+						zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 				}
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 			}
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
@@ -3955,10 +3955,10 @@ public menu_player_list(id, menuid, item)
 					if (allowed_survivor(playerid))
 						command_survivor(id, playerid)
 					else
-						zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+						zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 				}
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 			}
 			case ACTION_RESPAWN_PLAYER: // Respawn command
 			{
@@ -3967,15 +3967,15 @@ public menu_player_list(id, menuid, item)
 					if (allowed_respawn(playerid))
 						command_respawn(id, playerid)
 					else
-						zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+						zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 				}
 				else
-					zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT_ACCESS")
+					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_ACCESS")
 			}
 		}
 	}
 	else
-		zp_colored_print(id, "^x04[ZP]^x01 %L", id, "CMD_NOT")
+		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 	
 	menu_destroy(menuid)
 	show_menu_player_list(id)
@@ -4043,7 +4043,7 @@ public cmd_zombie(id, level, cid)
 	// Target not allowed to be zombie
 	if (!allowed_zombie(player))
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED
 	}
 	
@@ -4070,7 +4070,7 @@ public cmd_human(id, level, cid)
 	// Target not allowed to be human
 	if (!allowed_human(player))
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -4107,7 +4107,7 @@ public cmd_survivor(id, level, cid)
 	// Target not allowed to be survivor
 	if (!allowed_survivor(player))
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -4144,7 +4144,7 @@ public cmd_nemesis(id, level, cid)
 	// Target not allowed to be nemesis
 	if (!allowed_nemesis(player))
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -4171,7 +4171,7 @@ public cmd_respawn(id, level, cid)
 	// Target not allowed to be respawned
 	if (!allowed_respawn(player))
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -4190,7 +4190,7 @@ public cmd_swarm(id, level, cid)
 	// Swarm mode not allowed
 	if (!allowed_swarm())
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -4209,7 +4209,7 @@ public cmd_multi(id, level, cid)
 	// Multi infection mode not allowed
 	if (!allowed_multi())
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -4228,7 +4228,7 @@ public cmd_plague(id, level, cid)
 	// Plague mode not allowed
 	if (!allowed_plague())
 	{
-		client_print(id, print_console, "[ZP] %L", id, "CMD_NOT")
+		client_print(id, print_console, "[CSO] %L", id, "CMD_NOT")
 		return PLUGIN_HANDLED;
 	}
 	
@@ -6985,7 +6985,7 @@ check_round(leaving_player)
 		while ((id = fnGetRandomAlive(random_num(1, iPlayersnum))) == leaving_player ) { /* keep looping */ }
 		
 		// Show last zombie left notice
-		zp_colored_print(0, "^x04[ZP]^x01 %L", LANG_PLAYER, "LAST_ZOMBIE_LEFT", g_playername[id])
+		zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "LAST_ZOMBIE_LEFT", g_playername[id])
 		
 		// Set player leaving flag
 		g_lastplayerleaving = true
@@ -7015,7 +7015,7 @@ check_round(leaving_player)
 		while ((id = fnGetRandomAlive(random_num(1, iPlayersnum))) == leaving_player ) { /* keep looping */ }
 		
 		// Show last human left notice
-		zp_colored_print(0, "^x04[ZP]^x01 %L", LANG_PLAYER, "LAST_HUMAN_LEFT", g_playername[id])
+		zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "LAST_HUMAN_LEFT", g_playername[id])
 		
 		// Set player leaving flag
 		g_lastplayerleaving = true
@@ -8453,7 +8453,7 @@ public native_get_class_name(plugin, params)
 	new id = get_param(1);
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 
@@ -8467,7 +8467,7 @@ public native_get_user_zombie(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8479,7 +8479,7 @@ public native_get_user_nemesis(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8491,7 +8491,7 @@ public native_get_user_survivor(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8502,7 +8502,7 @@ public native_get_user_first_zombie(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8514,7 +8514,7 @@ public native_get_user_last_zombie(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8526,7 +8526,7 @@ public native_get_user_last_human(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8538,7 +8538,7 @@ public native_get_user_zombie_class(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8550,7 +8550,7 @@ public native_get_user_next_class(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8562,13 +8562,13 @@ public native_set_user_zombie_class(id, classid)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
 	if (classid < 0 || classid >= g_zclass_i)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid zombie class id (%d)", classid)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid zombie class id (%d)", classid)
 		return false;
 	}
 	
@@ -8581,7 +8581,7 @@ public native_get_user_ammo_packs(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8593,7 +8593,7 @@ public native_set_user_ammo_packs(id, amount)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8610,13 +8610,13 @@ public native_get_zombie_maxhealth(id)
 	
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
 	if (!g_zombie[id] || g_nemesis[id])
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Player not a normal zombie (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Player not a normal zombie (%d)", id)
 		return -1;
 	}
 	
@@ -8631,7 +8631,7 @@ public native_get_user_batteries(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8647,7 +8647,7 @@ public native_set_user_batteries(id, value)
 	
 	if (!is_user_valid_connected(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8667,7 +8667,7 @@ public native_get_user_nightvision(id)
 {
 	if (!is_user_valid(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
@@ -8683,7 +8683,7 @@ public native_set_user_nightvision(id, set)
 	
 	if (!is_user_valid_connected(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8729,7 +8729,7 @@ public native_infect_user(id, infector, silent, rewards)
 	
 	if (!is_user_valid_alive(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8761,7 +8761,7 @@ public native_disinfect_user(id, silent)
 	
 	if (!is_user_valid_alive(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8783,7 +8783,7 @@ public native_make_user_nemesis(id)
 	
 	if (!is_user_valid_alive(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8815,7 +8815,7 @@ public native_make_user_survivor(id)
 	
 	if (!is_user_valid_alive(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8848,7 +8848,7 @@ public native_respawn_user(id, team)
 	
 	if (!is_user_valid_connected(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -8873,13 +8873,13 @@ public native_force_buy_extra_item(id, itemid, ignorecost)
 	
 	if (!is_user_valid_alive(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
 	if (itemid < 0 || itemid >= g_extraitem_i)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid extra item id (%d)", itemid)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid extra item id (%d)", itemid)
 		return false;
 	}
 	
@@ -8896,7 +8896,7 @@ public native_override_user_model(id, const newmodel[], modelindex)
 	
 	if (!is_user_valid_connected(id))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid Player (%d)", id)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return false;
 	}
 	
@@ -9009,13 +9009,13 @@ public native_register_extra_item(const name[], cost, team)
 	// Arrays not yet initialized
 	if (!g_arrays_created)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Can't register extra item yet (%s)", name)
+		log_error(AMX_ERR_NATIVE, "[CSO] Can't register extra item yet (%s)", name)
 		return -1;
 	}
 	
 	if (strlen(name) < 1)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Can't register extra item with an empty name")
+		log_error(AMX_ERR_NATIVE, "[CSO] Can't register extra item with an empty name")
 		return -1;
 	}
 	
@@ -9025,7 +9025,7 @@ public native_register_extra_item(const name[], cost, team)
 		ArrayGetString(g_extraitem_name, index, extraitem_name, charsmax(extraitem_name))
 		if (equali(name, extraitem_name))
 		{
-			log_error(AMX_ERR_NATIVE, "[ZP] Extra item already registered (%s)", name)
+			log_error(AMX_ERR_NATIVE, "[CSO] Extra item already registered (%s)", name)
 			return -1;
 		}
 	}
@@ -9106,13 +9106,13 @@ public native_register_zombie_class(const name[], const info[], const model[], c
 	// Arrays not yet initialized
 	if (!g_arrays_created)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Can't register zombie class yet (%s)", name)
+		log_error(AMX_ERR_NATIVE, "[CSO] Can't register zombie class yet (%s)", name)
 		return -1;
 	}
 	
 	if (strlen(name) < 1)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Can't register zombie class with an empty name")
+		log_error(AMX_ERR_NATIVE, "[CSO] Can't register zombie class with an empty name")
 		return -1;
 	}
 	
@@ -9122,7 +9122,7 @@ public native_register_zombie_class(const name[], const info[], const model[], c
 		ArrayGetString(g_zclass_name, index, zombieclass_name, charsmax(zombieclass_name))
 		if (equali(name, zombieclass_name))
 		{
-			log_error(AMX_ERR_NATIVE, "[ZP] Zombie class already registered (%s)", name)
+			log_error(AMX_ERR_NATIVE, "[CSO] Zombie class already registered (%s)", name)
 			return -1;
 		}
 	}
@@ -9347,7 +9347,7 @@ public native_get_zombie_class_info(classid, info[], len)
 	// Invalid class
 	if (classid < 0 || classid >= g_zclass_i)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid zombie class id (%d)", classid)
+		log_error(AMX_ERR_NATIVE, "[CSO] Invalid zombie class id (%d)", classid)
 		return false;
 	}
 	

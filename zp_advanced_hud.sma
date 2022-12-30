@@ -9,7 +9,7 @@
 #include <zombieplague>
 #include <zp_cso_custom>
 
-#define PLUGIN "[ZP] Advanced HUD"
+#define PLUGIN "[CSO] Advanced HUD"
 #define VERSION "1.0"
 #define AUTHOR "Filiq_"
 
@@ -283,8 +283,6 @@ public showDamage(id)
 
 	set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02, -1)
 	ShowSyncHudMsg(attacker, syncMsg, "%d^n", damage)	
-
-	client_print(id, print_chat, "%d", damage)			
 }
 
 public getClass(id)

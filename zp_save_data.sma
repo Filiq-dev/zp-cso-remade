@@ -2,7 +2,7 @@
 #include <sqlx>
 #include <zp_cso_custom>
 
-#define PLUGIN "[ZP] Save data to SQL"
+#define PLUGIN "[CSO] Save data to SQL"
 #define VERSION "1.0"
 #define AUTHOR "Filiq_"
 

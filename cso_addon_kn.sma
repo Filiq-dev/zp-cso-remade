@@ -5,7 +5,7 @@
 #include <hamsandwich>
 #include <zombieplague>
 
-#define PLUGIN    "Choose knifes"
+#define PLUGIN    "[CSO] Knife menu"
 #define VERSION    "1.0"
 #define AUTHOR    "CHyC/4e/l"
 

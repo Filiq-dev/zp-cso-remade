@@ -2,11 +2,17 @@
 #include <zp_cso_custom>
 #include <colorchat>
 
+#define PLUGIN "[CSO] Transfer Menu"
+#define VERSION "1.0"
+#define AUTHOR "Filiq_"
+
 new 
     sendMoney[33] = -1
 
 public plugin_init()
 {
+	register_plugin(PLUGIN, VERSION, AUTHOR)
+
 	if(get_cvar_num("ms_money_allow_donate")) {
 		register_clcmd("say /transfer", "showTransferMenu")
 	
@@ -30,14 +36,14 @@ public cmdSay(id) {
 	{
 		sendMoney[id] = -1
 		
-		ColorChat(id, RED, "[^4ZP^3] ^3Now you can use the chat back.")
+		ColorChat(id, RED, "[^4CSO^3] ^3Now you can use the chat back.")
 
 		return PLUGIN_HANDLED_MAIN;
 	}
 
 	if(!isNumeric(szArgs))
 	{
-		ColorChat(id, RED, "[^4ZP^3] ^3Please type how much you want to send to ^4%s^3. If you want to cancel, type ^4cancel", getName(sendMoney[id]))
+		ColorChat(id, RED, "[^4CSO^3] ^3Please type how much you want to send to ^4%s^3. If you want to cancel, type ^4cancel", getName(sendMoney[id]))
 
 		return PLUGIN_HANDLED_MAIN
 	}
@@ -46,14 +52,14 @@ public cmdSay(id) {
 
 	if((zp_get_user_money(id) - money) < 1)
 	{
-		ColorChat(id, RED, "[^4ZP^3] ^3You don't have enough ^4money^3.")
+		ColorChat(id, RED, "[^4CSO^3] ^3You don't have enough ^4money^3.")
 
 		return PLUGIN_HANDLED_MAIN
 	}
 
 	// if((zp_get_user_money(sendMoney[id]) + money) > zp_get_user_limit(id))
 	// {
-	// 	ColorChat(id, RED, "[^4ZP^3] ^3He can't have more money. Buy ^4VIP ^3to can handle more money.")
+	// 	ColorChat(id, RED, "[^4CSO^3] ^3He can't have more money. Buy ^4VIP ^3to can handle more money.")
 
 	// 	return PLUGIN_HANDLED_MAIN
 	// }	
@@ -61,7 +67,7 @@ public cmdSay(id) {
 	zp_set_user_money(id, zp_get_user_money(id) - money)
 	zp_set_user_money(sendMoney[id], zp_get_user_money(sendMoney[id]) + money)
 
-	ColorChat(id, RED, "[^4ZP^3] ^4%s ^3send ^4%d^3$ to ^4%s^3. Use [^4/transfer^3] if you want to transfer ^4money ^3to a friend.", getName(id), money, getName(sendMoney[id]))
+	ColorChat(id, RED, "[^4CSO^3] ^4%s ^3send ^4%d^3$ to ^4%s^3. Use [^4/transfer^3] if you want to transfer ^4money ^3to a friend.", getName(id), money, getName(sendMoney[id]))
 
 	sendMoney[id] = -1
 
@@ -71,14 +77,14 @@ public cmdSay(id) {
 public showTransferMenu(id)
 {
 	if(!get_cvar_num("ms_money_allow_donate"))
-		ColorChat(id, RED, "[^4ZP^3] This command is ^4disabled ^3from the server")
+		ColorChat(id, RED, "[^4CSO^3] This command is ^4disabled ^3from the server")
 
 	new num, players[32], sid[10]
 	get_players(players, num)
 
 	if(num == 0)
 	{
-		ColorChat(id, RED, "[^4ZP^3] Is only you on ^4server^3.")
+		ColorChat(id, RED, "[^4CSO^3] Is only you on ^4server^3.")
 
 		return true
 	}
@@ -107,8 +113,8 @@ public transferMenuHandler(id, menu, item)
 		return PLUGIN_HANDLED
 	}
 
-	ColorChat(id, RED, "[^4ZP^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(item))
-	ColorChat(id, RED, "[^4ZP^3] ^3In chat please type only ^4numbers^3. If you want to cancel, type ^3cancel")
+	ColorChat(id, RED, "[^4CSO^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(item))
+	ColorChat(id, RED, "[^4CSO^3] ^3In chat please type only ^4numbers^3. If you want to cancel, type ^3cancel")
 
 	sendMoney[id] = item
 

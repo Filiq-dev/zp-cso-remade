@@ -4,7 +4,7 @@
 #include <zombieplague>
 #include <zp_cso_custom>
 
-#define PLUGIN "[ZP] Level System"
+#define PLUGIN "[CSO] Level System"
 #define VERSION "1.0"
 #define AUTHOR "Arwel & Filiq_"
 

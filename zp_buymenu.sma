@@ -8,7 +8,7 @@
 
 #include <zp_cso_custom>
 
-#define PLUGIN "[ZP] BuyMenu System"
+#define PLUGIN "[CSO] BuyMenu System"
 #define VERSION "7.4"
 #define AUTHOR "Arwel"
 #define KNIFES "hammer"

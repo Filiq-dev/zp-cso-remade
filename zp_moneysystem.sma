@@ -5,7 +5,7 @@
 #include <zombieplague>
 #include <zp_cso_custom>
 
-#define PLUGIN "[ZP] Money System"
+#define PLUGIN "[CSO] Money System"
 #define VERSION "1.0"
 #define AUTHOR "Arwel & Filiq_"
 
@@ -186,7 +186,7 @@ public fwKilled(id, killer)
 	set_user_money(killer, get_user_money(killer) + get_pcvar_num(zp_get_user_zombie(killer) ? pcvar_zombies_kill_reward : pcvar_humans_kill_reward))
 }
 
-public TaskMessage(id)
+public TaskMessage(id) // de luat asta de aici
 {
 	if(!is_user_alive(id))
 		return
