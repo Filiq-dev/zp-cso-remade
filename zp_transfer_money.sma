@@ -107,16 +107,10 @@ public transferMenuHandler(id, menu, item)
 		return PLUGIN_HANDLED
 	}
 
-	new data[6], name[64]
-	new access, callback
-
-	menu_item_getinfo (menu, item, access, data, 5, name, 63, callback)
-	new tempid = str_to_num (data)
-
-	ColorChat(id, RED, "[^4ZP^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(tempid))
+	ColorChat(id, RED, "[^4ZP^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(item))
 	ColorChat(id, RED, "[^4ZP^3] ^3In chat please type only ^4numbers^3. If you want to cancel, type ^3cancel")
 
-	sendMoney[id] = tempid
+	sendMoney[id] = item
 
 	return true
 }
