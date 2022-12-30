@@ -32,7 +32,7 @@ enum _: eTeamData
 new 
 	g_iWin[eTeamData], bool:roundStarted = false,
 	bool:hudScore[33], bool:hudStats[33], bool:hudLevel[33],
-	bool:hudMessages[33],
+	bool:hudMessages[33], hudDamage[33],
 	Array:g_Messages, syncMsg, messageExist, timer = 0
 
 public plugin_init()
@@ -40,6 +40,8 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
 	register_message(get_user_msgid("TextMsg"), "Message_TextMsg")
+
+	register_event("Damage", "showDamage", "b", "2!0", "3=0", "4!0")	
 
 	register_clcmd("say /hud", "hudMenu")
 }
@@ -104,6 +106,7 @@ public client_putinserver(id)
 	hudStats[id] = true
 	hudLevel[id] = true
 	hudMessages[id] = true
+	hudDamage[id] = true
 
 	if(!is_user_bot(id)) 
 		set_task(1.0, "ShowHUD", id , _, _, "b")
@@ -147,6 +150,9 @@ public hudMenu(id)
 	formatex(string, 30, "Messages [\y%s\w]", hudMessages[id] ? "hide" : "show")
 	menu_additem(menu, string)
 
+	formatex(string, 30, "Damage [\y%s\w]", hudDamage[id] ? "hide" : "show")
+	menu_additem(menu, string)
+
 	menu_display (id, menu)
 
 	return PLUGIN_HANDLED_MAIN;
@@ -166,6 +172,7 @@ public hudMenuHandler(id, menu, item)
 		case 1: hudStats[id] = !hudStats[id]
 		case 2: hudLevel[id] = !hudLevel[id]
 		case 3: hudMessages[id] = !hudMessages[id]
+		case 4: hudDamage[id] = !hudDamage[id]
 	}
 
 	hudMenu(id)
@@ -252,6 +259,32 @@ public showMessages(id)
 	set_hudmessage(random_num(0, 255), random_num(0, 255), random_num(0, 255), -1.0, 0.0777, random_num(0, 2), random_float(0.7, 0.9), 12.0, random_float(0.37, 0.4), random_float(0.37, 0.4), 4)
 	ArrayGetString(g_Messages, random_num(0, ArraySize(g_Messages) - 1), msg, 511)
 	ShowSyncHudMsg(id, syncMsg, msg)
+}
+
+public showDamage(id)
+{ 
+	static attacker; attacker = get_user_attacker(id)
+	static damage; damage = read_data(2)
+
+	if(id == attacker)
+		return
+	
+	if(hudDamage[id])
+	{
+		set_hudmessage(255, 0, 0, 0.45, 0.50, 2, 0.1, 4.0, 0.1, 0.1, -1)
+		ShowSyncHudMsg(id, syncMsg, "%d^n", damage)		
+	}
+
+	if(!is_user_connected(attacker) && !is_user_alive(attacker))
+		return
+
+	if(!hudDamage[attacker])
+		return
+
+	set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02, -1)
+	ShowSyncHudMsg(attacker, syncMsg, "%d^n", damage)	
+
+	client_print(id, print_chat, "%d", damage)			
 }
 
 public getClass(id)
