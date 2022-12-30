@@ -290,7 +290,7 @@ public HookSay(id)
 	if(equal(g_typed, "") || !is_user_connected(id))
 		return PLUGIN_HANDLED_MAIN
 
-	if(equal(g_typed, "/prefix"))
+	if(equal(g_typed, "/prefix") || equal(g_typed, "/tag"))
 	{
 		showPrefixMenu(id)
 
@@ -342,7 +342,7 @@ public HookSayTeam(id)
 	if(equal(g_typed, "") || !is_user_connected(id))
 		return PLUGIN_HANDLED_MAIN
 
-	if(equal(g_typed, "/prefix"))
+	if(equal(g_typed, "/prefix") || equal(g_typed, "/tag"))
 	{
 		showPrefixMenu(id)
 
