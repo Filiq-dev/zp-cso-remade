@@ -166,11 +166,21 @@ public plugin_natives()
 
 public plugin_precache()
 {
-	for(new i = 0; i < sizeof knifeData; i++)
+	for(new i = 0; i < sizeof knifeData; i++) 
+	{
 		precache_model(knifeData[i][vmodel])
-
-	for(new i = 0; i < sizeof knifeData; i++)
 		precache_model(knifeData[i][pmodel])
+		
+		precache_sound(knifeData[i][sDeploy])
+		precache_sound(knifeData[i][sCombat1])
+		precache_sound(knifeData[i][sCombat2])
+		precache_sound(knifeData[i][sCombat3])
+		precache_sound(knifeData[i][sCombat4])
+		precache_sound(knifeData[i][sWall])
+		precache_sound(knifeData[i][sSlash1])
+		precache_sound(knifeData[i][sSlash2])
+		precache_sound(knifeData[i][sStab])
+	}
 
 	precache_sound(g_sound_knife)
 }
