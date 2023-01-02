@@ -1577,9 +1577,12 @@ public logevent_round_end()
 	if (!fnGetZombies())
 	{
 		// Human team wins
-		set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
-		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
-		
+		if(hud_final_round(id))
+		{
+			set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+			show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
+		}
+
 		// Play win sound and increase score, unless game commencing
 		ArrayGetString(sound_win_humans, random_num(0, ArraySize(sound_win_humans) - 1), sound, charsmax(sound))
 		PlaySound(sound)
@@ -1591,9 +1594,12 @@ public logevent_round_end()
 	else if (!fnGetHumans())
 	{
 		// Zombie team wins
-		set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
-		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
-		
+		if(hud_final_round(id))
+		{
+			set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+			show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
+		}
+
 		// Play win sound and increase score, unless game commencing
 		ArrayGetString(sound_win_zombies, random_num(0, ArraySize(sound_win_zombies) - 1), sound, charsmax(sound))
 		PlaySound(sound)
@@ -1605,9 +1611,11 @@ public logevent_round_end()
 	else
 	{
 		// No one wins
-		set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
-		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
-		
+		if(hud_final_round(id))
+		{
+			set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+			show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
+		}
 		// Play win sound
 		ArrayGetString(sound_win_no_one, random_num(0, ArraySize(sound_win_no_one) - 1), sound, charsmax(sound))
 		PlaySound(sound)
@@ -6876,13 +6884,16 @@ balance_teams()
 public welcome_msg()
 {
 	// Show mod info
-	zp_colored_print(0, "^x01**** ^x04ZOMBIE-PLAGUE | CSO Mod remade by Filiq_ with the help from cTm # oNe^x01 ****")
+	zp_colored_print(0, "^x01**** ^x04ZOMBIE-PLAGUE | CSO Mod remade by Filiq_^x01 ****")
 	zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO1")
 	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
 	
 	// Show T-virus HUD notice
-	set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00, false);
-	show_dhudmessage(0, "%L", -1, "NOTICE_VIRUS_FREE");
+	if(hud_virus_free(id))
+	{
+		set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", -1, "NOTICE_VIRUS_FREE");
+	}
 }
 
 // Respawn Player Task (deathmatch)

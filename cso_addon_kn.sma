@@ -451,7 +451,7 @@ public menu_handler(id, menu, item)
 	if(item == MENU_EXIT)
 	{
 		menu_destroy(menu)
-		return PLUGIN_HANDLED;   
+		return PLUGIN_HANDLED
 	}
 
 	hasKnife[id] = item
