@@ -22,7 +22,7 @@ new const zclass_name[] = { "Normal Zombie" }
 new const zclass_info[] = { "[G -> Fast Run]" }
 new const zclass_model[] = { "tank_zombi_origin" }
 new const zclass_clawmodel[] = { "v_knife_tank_zombi.mdl" }
-const zclass_health = 10000
+const zclass_health = 12000
 const zclass_speed = 280
 const Float:zclass_gravity = 0.7
 const Float:zclass_knockback = 1.3
@@ -80,18 +80,7 @@ public plugin_precache()
 public zp_user_infected_post(id)
 {
 	if(zp_get_user_zombie(id) && zp_get_user_zombie_class(id) == g_zclassic_zombie)
-	{
-		//client_cmd(id, "bind F1 use_skill")
 		client_print(id, print_center, "[G] -> Fast Run")
-	}
-}
-
-public do_skill(id)
-{
-	
-	{
-		madness(id)
-	}
 }
 
 public madness(id)
@@ -106,22 +95,18 @@ public madness(id)
 	
 	if (!is_user_alive(id))
 	{
-		client_print(id, print_center, "Can be used only when you still alive")
 		return PLUGIN_HANDLED
 	}
 	if (g_hasSpeedBoost[id])
 	{
-		client_print(id, print_center, "Max Speed Up !!!")
 		return PLUGIN_HANDLED
 	}
 	if (g_hasSpeedTime[id])
 	{
-		client_print(id, print_center, "You may not use this at this time")
 		return PLUGIN_HANDLED
 	}
 	if (pev(id, pev_health) < 1+get_pcvar_num(cvar_zombiehp))
 	{
-		client_print(id, print_center, "You don't have enough HP")
 		return PLUGIN_HANDLED
 	}
 

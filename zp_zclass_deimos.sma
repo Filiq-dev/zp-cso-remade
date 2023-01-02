@@ -5,10 +5,10 @@
 
 // Zombie Attributes
 new const zclass_name[] = "Deimos Zombie" // name
-new const zclass_info[] = "| G -> Drop Human Weapon" // description
+new const zclass_info[] = "[G -> Drop Human Weapon]" // description
 new const zclass_model[] = "deimos_zombi_origin" // model
 new const zclass_clawmodel[] = "v_knife_deimos_zombi.mdl" // claw model
-const zclass_health = 2000 // health
+const zclass_health = 12000 // health
 const zclass_speed = 280 // speed
 const Float:zclass_gravity = 1.0 // gravity
 const Float:zclass_knockback = 1.0 // knockback

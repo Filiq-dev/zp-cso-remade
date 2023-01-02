@@ -17,11 +17,11 @@ new bool:can_invisible[33] // Co the su dung Skill neu = True
 new bool:is_invisible[33] // Dang tang Hinh neu = True
 
 new const zclass_name[] = "Light Zombie" // Ten
-new const zclass_info[] = "| G -> Tang Hinh" // Thong Tin
+new const zclass_info[] = "[G -> Invisibility]" // Thong Tin
 new const zclass_model[] = "speed_zombi_host"// Player Model
 new const zclass_clawmodel[] = "v_knife_speed_zombi.mdl" // Hand Model
 new const invisible_sound[] = "zombie_plague/zombi_pressure_female.wav"
-const zclass_health = 2000 // Mau
+const zclass_health = 7000 // Mau
 const zclass_speed = 260 // Toc Do
 const Float:zclass_gravity = 0.7 // Trong Luc
 const Float:zclass_knockback = 1.3 // Do Day Lui
@@ -119,6 +119,3 @@ public reset_cooldown(taskid)
 		client_print(id, print_chat, "[ZP] Now. You can Invisible. Press (G)")
 	}
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1066\\ f0\\ fs16 \n\\ par }
-*/

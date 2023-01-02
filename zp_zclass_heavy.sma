@@ -15,10 +15,10 @@ For: Zombie Plague Mod 4.3
 #define TASK_REMOVE_TRAP 37015
 
 new const zclass_name[] = "Heavy Zombie"
-new const zclass_info[] = "| G -> Make a Trap"
+new const zclass_info[] = "[G -> Make a Trap]"
 new const zclass_model[] = "heavy_zombi_origin"
 new const zclass_clawmodel[] = "v_knife_heavy_zombi.mdl"
-const zclass_health = 5000
+const zclass_health = 9000
 const zclass_speed = 230
 const Float:zclass_gravity = 1.0
 const Float:zclass_knockback = 1.0
