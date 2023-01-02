@@ -87,11 +87,13 @@ new classData[][cData] =
 	}
 }
 
-// speed vars
-new hasSpeed[33]
+// light custom
+new const invisible_sound[] = "zombie_plague/zombi_pressure_female.wav"
 
 // others
-new g_msgSetFOV
+new 
+	g_msgSetFOV,
+	abilityUse[33]
 
 public plugin_init()
 {
@@ -112,6 +114,8 @@ public plugin_precache()
 {
 	for(new i = 0; i < sizeof classData; i++)
 		classData[i][zID] = zp_register_zombie_class(classData[i][zName], classData[i][zInfo], classData[i][zModel], classData[i][zcModel], classData[i][zHP], classData[i][zSpeed], classData[i][zGravity], classData[i][zKnockback])
+
+	precache_sound(invisible_sound)
 }
 
 public message_textmsg()
@@ -128,7 +132,7 @@ public message_textmsg()
 
 public client_putinserver(id)
 {
-	hasSpeed[id] = -1
+	abilityUse[id] = -1
 }
 
 public playerSpawn(id)
@@ -138,7 +142,7 @@ public playerSpawn(id)
 
 public playerPreThink(id)
 {
-	if(hasSpeed[id])
+	if(abilityUse[id])
 	{
 		set_pev(id, pev_maxspeed, 500)		
 	}
@@ -165,10 +169,13 @@ public useAbility(id)
 	if(!is_user_alive(id))
 		return PLUGIN_HANDLED
 
+	if(abilityUse[id] != -1)
+		return PLUGIN_HANDLED
+
 	switch(zp_get_user_zombie_class(id))
 	{
 		case SPEED: speedAbility(id)
-		case INVIS: {}
+		case INVIS: invisAbility(id)
 		case HEAVY: { }
 		case BANSHEE: {}
 		case DEIMOS: {}
@@ -177,13 +184,13 @@ public useAbility(id)
 	
 	return PLUGIN_CONTINUE
 }
-
+// speed
 public speedAbility(id)
 {
-	if(hasSpeed[id] != -1 || pev(id, pev_health) < 101) 
+	if(pev(id, pev_health) < 101) 
 		return PLUGIN_HANDLED
 
-	hasSpeed[id] = 1
+	abilityUse[id] = 1
 
 	set_pev(id, pev_maxspeed, 500.0)
 	set_task(10.0, "taskSpeed", id)
@@ -209,13 +216,13 @@ public taskSpeed(id)
 	if(!is_user_connected(id))
 		return
 
-	if(hasSpeed[id] == 0)
+	if(abilityUse[id] == 0)
 	{
-		hasSpeed[id] = -1
+		abilityUse[id] = -1
 		return
 	}
 
-	hasSpeed[id] = 0
+	abilityUse[id] = 0
 
 	set_task(10.0, "taskSpeed", id)
 	client_print(id, print_center, "You can continue use after 10 seconds")
@@ -228,7 +235,7 @@ public taskSpeed(id)
 
 public speed_glow(id)
 {
-	if(hasSpeed[id] == 0)
+	if(abilityUse[id] == 0)
 		return
 
 	if(pev(id, pev_maxspeed) != 1.0)
@@ -237,10 +244,9 @@ public speed_glow(id)
 	set_task(0.1, "speed_glow", id)
 }
 
-
 public speed_aura(id)
 {
-	if(hasSpeed[id] == 0)
+	if(abilityUse[id] == 0)
 		return
 
 	// Get player origin
@@ -264,6 +270,24 @@ public speed_aura(id)
 	// Keep sending aura messages
 	set_task(0.1, "speed_aura", id)
 }
+// speed
+
+//invis
+public invisAbility(id)
+{
+	abilityUse[id] = 1
+
+	set_user_maxspeed(id, get_user_maxspeed(id) + 50)
+	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, get_pcvar_num(cvar_invisible_amount))
+
+	emit_sound(id, CHAN_VOICE, invisible_sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+	set_task(get_pcvar_float(cvar_inv_time), "visible", id+TASK_INVISIBLE)
+	
+	client_print(id, print_chat, "[ZP] You are Invisible.")
+}
+
+//invis
 
 stock fm_set_user_health(id, health)
 {

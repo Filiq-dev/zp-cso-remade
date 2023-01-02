@@ -32,7 +32,7 @@ enum _: eTeamData
 new 
 	g_iWin[eTeamData], bool:roundStarted = false,
 	bool:hudScore[33], bool:hudStats[33], bool:hudLevel[33],
-	bool:hudMessages[33], bool:hudDamage[33],
+	bool:hudMessages[33], bool:hudDamage[33], bool:hudcInfo[33],
 	Array:g_Messages, syncMsg, messageExist, timer = 0
 
 public plugin_init()
@@ -85,6 +85,7 @@ public plugin_precache()
 public plugin_natives()
 {
 	register_native("show_hud_menu", "hudMenu", 1)
+	register_native("hud_get_zinfo", "native_hud_get_zinfo", 1)
 }
 
 public Message_TextMsg() 
@@ -106,7 +107,8 @@ public client_putinserver(id)
 	hudStats[id] = true
 	hudLevel[id] = true
 	hudMessages[id] = true
-	hudDamage[id] = false
+	hudDamage[id] = false,
+	hudcInfo[id] = true
 
 	if(!is_user_bot(id)) 
 		set_task(1.0, "ShowHUD", id , _, _, "b")
@@ -153,6 +155,9 @@ public hudMenu(id)
 	formatex(string, 30, "Damage [%s\w]", hudDamage[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
+	formatex(string, 30, "Ability [%s\w]", hudcInfo[id] ? "\rhide" : "\yshow")
+	menu_additem(menu, string)
+
 	menu_display (id, menu)
 
 	return PLUGIN_HANDLED_MAIN;
@@ -173,6 +178,7 @@ public hudMenuHandler(id, menu, item)
 		case 2: hudLevel[id] = !hudLevel[id]
 		case 3: hudMessages[id] = !hudMessages[id]
 		case 4: hudDamage[id] = !hudDamage[id]
+		case 5: hudcInfo[id] = !hudcInfo[id]
 	}
 
 	hudMenu(id)
@@ -306,4 +312,9 @@ public getClass(id)
 	}
 
 	return class
+}
+
+public native_hud_get_zinfo(id)
+{
+	return hudcInfo[id]
 }

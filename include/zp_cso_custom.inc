@@ -13,6 +13,7 @@ native zp_knife_menu(id)
 native show_respawn_menu(id)
 native zp_level_reset(id)
 native zp_money_reset(id)
+native hud_get_zinfo(id)
 stock getName(id)
 {
 	new name[33]
