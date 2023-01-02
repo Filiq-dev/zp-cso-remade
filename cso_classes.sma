@@ -6,6 +6,7 @@
 #include <ColorChat>
 #include <dhudmessage>
 #include <zp_cso_custom>
+#include <fun>
 
 #define PLUGIN "[CSO] Default Classes"
 #define VERSION "1.0"
@@ -187,7 +188,7 @@ public speedAbility(id)
 	abilityUse[id] = 10
 
 	set_pev(id, pev_maxspeed, 500.0)
-	set_task(1.0, "taskSpeed", id, _, _, "b")
+	set_task(1.0, "timerAbility", id, _, _, "b")
 
 	fm_set_user_health(id, pev(id, pev_health)-101)
 
@@ -204,66 +205,13 @@ public speedAbility(id)
 	return PLUGIN_CONTINUE
 }
 
-public taskSpeed(id)
+public resetSpeed(id)
 {
-	if(!is_user_connected(id))
-	{
-		remove_task(id)
-		return
-	}
+	abilityCD[id] = 10 // cd ability
 
-	if(hud_get_zinfo(id))
-	{
-		set_dhudmessage(0, 255, 255, 0.0, 0.19, 1, 1.0, 1.0, 0.1, 0.9)
-		show_dhudmessage(id, "%d secound%s until the ability is gone.", abilityUse[id], abilityUse[id] == 1 ? "" : "s")
-	}
-	
-	if(abilityUse[id] == 0) // end
-	{
-		abilityCD[id] = 10 // cd ability
-		set_task(1.0, "resetAbility", id, _, _, "b")
-
-		// fov
-		message_begin(MSG_ONE, g_msgSetFOV, _, id)
-		write_byte(90) // angle
-		message_end()
-
-		return
-	}
-
-	abilityUse[id] --
-	if(abilityUse[id] < 0) abilityUse[id] = 0 // to be sure 
-}
-
-public resetAbility(id)
-{
-	if(!is_user_connected(id))
-	{
-		remove_task(id)
-		return
-	}
-
-	if(hud_get_zinfo(id))
-	{
-		set_dhudmessage(0, 255, 255, 0.0, 0.19, 1, 1.0, 1.0, 0.1, 0.9)
-		show_dhudmessage(id, "%d secound%s until you can use your ability again.", abilityCD[id], abilityCD[id] == 1 ? "" : "s")
-	}
-
-	if(abilityCD[id] == 0)
-	{
-		if(hud_get_zinfo(id))
-		{
-			set_dhudmessage(0, 255, 255, 0.0, 0.19, 1, 1.0, 1.0, 0.1, 0.9)
-			show_dhudmessage(id, "You can use your ability again.")
-		}
-
-		abilityUse[id] = -1
-
-		return
-	}
-
-	abilityCD[id] --
-	if(abilityCD[id] < 0) abilityCD[id] = 0 // to be sure 
+	message_begin(MSG_ONE, g_msgSetFOV, _, id)
+	write_byte(90) // angle
+	message_end()
 }
 
 public speed_glow(id)
@@ -308,19 +256,96 @@ public speed_aura(id)
 //invis
 public invisAbility(id)
 {
-	// abilityUse[id] = 1
+	abilityUse[id] = 10
 
-	// set_user_maxspeed(id, get_user_maxspeed(id) + 50)
-	// set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, get_pcvar_num(cvar_invisible_amount))
+	set_user_maxspeed(id, get_user_maxspeed(id) + 50)
+	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 0)
 
-	// emit_sound(id, CHAN_VOICE, invisible_sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(id, CHAN_VOICE, invisible_sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 
-	// set_task(get_pcvar_float(cvar_inv_time), "visible", id+TASK_INVISIBLE)
-	
-	// client_print(id, print_chat, "[ZP] You are Invisible.")
+	set_task(1.0, "timerAbility", id, _, _, "b")
+}
+
+public resetInviis(id)
+{
+	abilityCD[id] = 30 // cd ability
+
+	set_user_maxspeed(id, get_user_maxspeed(id) - 50)
+	set_user_rendering(id, kRenderFxGlowShell, 0, 0, 0, kRenderTransAlpha, 255)
 }
 
 //invis
+
+//
+public timerAbility(id)
+{
+	if(!is_user_connected(id))
+	{
+		remove_task(id)
+		return
+	}
+
+	if(hud_get_zinfo(id) && abilityUse[id] > 0)
+	{
+		set_dhudmessage(0, 255, 255, 0.0, 0.19, 1, 1.0, 1.0, 0.1, 0.9)
+		show_dhudmessage(id, "%d secound%s until the ability is gone.", abilityUse[id]	, abilityUse[id] == 1 ? "" : "s")
+	}
+	
+	if(abilityUse[id] == 0) // end
+	{
+		remove_task(id)
+
+		// fov
+		switch(zp_get_user_zombie_class(id))
+		{
+			case SPEED: resetSpeed(id)
+			case INVIS: resetInviis(id)
+			case HEAVY: { }
+			case BANSHEE: {}
+			case DEIMOS: {}
+		}
+
+		set_task(1.0, "resetAbility", id, _, _, "b")
+
+		return
+	}
+
+	abilityUse[id] --
+	if(abilityUse[id] < 0) abilityUse[id] = 0 // to be sure 
+}
+
+public resetAbility(id)
+{
+	if(!is_user_connected(id))
+	{
+		remove_task(id)
+		return
+	}
+
+	if(hud_get_zinfo(id) && abilityCD[id] > 0)
+	{
+		set_dhudmessage(0, 255, 255, 0.0, 0.19, 1, 1.0, 1.0, 0.1, 0.9)
+		show_dhudmessage(id, "%d secound%s until you can use your ability again.", abilityCD[id], abilityCD[id] == 1 ? "" : "s")
+	}
+
+	if(abilityCD[id] == 0)
+	{
+		if(hud_get_zinfo(id))
+		{
+			set_dhudmessage(0, 255, 255, 0.0, 0.19, 1, 1.0, 1.0, 0.1, 0.9)
+			show_dhudmessage(id, "You can use your ability again.")
+		}
+
+		abilityUse[id] = -1
+
+		remove_task(id)
+		return
+	}
+
+	abilityCD[id] --
+	if(abilityCD[id] < 0) abilityCD[id] = 0 // to be sure 
+}
+//
 
 stock fm_set_user_health(id, health)
 {
