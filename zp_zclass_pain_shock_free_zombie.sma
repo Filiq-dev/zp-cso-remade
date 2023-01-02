@@ -11,7 +11,7 @@ const OFFSET_LINUX = 5
 const OFFSET_PAINSHOCK = 108
 
 new const zclass_name[] = "Pain Shock Free"
-new const zclass_info[] = "Hp++ Speed-"
+new const zclass_info[] = "Pain Shock Free"
 new const zclass_model[] = "zombie_source"
 new const zclass_clawmodel[] = "v_knife_zombie.mdl"
 const zclass_health = 3000

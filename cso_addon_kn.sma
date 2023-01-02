@@ -456,6 +456,10 @@ public menu_handler(id, menu, item)
 
 	hasKnife[id] = item
 
+	
+	set_pev(id, pev_viewmodel2, knifeData[item][vmodel])
+	set_pev(id, pev_weaponmodel2, knifeData[item][pmodel])
+
 	menu_destroy(menu)
 
 	return PLUGIN_HANDLED
