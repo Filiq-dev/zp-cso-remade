@@ -25,74 +25,29 @@
 enum ekData {
 	kname[15],
 	vmodel[50],
-	pmodel[50],
-	sDeploy[50],
-	sCombat1[50],
-	sCombat2[50],
-	sCombat3[50],
-	sCombat4[50],
-	sWall[50],
-	sSlash1[50],
-	sSlash2[50],
-	sStab[50]
+	pmodel[50]
 }
 
 new const knifeData[][ekData] = {
 	{
 		"Combat Knife",
 		"models/tx/knifes/v_combat.mdl", 
-		"models/tx/knifes/p_combat.mdl", 
-		"tox_cso/combat_deploy1.wav",
-		"tox_cso/combat1.wav",
-		"tox_cso/combat1.wav",
-		"tox_cso/combat2.wav",
-		"tox_cso/combat2.wav",
-		"tox_cso/combat_hwall.wav",
-		"tox_cso/combat_slash1.wav",
-		"tox_cso/combat_slash1.wav",
-		"tox_cso/combatstab.wav"
+		"models/tx/knifes/p_combat.mdl"
 	},
 	{
 		"Strong Knife",
 		"models/tx/knifes/v_strong.mdl",
-		"models/tx/knifes/p_strong.mdl",
-		"tox_cso/strongdeply.wav",
-		"tox_cso/strong-1.wav",
-		"tox_cso/strong-1.wav",
-		"tox_cso/strong-2.wav",
-		"tox_cso/strong-2.wav",
-		"tox_cso/strong-wall.wav",
-		"tox_cso/strong-slash1.wav",
-		"tox_cso/strong-slash1.wav",
-		"tox_cso/strongstab.wav"
+		"models/tx/knifes/p_strong.mdl"
 	},
 	{
 		"Axe Knife",
 		"models/tx/knifes/v_axe.mdl",
-		"models/tx/knifes/p_axe.mdl",
-		"tox_cso/axedep.wav",
-		"tox_cso/axe_hit2222.wav",
-		"tox_cso/axe_hit2222.wav",
-		"tox_cso/axe_hit11111.wav",
-		"tox_cso/axe_hit11111.wav",
-		"tox_cso/axe_hit_wall1.wav",
-		"tox_cso/axe_slash11.wav",
-		"tox_cso/axe_slash11.wav",
-		"tox_cso/axstab.wav"
+		"models/tx/knifes/p_axe.mdl"
 	},
 	{
 		"Hammer Knife",
 		"models/tx/knifes/v_hammer_norm.mdl",
-		"models/tx/knifes/p_hammer.mdl",
-		"tox_cso/hammer_deploy111.wav",
-		"tox_cso/ham1.wav",
-		"tox_cso/ham1.wav",
-		"tox_cso/ham2.wav",
-		"tox_cso/ham2.wav",
-		"tox_cso/hammer_hitwall11.wav",
-		"tox_cso/hammer_slash111.wav",
-		"tox_cso/hammer_slash111.wav",
-		"tox_cso/hammerstab.wav"
+		"models/tx/knifes/p_hammer.mdl"
 	}
 }
 
@@ -107,6 +62,58 @@ new const oldSounds[][] =
 	"weapons/knife_slash1.wav",
 	"weapons/knife_slash2.wav",
 	"weapons/knife_stab.wav"
+}
+
+new const combatSounds[][] = 
+{
+	"tox_cso/combat_deploy1.wav",
+	"tox_cso/combat1.wav",
+	"tox_cso/combat1.wav",
+	"tox_cso/combat2.wav",
+	"tox_cso/combat2.wav",
+	"tox_cso/combat_hwall.wav",
+	"tox_cso/combat_slash1.wav",
+	"tox_cso/combat_slash1.wav",
+	"tox_cso/combatstab.wav"
+}
+
+new const strongSounds[][] = 
+{
+	"tox_cso/strongdeply.wav",
+	"tox_cso/strong-1.wav",
+	"tox_cso/strong-1.wav",
+	"tox_cso/strong-2.wav",
+	"tox_cso/strong-2.wav",
+	"tox_cso/strong-wall.wav",
+	"tox_cso/strong-slash1.wav",
+	"tox_cso/strong-slash1.wav",
+	"tox_cso/strongstab.wav"
+}
+
+new const axeSounds[][] =
+{
+	"tox_cso/axedep.wav",
+	"tox_cso/axe_hit2222.wav",
+	"tox_cso/axe_hit2222.wav",
+	"tox_cso/axe_hit11111.wav",
+	"tox_cso/axe_hit11111.wav",
+	"tox_cso/axe_hit_wall1.wav",
+	"tox_cso/axe_slash11.wav",
+	"tox_cso/axe_slash11.wav",
+	"tox_cso/axstab.wav"
+}
+
+new const hammerSounds[][] = 
+{
+	"tox_cso/hammer_deploy111.wav",
+	"tox_cso/ham1.wav",
+	"tox_cso/ham1.wav",
+	"tox_cso/ham2.wav",
+	"tox_cso/ham2.wav",
+	"tox_cso/hammer_hitwall11.wav",
+	"tox_cso/hammer_slash111.wav",
+	"tox_cso/hammer_slash111.wav",
+	"tox_cso/hammerstab.wav"
 }
 
 new const g_sound_knife[] = { "items/gunpickup2.wav" }
@@ -172,24 +179,26 @@ public plugin_precache()
 	{
 		precache_model(knifeData[i][vmodel])
 		precache_model(knifeData[i][pmodel])
-
-		precache_sound(knifeData[i][sDeploy])
-		precache_sound(knifeData[i][sCombat1])
-		precache_sound(knifeData[i][sCombat2])
-		precache_sound(knifeData[i][sCombat3])
-		precache_sound(knifeData[i][sCombat4])
-		precache_sound(knifeData[i][sWall])
-		precache_sound(knifeData[i][sSlash1])
-		precache_sound(knifeData[i][sSlash2])
-		precache_sound(knifeData[i][sStab])
 	}
+
+	for(new i = 0; i < sizeof combatSounds; i++)
+		precache_sound(combatSounds[i])
+
+	for(new i = 0; i < sizeof strongSounds; i++)
+		precache_sound(strongSounds[i])
+
+	for(new i = 0; i < sizeof axeSounds; i++)
+		precache_sound(axeSounds[i])
+
+	for(new i = 0; i < sizeof hammerSounds; i++)
+		precache_sound(hammerSounds[i])
 
 	precache_sound(g_sound_knife)
 }
 
-public client_disconnect(id)
+public client_connect(id)
 {
-	hasKnife[id] = 2
+	hasKnife[id] = kAxe
 }
 
 public event_Damage(id)
@@ -275,25 +284,39 @@ public fw_EmitSound(id, channel, const sound[])
 	if(hasKnife[id] == -1)
 		return FMRES_IGNORED
 
-	for(new s = 0; s < sizeof oldSounds; s++)
-	{
-		if(equal(sound, oldSounds[s]))
+	for(new i = 0; i < sizeof oldSounds; i++)
+	{ 
+		if(equal(sound, oldSounds[i]))
 		{
-			emit_sound(id, channel, knifeData[hasKnife[id]][sDeploy], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sCombat1], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sCombat2], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sCombat3], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sCombat4], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sWall], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sSlash1], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sSlash2], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			emit_sound(id, channel, knifeData[hasKnife[id]][sStab], 1.0, ATTN_NORM, 0, PITCH_NORM)
-
-			return FMRES_SUPERCEDE
-		}
-		else {
-			emit_sound(id, channel, oldSounds[s], 1.0, ATTN_NORM, 0, PITCH_NORM)
-			return FMRES_SUPERCEDE
+			switch(hasKnife[id])
+			{
+				case kAxe:
+				{
+					emit_sound(id, channel, axeSounds[i], 1.0, ATTN_NORM, 0, PITCH_NORM)
+					return FMRES_SUPERCEDE
+				}
+				case kCombat:
+				{
+					emit_sound(id, channel, combatSounds[i], 1.0, ATTN_NORM, 0, PITCH_NORM)
+					return FMRES_SUPERCEDE
+				}
+				case kStrong:
+				{
+					
+					emit_sound(id, channel, strongSounds[i], 1.0, ATTN_NORM, 0, PITCH_NORM)
+					return FMRES_SUPERCEDE
+				}
+				case kHammer:
+				{
+					emit_sound(id, channel, hammerSounds[i], 1.0, ATTN_NORM, 0, PITCH_NORM)
+					return FMRES_SUPERCEDE
+				}
+				default:
+				{
+					emit_sound(id, channel, oldSounds[i], 1.0, ATTN_NORM, 0, PITCH_NORM)
+					return FMRES_SUPERCEDE
+				}
+			}
 		}
 	}
 	return FMRES_IGNORED
@@ -337,8 +360,6 @@ public changeModel(weapon)
 
 	if(cs_get_weapon_id(weapon) != CSW_KNIFE)
 		return HAM_HANDLED
-
-	ColorChat(id, RED, "TESTTT")
 
 	set_pev(id, pev_viewmodel2, knifeData[hasKnife[id]][vmodel])
 	set_pev(id, pev_weaponmodel2, knifeData[hasKnife[id]][pmodel])
@@ -495,8 +516,8 @@ public create_velocity_vector(victim, attacker, Float:velocity[3])
 
 fm_cs_get_weapon_ent_owner(ent)
 {
-    // Prevent server crash if entity's private data not initalized
-    if (pev_valid(ent) != 2) return -1;
+	// Prevent server crash if entity's private data not initalized
+	if (pev_valid(ent) != 2) return -1;
 
-    return get_pdata_cbase(ent, 41, 4);
+	return get_pdata_cbase(ent, 41, 4);
 } 
