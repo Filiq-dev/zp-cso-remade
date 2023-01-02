@@ -22,7 +22,6 @@ stock getName(id)
 stock getIP(id)
 {
 	new name[64]
-	// get_user_ip(id, name, 63, 1)
-	format(name, 63, "1.2.3.4")
+	get_user_ip(id, name, 63, 1)
 	return name
 }

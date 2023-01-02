@@ -25,6 +25,7 @@ const MAX_STATS_SAVED = 64
 #include <xs>
 #include <dhudmessage>
 #include <zp_cso_custom>
+#include <geoip>
 
 /*================================================================================
  [Constants, Offsets, Macros]
@@ -2382,6 +2383,15 @@ public client_putinserver(id)
 			set_task(0.1, "register_ham_czbots", id)
 		}
 	}
+
+	new 
+		country[45],
+    	city[45]
+
+	geoip_country(getIP(id), country, charsmax(country));
+	geoip_city(getIP(id), city, charsmax(city));
+
+	zp_colored_print(0, "[^x04CSO^x01] Player ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", getName(id), country, city);    
 }
 
 // Client leaving
@@ -2547,7 +2557,7 @@ public fw_ClientUserInfoChanged(id)
 public fw_GetGameDescription()
 {
 	// Return the mod name so it can be easily identified
-	forward_return(FMV_STRING, "CSO Mod Remade")
+	forward_return(FMV_STRING, "Zombie Plague [CSO]")
 	
 	return FMRES_SUPERCEDE;
 }
