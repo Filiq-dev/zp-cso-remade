@@ -19,10 +19,10 @@ new const zombie_pre_idle1[][] = { "zombie_plague/zombie_pre_idle_1.wav" }
 new const zombie_pre_idle2[][] = { "zombie_plague/zombie_pre_idle_2.wav" }
 
 new const zclass_name[] = { "Normal Zombie" }
-new const zclass_info[] = { "| G -> Fast Run" }
+new const zclass_info[] = { "[G -> Fast Run]" }
 new const zclass_model[] = { "tank_zombi_origin" }
 new const zclass_clawmodel[] = { "v_knife_tank_zombi.mdl" }
-const zclass_health = 2000
+const zclass_health = 10000
 const zclass_speed = 280
 const Float:zclass_gravity = 0.7
 const Float:zclass_knockback = 1.3
@@ -88,7 +88,7 @@ public zp_user_infected_post(id)
 
 public do_skill(id)
 {
-	if (zp_get_user_zombie(id) && zp_get_user_zombie_class(id) == g_zclassic_zombie)
+	
 	{
 		madness(id)
 	}
@@ -96,9 +96,12 @@ public do_skill(id)
 
 public madness(id)
 {		
+	if(!zp_get_user_zombie(id) && zp_get_user_zombie_class(id) != g_zclassic_zombie)
+		return PLUGIN_HANDLED
+
 	#if defined FOR_ADMINS_A_FLAG
 		if ( !( get_user_flags(id) & ADMINACCESS))
-			return PLUGIN_CONTINUE
+			return PLUGIN_HANDLED
 	#endif
 	
 	if (!is_user_alive(id))
