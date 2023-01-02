@@ -2,6 +2,8 @@
  [Plugin Customization]
 =================================================================================*/
 
+#define LOCATION_IN_CHAT
+
 // All customization settings have been moved
 // to external files to allow easier editing
 new const ZP_CUSTOMIZATION_FILE[] = "zombieplague.ini"
@@ -25,7 +27,10 @@ const MAX_STATS_SAVED = 64
 #include <xs>
 #include <dhudmessage>
 #include <zp_cso_custom>
+
+#if defined LOCATION_IN_CHAT
 #include <geoip>
+#endif
 
 /*================================================================================
  [Constants, Offsets, Macros]
@@ -2384,14 +2389,25 @@ public client_putinserver(id)
 		}
 	}
 
+#if defined LOCATION_IN_CHAT
 	new 
 		country[45],
-    	city[45]
+    	city[45],
+		who[10]
+		
+	who = "Player"
+
+	if(get_user_flags(id) & ADMIN_KICK)
+		who = "Admin"
+
+	if(get_user_flags(id) & ADMIN_RCON)
+		who = "Owner"
 
 	geoip_country(getIP(id), country, charsmax(country));
 	geoip_city(getIP(id), city, charsmax(city));
 
-	zp_colored_print(0, "[^x04CSO^x01] Player ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", getName(id), country, city);    
+	zp_colored_print(0, "[^x04CSO^x01] %s ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", who, getName(id), country, city);    
+#endif
 }
 
 // Client leaving
