@@ -170,7 +170,7 @@ public plugin_precache()
 	{
 		precache_model(knifeData[i][vmodel])
 		precache_model(knifeData[i][pmodel])
-		
+
 		precache_sound(knifeData[i][sDeploy])
 		precache_sound(knifeData[i][sCombat1])
 		precache_sound(knifeData[i][sCombat2])
@@ -197,7 +197,7 @@ public event_Damage(id)
 	if(!is_user_alive(attacker))
 		return PLUGIN_HANDLED;
 
-	if(hasKnife[id] == -1)
+	if(hasKnife[id] == -1 || weapon != CSW_KNIFE)
 		return PLUGIN_HANDLED
 
 	new Float:vec[3];
@@ -270,6 +270,9 @@ public fw_EmitSound(id, channel, const sound[])
 	if(!is_user_alive(id) || zp_get_user_zombie(id))
 		return FMRES_IGNORED
 
+	if(hasKnife[id] == -1)
+		return FMRES_IGNORED
+
 	for(new s = 0; s < sizeof oldSounds; s++)
 	{
 		if(equal(sound, oldSounds[s]))
@@ -286,10 +289,10 @@ public fw_EmitSound(id, channel, const sound[])
 
 			return FMRES_SUPERCEDE
 		}
-		// else {
-		// 	emit_sound(id, channel, oldSounds[i], 1.0, ATTN_NORM, 0, PITCH_NORM)
-		// 	return FMRES_SUPERCEDE
-		// }
+		else {
+			emit_sound(id, channel, oldSounds[s], 1.0, ATTN_NORM, 0, PITCH_NORM)
+			return FMRES_SUPERCEDE
+		}
 	}
 	return FMRES_IGNORED
 }
