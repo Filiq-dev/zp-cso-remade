@@ -32,8 +32,7 @@ enum _: eTeamData
 new 
 	g_iWin[eTeamData], bool:roundStarted = false,
 	bool:hudScore[33], bool:hudStats[33], bool:hudLevel[33],
-	bool:hudMessages[33], bool:hudDamage[33], bool:hudVirus[33],
-	bool:hudFinal[33],
+	bool:hudMessages[33], bool:hudDamage[33],
 	Array:g_Messages, syncMsg, messageExist, timer = 0
 
 public plugin_init()
@@ -86,8 +85,6 @@ public plugin_precache()
 public plugin_natives()
 {
 	register_native("show_hud_menu", "hudMenu", 1)
-	register_native("hud_virus_free", "native_hud_virus_free", 1)
-	register_native("hud_final_round", "native_hud_final_round", 1)
 }
 
 public Message_TextMsg() 
@@ -110,8 +107,6 @@ public client_putinserver(id)
 	hudLevel[id] = true
 	hudMessages[id] = true
 	hudDamage[id] = false
-	hudVirus[id] = true
-	hudFinal[id] = true
 
 	if(!is_user_bot(id)) 
 		set_task(1.0, "ShowHUD", id , _, _, "b")
@@ -158,12 +153,6 @@ public hudMenu(id)
 	formatex(string, 30, "Damage [%s\w]", hudDamage[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
-	formatex(string, 30, "Notice virus start [%s\w]", hudVirus[id] ? "\rhide" : "\yshow")
-	menu_additem(menu, string)
-
-	formatex(string, 30, "End round message [%s\w]", hudFinal[id] ? "\rhide" : "\yshow")
-	menu_additem(menu, string)
-
 	menu_display (id, menu)
 
 	return PLUGIN_HANDLED_MAIN;
@@ -184,8 +173,6 @@ public hudMenuHandler(id, menu, item)
 		case 2: hudLevel[id] = !hudLevel[id]
 		case 3: hudMessages[id] = !hudMessages[id]
 		case 4: hudDamage[id] = !hudDamage[id]
-		case 5: hudVirus[id] = !hudVirus[id]
-		case 6: hudFinal[id] = !hudFinal[id]
 	}
 
 	hudMenu(id)
@@ -296,16 +283,6 @@ public showDamage(id)
 
 	set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 4.0, 0.02, 0.02, -1)
 	ShowSyncHudMsg(attacker, syncMsg, "%d^n", damage)	
-}
-
-public native_hud_virus_free(id)
-{
-	return hudVirus[id]
-}
-
-public native_hud_final_round(id)
-{
-	return hudFinal[id]
 }
 
 public getClass(id)

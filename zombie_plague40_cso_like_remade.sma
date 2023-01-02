@@ -1577,11 +1577,8 @@ public logevent_round_end()
 	if (!fnGetZombies())
 	{
 		// Human team wins
-		if(hud_final_round(id))
-		{
-			set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
-			show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
-		}
+		set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
 
 		// Play win sound and increase score, unless game commencing
 		ArrayGetString(sound_win_humans, random_num(0, ArraySize(sound_win_humans) - 1), sound, charsmax(sound))
@@ -1594,11 +1591,8 @@ public logevent_round_end()
 	else if (!fnGetHumans())
 	{
 		// Zombie team wins
-		if(hud_final_round(id))
-		{
-			set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
-			show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
-		}
+		set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
 
 		// Play win sound and increase score, unless game commencing
 		ArrayGetString(sound_win_zombies, random_num(0, ArraySize(sound_win_zombies) - 1), sound, charsmax(sound))
@@ -1611,12 +1605,11 @@ public logevent_round_end()
 	else
 	{
 		// No one wins
-		if(hud_final_round(id))
-		{
-			set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
-			show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
-		}
+		
+		set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
 		// Play win sound
+
 		ArrayGetString(sound_win_no_one, random_num(0, ArraySize(sound_win_no_one) - 1), sound, charsmax(sound))
 		PlaySound(sound)
 		
@@ -6889,11 +6882,8 @@ public welcome_msg()
 	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
 	
 	// Show T-virus HUD notice
-	if(hud_virus_free(id))
-	{
-		set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00, false);
-		show_dhudmessage(0, "%L", -1, "NOTICE_VIRUS_FREE");
-	}
+	set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00, false);
+	show_dhudmessage(0, "%L", -1, "NOTICE_VIRUS_FREE");
 }
 
 // Respawn Player Task (deathmatch)
