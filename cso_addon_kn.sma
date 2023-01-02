@@ -4,6 +4,7 @@
 #include <hamsandwich>
 #include <zombieplague>
 #include <colorchat>
+#include <cstrike>
 
 #define PLUGIN    "[CSO] Knife menu"
 #define VERSION    "1.0"
@@ -135,6 +136,7 @@ public plugin_init()
 	register_message(get_user_msgid("DeathMsg"), "message_DeathMsg")
 
 	RegisterHam(Ham_Item_Deploy, "weapon_knife", "changeModel", 1)
+	
 	RegisterHam(Ham_TakeDamage, "player", "fw_TakeDamage")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "fw_Knife_SecondaryAttack_Post", 1) 
 
@@ -322,10 +324,21 @@ public message_DeathMsg(msg_id, msg_dest, id)
 
 public changeModel(weapon)
 {
-	if(weapon != CSW_KNIFE)
+	static id; id = fm_cs_get_weapon_ent_owner(weapon)
+
+	if(!pev_valid(id))
 		return HAM_HANDLED
 
-	static id; id = get_pdata_cbase(weapon, m_pPlayer, 4)
+	if(zp_get_user_zombie(id))
+		return HAM_HANDLED
+
+	if(hasKnife[id] == -1)
+		return HAM_HANDLED
+
+	if(cs_get_weapon_id(weapon) != CSW_KNIFE)
+		return HAM_HANDLED
+
+	ColorChat(id, RED, "TESTTT")
 
 	set_pev(id, pev_viewmodel2, knifeData[hasKnife[id]][vmodel])
 	set_pev(id, pev_weaponmodel2, knifeData[hasKnife[id]][pmodel])
@@ -479,3 +492,11 @@ public create_velocity_vector(victim, attacker, Float:velocity[3])
 
 	return 1;
 }
+
+fm_cs_get_weapon_ent_owner(ent)
+{
+    // Prevent server crash if entity's private data not initalized
+    if (pev_valid(ent) != 2) return -1;
+
+    return get_pdata_cbase(ent, 41, 4);
+} 
