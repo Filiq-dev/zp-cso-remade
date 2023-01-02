@@ -2390,6 +2390,10 @@ public client_putinserver(id)
 	}
 
 #if defined LOCATION_IN_CHAT
+
+	if(is_user_bot(id))
+		return 
+
 	new 
 		country[45],
     	city[45],
@@ -2406,7 +2410,7 @@ public client_putinserver(id)
 	geoip_country(getIP(id), country, charsmax(country));
 	geoip_city(getIP(id), city, charsmax(city));
 
-	zp_colored_print(0, "[^x04CSO^x01] %s ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", who, getName(id), country, city);    
+	zp_colored_print(0, "^x04[CSO] ^x01%s ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", who, getName(id), country, city)
 #endif
 }
 
