@@ -264,7 +264,7 @@ public useAbility(id)
 			case SPEED: speedAbility(id)
 			case INVIS: invisAbility(id)
 			case HEAVY: heavyAbility(id)
-			case BANSHEE: {}
+			case BANSHEE: bansheeAbility(id)
 			case DEIMOS: deimosAbility(id)
 		}
 	}
