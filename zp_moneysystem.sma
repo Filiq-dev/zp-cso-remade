@@ -38,6 +38,7 @@ public plugin_init()
 
 	RegisterHam(Ham_TakeDamage, "player", "fwTakeDamage", 1)
 	RegisterHam(Ham_Killed, "player", "fwKilled", 1)
+	RegisterHam(Ham_Spawn, "player", "fwSpawn")
 	
 	defaultmoney = register_cvar("ms_default_money", "3200")
 	
@@ -184,6 +185,11 @@ public fwKilled(id, killer)
 		return
 	
 	set_user_money(killer, get_user_money(killer) + get_pcvar_num(zp_get_user_zombie(killer) ? pcvar_zombies_kill_reward : pcvar_humans_kill_reward))
+}
+
+public fwSpawn(id)
+{
+	set_user_money(id, g_PlayerMoney[id])
 }
 
 public give_team_money(money_hum, money_zb)
