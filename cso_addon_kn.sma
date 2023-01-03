@@ -243,37 +243,38 @@ public fw_PlayerPreThink(id)
 		set_pev(id, pev_maxspeed, get_pcvar_float(cvar_knife_combat_spd))
 	}
 
-	if(!(pev(id, pev_button) & IN_JUMP) && !(pev(id, pev_oldbuttons) & IN_JUMP))
-		return FMRES_IGNORED
-
-	new vel = 0
-
-	switch(hasKnife[id])
+	if((pev(id, pev_button) & IN_JUMP) && !(pev(id, pev_oldbuttons) & IN_JUMP))
 	{
-		case kCombat: vel = get_pcvar_num(cvar_knife_combat_jump)
-		case kStrong: vel = get_pcvar_num(cvar_knife_strong_jump)
-		case kAxe: vel = get_pcvar_num(cvar_knife_axe_jump)
-		case kHammer: vel = get_pcvar_num(cvar_knife_hammer_jump)
+		new vel = 0
+
+		switch(hasKnife[id])
+		{
+			case kCombat: vel = get_pcvar_num(cvar_knife_combat_jump)
+			case kStrong: vel = get_pcvar_num(cvar_knife_strong_jump)
+			case kAxe: vel = get_pcvar_num(cvar_knife_axe_jump)
+			case kHammer: vel = get_pcvar_num(cvar_knife_hammer_jump)
+		}
+		
+		if (!(pev(id, pev_flags) & FL_ONGROUND))
+			return FMRES_IGNORED
+
+		if (pev(id, pev_flags) & FL_WATERJUMP)
+			return FMRES_IGNORED
+
+		if (pev(id, pev_waterlevel) > 1.0)
+			return FMRES_IGNORED
+		
+		new Float:fVelocity[3]
+		pev(id, pev_velocity, fVelocity)
+		
+		fVelocity[2] += vel
+		
+		set_pev(id, pev_velocity, fVelocity)
+		set_pev(id, pev_gaitsequence, 6)
 	}
-	
-	if (!(pev(id, pev_flags) & FL_ONGROUND))
-		return FMRES_IGNORED
 
-	if (pev(id, pev_flags) & FL_WATERJUMP)
-		return FMRES_IGNORED
-
-	if (pev(id, pev_waterlevel) > 1.0)
-		return FMRES_IGNORED
-	
-	new Float:fVelocity[3]
-	pev(id, pev_velocity, fVelocity)
-	
-	fVelocity[2] += vel
-	
-	set_pev(id, pev_velocity, fVelocity)
-	set_pev(id, pev_gaitsequence, 6)
-
-	return FMRES_IGNORED
+	// return FMRES_IGNORED // for bhop
+	return FMRES_SUPERCEDE
 }  
 
 public fw_EmitSound(id, channel, const sound[])
@@ -455,7 +456,6 @@ public menu_handler(id, menu, item)
 	}
 
 	hasKnife[id] = item
-
 	
 	set_pev(id, pev_viewmodel2, knifeData[item][vmodel])
 	set_pev(id, pev_weaponmodel2, knifeData[item][pmodel])
