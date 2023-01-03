@@ -7,6 +7,8 @@
 #define VERSION "1.0"
 #define AUTHOR "Filiq_"
 
+#define DEBUG
+
 new 
 	Handle:g_SqlTuple,
 	gQuery[256]
@@ -19,7 +21,7 @@ public plugin_precache(){
 
 public sql_init(){
 
-	g_SqlTuple = SQL_MakeDbTuple("localhost", "root", "", "server")
+	g_SqlTuple = SQL_MakeDbTuple(host, user, pass, db)
 
 }
 
@@ -28,7 +30,11 @@ public client_putinserver(id)
 	if(is_user_bot(id))
 		return
 
-	load(id)
+	new data[1]
+	data[0] = id
+
+	formatex(gQuery, 65, "SELECT * FROM players WHERE name = '%s'", getName(id))	
+	SQL_ThreadQuery(g_SqlTuple, "checkAccount", gQuery, data, 2)
 }
 
 public client_disconnect(id)
@@ -46,24 +52,12 @@ public client_disconnect(id)
 	zp_money_reset(id)
 }
 
-public load(id)
-{
-	if(!is_user_connected(id))
-		return
-
-	new data[2]
-	data[0] = id
-
-	formatex(gQuery, 50, "SELECT * FROM players WHERE name = '%s'", getName(id))	
-	SQL_ThreadQuery(g_SqlTuple, "checkAccount", gQuery, data, 2)
-}
-
 public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize){
 	if(FailState){
 		log_amx("SQL Error: %s (%d)", Error, Errcode)
 		return PLUGIN_HANDLED
 	}
-
+	
 	new id = Data[0]
 
 	if(SQL_NumResults(Query)) {

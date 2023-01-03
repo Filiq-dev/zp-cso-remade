@@ -36,7 +36,6 @@ public plugin_init()
 	register_message(g_msgMoney, "Msg_Money")
 	register_message(get_user_msgid("StatusIcon"), "Msg_StatusIcon")
 
-	RegisterHam(Ham_Spawn, "player", "fwSpawn", 1)
 	RegisterHam(Ham_TakeDamage, "player", "fwTakeDamage", 1)
 	RegisterHam(Ham_Killed, "player", "fwKilled", 1)
 	
@@ -65,7 +64,6 @@ public get(id)
 	set_user_money(id, 100000)
 	zp_set_user_level(id, 25)
 }
-
 
 public plugin_cfg()
 {
@@ -167,14 +165,6 @@ public zp_user_infected_pre(id, infector)
 	}
 }
 
-public fwSpawn(id)
-{
-	if(!is_user_alive(id) || g_First < 3 || zp_get_user_zombie(id))
-		return
-	
-	set_task(0.3, "TaskMessage", id)
-}
-
 public fwTakeDamage(id, weapon, attacker, Float:damage)
 {	
 	if(!is_user_alive(attacker))
@@ -194,15 +184,6 @@ public fwKilled(id, killer)
 		return
 	
 	set_user_money(killer, get_user_money(killer) + get_pcvar_num(zp_get_user_zombie(killer) ? pcvar_zombies_kill_reward : pcvar_humans_kill_reward))
-}
-
-public TaskMessage(id) // de luat asta de aici
-{
-	if(!is_user_alive(id))
-		return
-
-	set_dhudmessage(0, 255, 0, -1.0, 0.8 , 0)
-	show_dhudmessage(id, "Press ^"B^" to buy weapons!")
 }
 
 public give_team_money(money_hum, money_zb)
@@ -258,10 +239,10 @@ public set_user_money(id, value)
 {
 	new money = clamp(value, 0, g_PlayerMoneyLimit[id])
 
-	g_PlayerMoney[id] = value
+	g_PlayerMoney[id] = money
 		
 	if(is_user_alive(id))
-		sent_money(id, value)
+		sent_money(id, money)
 }
 
 public sent_money(id, num)

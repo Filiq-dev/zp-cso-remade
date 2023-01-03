@@ -19,7 +19,6 @@ new Trie:pre_flags_collect, Trie:bad_prefixes_collect, Trie:client_prefix;
 new str_id[16], temp_key[35], temp_prefix[32], temp_flag_key[2], temp_value, id;
 
 new bool:mysql_connected = false, bool:data_ready = false, bool:data_badp_ready = false;
-new g_host, g_user, g_pass, g_db
 new Handle:g_sqltuple;
 new query[512];
 
@@ -64,11 +63,6 @@ new const in_prefix[] = "[AdminPrefixes]"
 public plugin_init()
 {
 	register_plugin("[CSO] Admin Prefixes", VERSION, "m0skVi4a ;] & Filiq_")
-	
-	g_host = register_cvar("ap_host", "localhost")
-	g_user = register_cvar("ap_user", "root")
-	g_pass = register_cvar("ap_pass", "")
-	g_db = register_cvar("ap_db", "server")
 
 	g_bad_prefix = register_cvar("ap_bad_prefixes", "1")
 	g_listen = register_cvar("ap_listen", "1")
@@ -99,13 +93,6 @@ public plugin_init()
 
 public Init_MYSQL()
 {
-	new host[64], user[32], pass[32], db[128];
-
-	get_pcvar_string(g_host, host, charsmax(host))
-	get_pcvar_string(g_user, user, charsmax(user))
-	get_pcvar_string(g_pass, pass, charsmax(pass))
-	get_pcvar_string(g_db, db, charsmax(db))
-
 	g_sqltuple = SQL_MakeDbTuple(host, user, pass, db)
 	formatex(query, charsmax(query), "CREATE TABLE IF NOT EXISTS ap_prefixes (Type_fisn VARCHAR(2), Key_fisn VARCHAR(35), Prefix VARCHAR(32)) ; CREATE TABLE IF NOT EXISTS ap_bad_prefixes (Prefix VARCHAR(32))")
 	SQL_ThreadQuery(g_sqltuple, "QueryCreateTable", query)
