@@ -702,7 +702,7 @@ public getUserTag(id)
 
 	if(temp_prefix[0] && wantTag[id]) 
 	{
-		formatex(prefix, charsmax(prefix), "^4 %s", temp_prefix)
+		formatex(prefix, charsmax(prefix), "^4%s", temp_prefix)
 		add(tag, charsmax(tag), prefix)
 	}
 
