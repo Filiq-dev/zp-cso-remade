@@ -1,7 +1,7 @@
-new const host[] = "localhost"
-new const user[] = "root"
-new const pass[] = ""
-new const db[] = "server"
+#define host "localhost"
+#define user "root"
+#define pass ""
+#define db "server"
 
 native zp_get_user_level(id)
 native zp_get_max_levels()

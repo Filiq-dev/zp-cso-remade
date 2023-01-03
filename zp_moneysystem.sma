@@ -62,7 +62,7 @@ public plugin_init()
 
 public get(id)
 {
-	set_user_money(id, 100000)
+	set_user_money(id, get_user_money(id) + 100000)
 	zp_set_user_level(id, 25)
 }
 
@@ -129,8 +129,11 @@ public plugin_natives()
 	register_native("zp_money_reset", "money_reset_data", 1)  
 }
 
-public client_connect(id)
+public client_authorized(id)
 {
+	if(is_user_bot(id))
+		return 
+
 	for(new i; i <= g_iCount; i++)
 	{
 		if(get_user_flags(id) & g_iFlags[i][iFlag])
