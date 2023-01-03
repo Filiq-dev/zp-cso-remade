@@ -180,7 +180,7 @@ public zp_user_infected_post(id)
 
 	new class = zp_get_user_zombie_class(id)
 
-	ColorChat(id, NORMAL, "Your class is [%s], your health is now [%d] and you can access the ability on [G]", classData[class][zName], classData[class][zHP])
+	ColorChat(id, RED, "^x04[CSO] ^x01Your class is ^x04[%s]^x01, your ^x03health ^x01is now ^x04[%d] ^x01and you can access the ^x03ability ^x01on ^x04[G]", classData[class][zName], classData[class][zHP])
 
 	if(player_trapped[id] == true)
 	{
@@ -208,7 +208,7 @@ public useAbility(id)
 	{
 		case SPEED: speedAbility(id)
 		case INVIS: invisAbility(id)
-		case HEAVY: { }
+		case HEAVY: heavyAbility(id)
 		case BANSHEE: {}
 		case DEIMOS: {}
 	}
@@ -216,6 +216,7 @@ public useAbility(id)
 	
 	return PLUGIN_CONTINUE
 }
+
 // speed
 public speedAbility(id)
 {
@@ -360,7 +361,10 @@ public fw_touch(trap, id)
 	if(!pev_valid(trap))
 		return	
 	
-	if(is_user_alive(id) && zp_get_user_zombie(id))
+	if(!is_user_alive(id))
+		return
+	
+	if(zp_get_user_zombie(id))
 		return
 
 	entity_set_int(find_ent_by_class(0, trap_string), EV_INT_sequence, 1)
@@ -383,6 +387,10 @@ public remove_trap(taskid)
 	remove_task(id+TASK_REMOVE_TRAP)
 }
 //heavy
+
+//deimos
+
+//deimos
 
 //
 public timerAbility(id)
