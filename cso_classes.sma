@@ -221,24 +221,23 @@ public zp_user_infected_post(id)
 
 public useAbility(id)
 {
-	if(!zp_get_user_zombie(id))
-		return PLUGIN_HANDLED
-	
 	if(!is_user_alive(id))
 		return PLUGIN_HANDLED
 
-	if(abilityUse[id] != -1)
-		return PLUGIN_HANDLED
-
-	switch(zp_get_user_zombie_class(id))
+	if(zp_get_user_zombie(id))
 	{
-		case SPEED: speedAbility(id)
-		case INVIS: invisAbility(id)
-		case HEAVY: heavyAbility(id)
-		case BANSHEE: {}
-		case DEIMOS: deimosAbility(id)
-	}
+		if(abilityUse[id] != -1)
+			return PLUGIN_HANDLED
 
+		switch(zp_get_user_zombie_class(id))
+		{
+			case SPEED: speedAbility(id)
+			case INVIS: invisAbility(id)
+			case HEAVY: heavyAbility(id)
+			case BANSHEE: {}
+			case DEIMOS: deimosAbility(id)
+		}
+	}
 	
 	return PLUGIN_CONTINUE
 }
