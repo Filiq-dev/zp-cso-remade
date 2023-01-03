@@ -67,11 +67,11 @@ public cmdSay(id) {
 	zp_set_user_money(id, zp_get_user_money(id) - money)
 	zp_set_user_money(sendMoney[id], zp_get_user_money(sendMoney[id]) + money)
 
-	ColorChat(id, RED, "[^4CSO^3] ^4%s ^3send ^4%d^3$ to ^4%s^3. Use [^4/transfer^3] if you want to transfer ^4money ^3to a friend.", getName(id), money, getName(sendMoney[id]))
+	ColorChat(0, RED, "[^4CSO^3] ^4%s ^3send ^4%d^3$ to ^4%s^3. Use [^4/transfer^3] if you want to transfer ^4money ^3to a friend.", getName(id), money, getName(sendMoney[id]))
 
 	sendMoney[id] = -1
 
-	return PLUGIN_CONTINUE
+	return PLUGIN_HANDLED_MAIN
 }
 
 public showTransferMenu(id)
@@ -115,8 +115,8 @@ public transferMenuHandler(id, menu, item)
 
 	new iData[6], iAccess, iCallback, iName[64];
         
-	menu_item_getinfo ( menu, item, iAccess, iData, charsmax ( iData ), iName, charsmax ( iName ), iCallback );
-	new Key = str_to_num ( iData );
+	menu_item_getinfo(menu, item, iAccess, iData, charsmax (iData), iName, charsmax (iName), iCallback)
+	new Key = str_to_num(iData)
 
 	ColorChat(id, RED, "[^4CSO^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(Key))
 	ColorChat(id, RED, "[^4CSO^3] ^3In chat please type only ^4numbers^3. If you want to cancel, type ^3cancel")
