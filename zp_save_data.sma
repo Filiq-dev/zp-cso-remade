@@ -33,7 +33,7 @@ public client_putinserver(id)
 	new data[1]
 	data[0] = id
 
-	formatex(gQuery, 65, "SELECT * FROM players WHERE name = '%s'", getName(id))	
+	formatex(gQuery, 65, "SELECT * FROM players WHERE name = '%s'", sql_getName(id))	
 	SQL_ThreadQuery(g_SqlTuple, "checkAccount", gQuery, data, 2)
 }
 
@@ -45,7 +45,7 @@ public client_disconnect(id)
 	if(zp_get_user_level(id) == 0)
 		return
 
-	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), getName(id))
+	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), sql_getName(id))
 	SQL_ThreadQuery(g_SqlTuple, "burnQuery", gQuery)
 
 	zp_level_reset(id)
@@ -57,7 +57,7 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 		log_amx("SQL Error: %s (%d)", Error, Errcode)
 		return PLUGIN_HANDLED
 	}
-	
+
 	new id = Data[0]
 
 	if(SQL_NumResults(Query)) {
@@ -68,9 +68,9 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 		new xp = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "xp"))
 		zp_set_user_exp(id, xp)
 
-		log_amx("loading data for %s", getName(id))
+		log_amx("loading data for %s", sql_getName(id))
 	}else{
-		formatex(gQuery, 90, "INSERT INTO players (name, lastip) VALUES ('%s', '%s')", getName(id), getIP(id))	
+		formatex(gQuery, 90, "INSERT INTO players (name, lastip) VALUES ('%s', '%s')", sql_getName(id), getIP(id))	
 		SQL_ThreadQuery(g_SqlTuple, "insertPlayer", gQuery, Data, DataSize)
 	}
 
@@ -88,7 +88,7 @@ public insertPlayer(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 	zp_set_user_money(id, get_cvar_num("ms_default_money"))
 	zp_set_user_level(id, 1)
 
-	log_amx("inserting data for %s in db", getName(id))
+	log_amx("inserting data for %s in db", sql_getName(id))
 
 	return PLUGIN_CONTINUE
 }
@@ -100,4 +100,26 @@ public burnQuery(FailState, Handle:Query, Error[], Errcode, Data[], DataSize){
 	}
 
 	return PLUGIN_CONTINUE
+}
+
+public mysql_escape_string(dest[], len)
+{
+    //copy(dest, len, source);
+    replace_all(dest, len, "\\", "\\\\")
+    replace_all(dest, len, "\0", "\\0")
+    replace_all(dest, len, "\n", "\\n")
+    replace_all(dest, len, "\r", "\\r")
+    replace_all(dest, len, "\x1a", "\Z")
+    replace_all(dest, len, "'", "\'")
+    replace_all(dest, len, "^"", "\^"")
+}
+
+stock sql_getName(id)
+{
+	new name[96]
+
+	get_user_name(id, name, charsmax(name))
+	mysql_escape_string(name, charsmax(name))
+
+	return name
 }
