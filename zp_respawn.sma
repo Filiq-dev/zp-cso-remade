@@ -1,7 +1,6 @@
 #include <amxmodx>
 #include <cstrike>
 #include <zp_cso_custom>
-#include <colorchat>
 #include <zombieplague>
 
 #define PLUGIN "[CSO] Respawn Menu"
@@ -56,7 +55,7 @@ public respawnMenuHandler(id, menu, item)
 	if(verification(id) != PLUGIN_CONTINUE)
 		return PLUGIN_HANDLED
 
-	ColorChat(id, RED, "[^4CSO^3] ^4%s ^3has just respawned at ^4%s^3.", getName(id), item ? "Human" : "Zombie")
+	client_print_color(id, 0, "[^4CSO^3] ^4%s ^3has just respawned at ^4%s^3.", getName(id), item ? "Human" : "Zombie")
 
 	if(cs_get_user_team(id) == CS_TEAM_SPECTATOR) 
 		cs_set_user_team(id, CS_TEAM_CT)
@@ -73,13 +72,13 @@ public verification(id)
 {
 	if(is_user_alive(id))
 	{
-		ColorChat(id, RED, "[^4CSO^3] Only ^4Dead people ^3can purchase respawn")
+		client_print_color(id, 0, "[^4CSO^3] Only ^4Dead people ^3can purchase respawn")
 		return PLUGIN_HANDLED
 	}
 
 	if(zp_is_survivor_round() && !is_user_alive(id))
 	{
-		ColorChat(id, RED, "[^4CSO^3] Only ^4zombie ^3can respawn")
+		client_print_color(id, 0, "[^4CSO^3] Only ^4zombie ^3can respawn")
 		return PLUGIN_HANDLED
 	}
 

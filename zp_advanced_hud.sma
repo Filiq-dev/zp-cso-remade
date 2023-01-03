@@ -5,7 +5,6 @@
 #include <amxmodx>
 #include <amxmisc>
 #include <fakemeta>
-#include <dhudmessage>
 #include <zombieplague>
 #include <zp_cso_custom>
 
@@ -114,7 +113,7 @@ public client_putinserver(id)
 		set_task(1.0, "ShowHUD", id , _, _, "b")
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	remove_task(id)
 }
@@ -227,7 +226,7 @@ public showStats(id, spec)
 	if(!hudStats[id])
 		return
 
-	set_dhudmessage(245, 255, 250, spec == id ? HUD_STATS_X : HUD_SPECT_X, spec == id ? HUD_STATS_Y : HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00, false);
+	set_dhudmessage(245, 255, 250, spec == id ? HUD_STATS_X : HUD_SPECT_X, spec == id ? HUD_STATS_Y : HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[HP: %d] [Class: %s]", pev(spec == id ? id : spec, pev_health), getClass(spec == id ? id : spec))
 }
 
@@ -236,7 +235,7 @@ public showLevel(id, spec)
 	if(!hudLevel[id])
 		return
 
-	set_dhudmessage(0, 255, 0, HUD_LEVEL_X, HUD_LEVEL_Y, 0, 6.00, 1.10, 0.00, 0.00, false);
+	set_dhudmessage(0, 255, 0, HUD_LEVEL_X, HUD_LEVEL_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[LVL: %d | EXP: %d/%d]", zp_get_user_level(spec == id ? id : spec), zp_get_user_exp(spec == id ? id : spec), zp_get_exp_current(spec == id ? id : spec))
 }
 
@@ -245,13 +244,13 @@ public showScore(id)
 	if(!hudScore[id]) 
 		return
 	
-	set_dhudmessage(.red = 0, .green = 255, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0, .reliable = false ); 
+	set_dhudmessage(.red = 0, .green = 255, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
 	show_dhudmessage(0, "Humans %d                        ", zp_get_human_count() );
 	
-	set_dhudmessage(.red = 100, .green = 100, .blue = 100, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0, .reliable = false ); 
+	set_dhudmessage(.red = 100, .green = 100, .blue = 100, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
 	show_dhudmessage(0, "[ %d ]^n%d Wins %d", ( g_iWin[ WIN_HUMANS ] +  g_iWin[ WIN_ZOMBIES ] + g_iWin[ WIN_NO_ONE ] ), g_iWin[ WIN_HUMANS ],  g_iWin[ WIN_ZOMBIES ] );
 	
-	set_dhudmessage(.red = 255, .green = 0, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0, .reliable = false ); 
+	set_dhudmessage(.red = 255, .green = 0, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
 	show_dhudmessage(0, "                         %d Zombies", zp_get_zombie_count());
 }
 

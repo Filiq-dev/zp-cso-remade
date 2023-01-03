@@ -5,7 +5,6 @@
 #include < fun >
 #include < hamsandwich >
 #include < zombieplague >
-#include < colorchat >
 
 #define Plugin    "[CSO] Extra Item: Jump Bomb"
 #define Version    "1.1.4"
@@ -97,7 +96,7 @@ public zp_extra_item_selected ( id, Item )
 	{
 		if ( g_iJumpingNadeCount [ id ] >= MAXCARRY )
 		{
-			ColorChat ( id, RED, "^4[ZP] ^1You can't buy more than ^4%d^1!", MAXCARRY )
+			client_print_color ( id, 0, "^4[ZP] ^1You can't buy more than ^4%d^1!", MAXCARRY )
 			return ZP_PLUGIN_HANDLED
 		}
 		

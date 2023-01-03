@@ -350,7 +350,7 @@ public client_putinserver( id )
 public client_authorized( id )
 	get_user_authid( id, g_szAuthid[ id ], 34 );
 
-public client_disconnect( id )
+public client_disconnected( id )
 {
 	if( TrieKeyExists( g_tArrayPos, g_szAuthid[ id ] ) )
 	{

@@ -217,7 +217,7 @@ public client_connect(id)
     g_mode[id] = 0
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
     g_has_infi[id] = false
     g_mode[id] = 0

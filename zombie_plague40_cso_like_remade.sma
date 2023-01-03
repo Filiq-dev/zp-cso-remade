@@ -25,7 +25,6 @@ const MAX_STATS_SAVED = 64
 #include <fakemeta>
 #include <hamsandwich>
 #include <xs>
-#include <dhudmessage>
 #include <zp_cso_custom>
 
 #if defined LOCATION_IN_CHAT
@@ -1583,7 +1582,7 @@ public logevent_round_end()
 	if (!fnGetZombies())
 	{
 		// Human team wins
-		set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		set_dhudmessage(100, 149, 237, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00);
 		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
 
 		// Play win sound and increase score, unless game commencing
@@ -1597,7 +1596,7 @@ public logevent_round_end()
 	else if (!fnGetHumans())
 	{
 		// Zombie team wins
-		set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		set_dhudmessage(165, 42, 42, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00);
 		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
 
 		// Play win sound and increase score, unless game commencing
@@ -1612,7 +1611,7 @@ public logevent_round_end()
 	{
 		// No one wins
 		
-		set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00, false);
+		set_dhudmessage(85, 107, 47, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.00, 3.00, 2.00, 1.00);
 		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
 		// Play win sound
 
@@ -2407,7 +2406,7 @@ public client_putinserver(id)
 	if(get_user_flags(id) & ADMIN_RCON)
 		who = "Owner"
 
-	geoip_country(getIP(id), country, charsmax(country));
+	geoip_country_ex(getIP(id), country, charsmax(country));
 	geoip_city(getIP(id), city, charsmax(city));
 
 	zp_colored_print(0, "^x04[CSO] ^x01%s ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", who, getName(id), country, city)
@@ -4598,7 +4597,7 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Survivor HUD notice
-		set_dhudmessage(20, 20, 255, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		set_dhudmessage(20, 20, 255, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0)
 		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_SURVIVOR", g_playername[forward_id])
 		
 		// Mode fully started!
@@ -4651,7 +4650,7 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Swarm HUD notice
-		set_dhudmessage(20, 255, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		set_dhudmessage(20, 255, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0)
 		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_SWARM")
 		
 		// Mode fully started!
@@ -4709,7 +4708,7 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Multi Infection HUD notice
-		set_dhudmessage(200, 50, 0, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		set_dhudmessage(200, 50, 0, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0)
 		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_MULTI")
 		
 		// Mode fully started!
@@ -4813,7 +4812,7 @@ make_a_zombie(mode, id)
 		PlaySound(sound);
 		
 		// Show Plague HUD notice
-		set_dhudmessage(0, 50, 200, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+		set_dhudmessage(0, 50, 200, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0)
 		show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_PLAGUE")
 		
 		// Mode fully started!
@@ -4878,7 +4877,7 @@ make_a_zombie(mode, id)
 			PlaySound(sound);
 			
 			// Show Nemesis HUD notice
-			set_dhudmessage(255, 20, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0, false)
+			set_dhudmessage(255, 20, 20, HUD_EVENT_X, HUD_EVENT_Y, 1, 0.0, 5.0, 1.0, 1.0)
 			show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_NEMESIS", g_playername[forward_id])
 			
 			// Mode fully started!
@@ -4890,7 +4889,7 @@ make_a_zombie(mode, id)
 		else
 		{
 			// Show First Zombie HUD notice
-			set_dhudmessage(255, 0, 0, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 5.0, 1.0, 1.0, false)
+			set_dhudmessage(255, 0, 0, HUD_EVENT_X, HUD_EVENT_Y, 0, 0.0, 5.0, 1.0, 1.0)
 			show_dhudmessage(0, "%L",LANG_PLAYER, "NOTICE_FIRST", g_playername[forward_id])
 			
 			// Mode fully started!
@@ -5032,7 +5031,7 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 			emit_sound(id, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			
 			// Show Infection HUD notice
-			set_dhudmessage(255, 0, 0, HUD_INFECT_X, HUD_INFECT_Y, 0, 0.00, 5.00, 1.00, 1.00, false);
+			set_dhudmessage(255, 0, 0, HUD_INFECT_X, HUD_INFECT_Y, 0, 0.00, 5.00, 1.00, 1.00);
 			
 			if (infector) // infected by someone?
 				show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_INFECT2", g_playername[id], g_playername[infector])
@@ -6912,7 +6911,7 @@ public welcome_msg()
 	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
 	
 	// Show T-virus HUD notice
-	set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00, false);
+	set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00);
 	show_dhudmessage(0, "%L", -1, "NOTICE_VIRUS_FREE");
 }
 

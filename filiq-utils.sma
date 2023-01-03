@@ -30,7 +30,7 @@ public plugin_init()
 	register_forward(FM_ClientUserInfoChanged,"ClientUserInfoChanged");
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(g_Bot[id] ) {
 		g_Bot[id] = 0

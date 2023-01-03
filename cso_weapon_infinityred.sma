@@ -208,7 +208,7 @@ public client_connect(id)
 	g_has_infinir[id] = false
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	g_has_infinir[id] = false
 }

@@ -42,7 +42,7 @@ public client_putinserver(id)
 	SQL_ThreadQuery(g_SqlTuple, "checkAccount", gQuery, data, 2)
 }
 
-public client_disconnect(id)
+public client_disconnected(id)
 {
 	if(is_user_bot(id))
 		return

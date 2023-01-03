@@ -3,7 +3,6 @@
 #include <engine> 
 #include <hamsandwich>
 #include <zombieplague>
-#include <colorchat>
 #include <cstrike>
 
 #define PLUGIN    "[CSO] Knife menu"
@@ -430,7 +429,7 @@ public knife_menu(id)
 {
 	if(hasChoosed[id])
 	{
-		ColorChat(id, NORMAL, "^1[^4CSO^1] You can choose your knife only one time per round.")
+		client_print_color(id, 0, "^1[^4CSO^1] You can choose your knife only one time per round.")
 		return PLUGIN_HANDLED_MAIN
 	}
 
@@ -459,7 +458,8 @@ public menu_handler(id, menu, item)
 	}
 
 	hasKnife[id] = item
-	
+	hasChoosed[id] = true
+
 	set_pev(id, pev_viewmodel2, knifeData[item][vmodel])
 	set_pev(id, pev_weaponmodel2, knifeData[item][pmodel])
 

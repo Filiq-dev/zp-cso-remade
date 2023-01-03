@@ -3,8 +3,6 @@
 #include <fakemeta>
 #include <zombieplague>
 #include <hamsandwich>
-#include <ColorChat>
-#include <dhudmessage>
 #include <zp_cso_custom>
 #include <fun>
 #include <engine>
@@ -225,7 +223,7 @@ public zp_user_infected_post(id)
 
 	new class = zp_get_user_zombie_class(id)
 
-	ColorChat(id, RED, "^x04[CSO] ^x01Your class is ^x04[%s]^x01, your ^x03health ^x01is now ^x04[%d] ^x01and you can access the ^x03ability ^x01on ^x04[G]", classData[class][zName], classData[class][zHP])
+	client_print_color(id, 0, "^4[CSO] ^1Your class is ^4[%s]^1, your ^x03health ^1is now ^4[%d] ^1and you can access the ^x03ability ^1on ^4[G]", classData[class][zName], classData[class][zHP])
 
 	if(player_trapped[id])
 	{
