@@ -24,6 +24,14 @@ public sql_init(){
 	RegisterHam(Ham_Spawn, "player", "fw_PlayerSpawn")
 }
 
+public client_putinserver(id)
+{
+	if(is_user_bot(id))
+		return
+
+	load(id)
+}
+
 public client_disconnect(id)
 {
 	if(is_user_bot(id))
@@ -44,8 +52,8 @@ public fw_PlayerSpawn(id)
 	if(is_user_bot(id))
 		return
 
-	if(zp_get_user_level(id) == 0)
-		load(id)
+	// if(zp_get_user_level(id) == 0)
+	// 	load(id)
 }
 
 public load(id)
@@ -68,7 +76,7 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 
 	new id = Data[0]
 
-	if(SQL_MoreResults(Query)) {
+	if(SQL_NumResults(Query)) {
 		new money = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "money"))
 		zp_set_user_money(id, money)
 		new level = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "level"))
@@ -76,7 +84,7 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 		new xp = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "xp"))
 		zp_set_user_exp(id, xp)
 
-
+		log_amx("loading data for %s", getName(id))
 	}else{
 		formatex(gQuery, 90, "INSERT INTO players (name, lastip) VALUES ('%s', '%s')", getName(id), getIP(id))	
 		SQL_ThreadQuery(g_SqlTuple, "insertPlayer", gQuery, Data, DataSize)
@@ -95,6 +103,8 @@ public insertPlayer(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 
 	zp_set_user_money(id, get_cvar_num("ms_default_money"))
 	zp_set_user_level(id, 1)
+
+	log_amx("inserting data for %s in db", getName(id))
 
 	return PLUGIN_CONTINUE
 }

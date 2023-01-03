@@ -101,7 +101,20 @@ new const trap_string[] = "trap"
 new const trap_model[] = "models/zombie_plague/zombie_trap.mdl"
 new bool:player_trapped[33]
 
+// deimos custom
+new const light_classname[] = "deimos_skill"
+new const skill_start[] = "zombie_plague/deimos_skill_start.wav"
+new const skill_hit[] = "zombie_plague/deimos_skill_hit.wav"
 
+new trail_spr
+new exp_spr
+
+const WPN_NOT_DROP = ((1<<2)|(1<<CSW_HEGRENADE)|(1<<CSW_SMOKEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_KNIFE)|(1<<CSW_C4))
+
+const m_flTimeWeaponIdle = 48
+const m_flNextAttack = 83
+
+#define TASK_ATTACK 22222
 
 // others
 new 
@@ -121,7 +134,8 @@ public plugin_init()
 
 	register_clcmd("drop", "useAbility")
 
-	register_touch(trap_string, "*", "fw_touch")
+	register_touch(trap_string, "*", "trapTouch")
+	register_touch(light_classname, "*", "touchDeimos")
 
 	g_msgSetFOV = get_user_msgid("SetFOV")
 }
@@ -131,9 +145,21 @@ public plugin_precache()
 	for(new i = 0; i < sizeof classData; i++)
 		classData[i][zID] = zp_register_zombie_class(classData[i][zName], classData[i][zInfo], classData[i][zModel], classData[i][zcModel], classData[i][zHP], classData[i][zSpeed], classData[i][zGravity], classData[i][zKnockback])
 
+	//invis
 	precache_sound(invisible_sound)
+	//invis
 
-	precache_model(trap_model)
+	//trap
+	precache_model(trap_model) 
+	//trap
+
+	//demois
+	trail_spr = precache_model("sprites/zb3/trail.spr")
+	exp_spr = precache_model("sprites/zb3/deimosexp.spr")
+	
+	precache_sound(skill_start)
+	precache_sound(skill_hit)
+	//demois
 }
 
 public message_textmsg()
@@ -210,7 +236,7 @@ public useAbility(id)
 		case INVIS: invisAbility(id)
 		case HEAVY: heavyAbility(id)
 		case BANSHEE: {}
-		case DEIMOS: {}
+		case DEIMOS: deimosAbility(id)
 	}
 
 	
@@ -356,7 +382,7 @@ public resetHeavy(id)
 	abilityCD[id] = 30 // cd ability
 }
 
-public fw_touch(trap, id)
+public trapTouch(trap, id)
 {
 	if(!pev_valid(trap))
 		return	
@@ -389,6 +415,170 @@ public remove_trap(taskid)
 //heavy
 
 //deimos
+public deimosAbility(id)
+{
+	abilityUse[id] = 0
+
+	play_weapon_anim(id, 8)
+	set_weapons_timeidle(id, 7.0)
+	set_player_nextattack(id, 0.5)
+	emit_sound(id, CHAN_WEAPON, skill_start, 1.0, ATTN_NORM, 0, PITCH_NORM)
+	entity_set_int(id, EV_INT_sequence, 10)
+
+	set_task(0.5, "launch_light", id+TASK_ATTACK)
+
+}
+
+public resetDeimos(id)
+{
+	abilityCD[id] = 30 // cd ability
+}
+
+public launch_light(taskid)
+{
+	new id = taskid - TASK_ATTACK
+	if (task_exists(id+TASK_ATTACK)) remove_task(id+TASK_ATTACK)
+	
+	if (!is_user_alive(id)) return;
+	
+	// check
+	new Float: fOrigin[3], Float:fAngle[3],Float: fVelocity[3]
+	pev(id, pev_origin, fOrigin)
+	pev(id, pev_view_ofs, fAngle)
+	fm_velocity_by_aim(id, 2.0, fVelocity, fAngle)
+	fAngle[0] *= -1.0
+	
+	// create ent
+	new ent = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "info_target"))
+	set_pev(ent, pev_classname, light_classname)
+	engfunc(EngFunc_SetModel, ent, "models/w_hegrenade.mdl")
+	set_pev(ent, pev_mins, Float:{-1.0, -1.0, -1.0})
+	set_pev(ent, pev_maxs, Float:{1.0, 1.0, 1.0})
+	set_pev(ent, pev_origin, fOrigin)
+	fOrigin[0] += fVelocity[0]
+	fOrigin[1] += fVelocity[1]
+	fOrigin[2] += fVelocity[2]
+	set_pev(ent, pev_movetype, MOVETYPE_BOUNCE)
+	set_pev(ent, pev_gravity, 0.01)
+	fVelocity[0] *= 1000
+	fVelocity[1] *= 1000
+	fVelocity[2] *= 1000
+	set_pev(ent, pev_velocity, fVelocity)
+	set_pev(ent, pev_owner, id)
+	set_pev(ent, pev_angles, fAngle)
+	set_pev(ent, pev_solid, SOLID_BBOX)						//store the enitty id
+	
+	// invisible ent
+	fm_set_rendering(ent, kRenderFxGlowShell, Float:{ 0.0, 0.0, 0.0 }, kRenderTransAlpha, 0)
+	
+	// show trail	
+	message_begin( MSG_BROADCAST, SVC_TEMPENTITY )
+	write_byte(TE_BEAMFOLLOW)
+	write_short(ent)				//entity
+	write_short(trail_spr)		//model
+	write_byte(5)		//10)//life
+	write_byte(3)		//5)//width
+	write_byte(209)					//r, hegrenade
+	write_byte(120)					//g, gas-grenade
+	write_byte(9)					//b
+	write_byte(200)		//brightness
+	message_end()					//move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
+	
+	return;
+}
+
+public touchDeimos(ent, id)
+{
+	if(!pev_valid(ent))
+		return 
+	
+	if(!is_user_alive(id))
+		return
+	
+	if(zp_get_user_zombie(id))
+		return
+	
+	light_exp(ent, id)
+	remove_entity(ent)
+}
+
+public light_exp(ent, victim)
+{
+	if (!pev_valid(ent)) return;
+	
+	if (is_user_alive(victim) && !zp_get_user_zombie(victim) && !zp_get_user_survivor(victim))
+	{
+		new wpn, wpnname[32]
+		wpn = get_user_weapon(victim)
+		if( !(WPN_NOT_DROP & (1<<wpn)) && get_weaponname(wpn, wpnname, charsmax(wpnname)) )
+		{
+			engclient_cmd(victim, "drop", wpnname)
+		}
+	}
+	
+	// create effect
+	static Float:origin[3];
+	pev(ent, pev_origin, origin);
+	message_begin(MSG_BROADCAST,SVC_TEMPENTITY); 
+	write_byte(TE_EXPLOSION); // TE_EXPLOSION
+	write_coord(floatround(origin[0])); // origin x
+	write_coord(floatround(origin[1])); // origin y
+	write_coord(floatround(origin[2])); // origin z
+	write_short(exp_spr); // sprites
+	write_byte(40); // scale in 0.1's
+	write_byte(30); // framerate
+	write_byte(14); // flags 
+	message_end(); // message end
+	
+	// play sound exp
+	emit_sound(victim, CHAN_WEAPON, skill_hit, 1.0, ATTN_NORM, 0, PITCH_NORM)
+}
+
+public play_weapon_anim(player, anim)
+{
+	set_pev(player, pev_weaponanim, anim)
+	message_begin(MSG_ONE, SVC_WEAPONANIM, {0, 0, 0}, player)
+	write_byte(anim)
+	write_byte(pev(player, pev_body))
+	message_end()
+}
+
+public fm_velocity_by_aim(iIndex, Float:fDistance, Float:fVelocity[3], Float:fViewAngle[3])
+{
+	//new Float:fViewAngle[3]
+	pev(iIndex, pev_v_angle, fViewAngle)
+	fVelocity[0] = floatcos(fViewAngle[1], degrees) * fDistance
+	fVelocity[1] = floatsin(fViewAngle[1], degrees) * fDistance
+	fVelocity[2] = floatcos(fViewAngle[0]+90.0, degrees) * fDistance
+	return 1
+}
+
+public get_weapon_ent(id, weaponid)
+{
+	static wname[32], weapon_ent
+	get_weaponname(weaponid, wname, charsmax(wname))
+	weapon_ent = fm_find_ent_by_owner(-1, wname, id)
+
+	return weapon_ent
+}
+
+public set_weapons_timeidle(id, Float:timeidle)
+{
+	new entwpn = get_weapon_ent(id, get_user_weapon(id))
+	if (pev_valid(entwpn)) set_pdata_float(entwpn, m_flTimeWeaponIdle, timeidle+3.0, 4)
+}
+
+public set_player_nextattack(id, Float:nexttime)
+{
+	set_pdata_float(id, m_flNextAttack, nexttime, 4)
+}
+
+stock fm_find_ent_by_owner(entity, const classname[], owner)
+{
+	while ((entity = engfunc(EngFunc_FindEntityByString, entity, "classname", classname)) && pev(entity, pev_owner) != owner) { /* keep looping */ }
+	return entity;
+}
+
 
 //deimos
 
@@ -418,7 +608,7 @@ public timerAbility(id)
 			case INVIS: resetInviis(id)
 			case HEAVY: resetHeavy(id)
 			case BANSHEE: {}
-			case DEIMOS: {}
+			case DEIMOS: resetDeimos(id)
 		}
 
 		set_task(1.0, "resetAbility", id, _, _, "b")

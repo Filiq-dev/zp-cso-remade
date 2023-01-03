@@ -93,7 +93,7 @@ public showTransferMenu(id)
 
 	for (new i = 0; i < num; i++)
 	{
-		if(id == players[i] || !is_user_bot(players[i]))
+		if(id == players[i] || is_user_bot(players[i]))
 			continue
 
 		num_to_str(players[i], sid, 9)
