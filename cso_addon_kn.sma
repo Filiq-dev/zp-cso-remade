@@ -203,12 +203,15 @@ public client_connect(id)
 
 public event_Damage(id)
 {
-	new weapon , attacker = get_user_attacker(id , weapon);
+	new weapon , attacker = get_user_attacker(id, weapon)
 
 	if(!is_user_alive(attacker))
-		return PLUGIN_HANDLED;
+		return PLUGIN_HANDLED
 
-	if(hasKnife[id] == -1 || weapon != CSW_KNIFE)
+	if(hasKnife[id] == -1)
+		return PLUGIN_HANDLED
+
+	if(weapon != CSW_KNIFE)
 		return PLUGIN_HANDLED
 
 	new Float:vec[3];

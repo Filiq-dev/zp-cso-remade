@@ -685,8 +685,6 @@ public getUserTag(id)
 		add(tag, charsmax(tag), level)
 	}
 
-	server_print(tag)
-
 	if(temp_prefix[0] && wantTag[id]) 
 	{
 		formatex(prefix, charsmax(prefix), "^4%s", temp_prefix)
