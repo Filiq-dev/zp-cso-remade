@@ -86,7 +86,7 @@ public plugin_init()
 	bad_prefixes_collect = TrieCreate()
 	client_prefix = TrieCreate()
 
-	register_dictionary("admin_prefixes.txt")
+	register_dictionary("cso.txt")
 
 	set_task(0.5, "Init_MYSQL")
 }

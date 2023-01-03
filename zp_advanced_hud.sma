@@ -53,7 +53,7 @@ public plugin_precache()
 	new confdir[64], path[128]
 
 	get_configsdir(confdir, charsmax(confdir))
-	formatex(path, charsmax(path), "%s/hud_messages.ini", confdir)
+	formatex(path, charsmax(path), "%s/cso/hud_messages.ini", confdir)
 
 	new a = fopen(path, "rt")
 	if(a)

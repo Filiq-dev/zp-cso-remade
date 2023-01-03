@@ -77,14 +77,14 @@ public plugin_precache()
 	new map[32]
 	get_configsdir(configsdir,199)
 	get_mapname(map,31)
-	format(configfile,199,"%s/new_weapons_%s.ini",configsdir,map)
+	format(configfile,199,"%s/cso/new_weapons_%s.ini",configsdir,map)
 	if(file_exists(configfile))
 	{
 		load_models(configfile)
 	}
 	else
 	{
-		format(configfile,199,"%s/new_weapons.ini",configsdir)
+		format(configfile,199,"%s/cso/new_weapons.ini",configsdir)
 		load_models(configfile)
 	}
 }

@@ -59,8 +59,8 @@
 #define ADMIN_SYS_FLAG ADMIN_LEVEL_E //(ADMIN_LEVEL_E flag is "q")
 // -------------------------------------------------------------------------------------------------
 // Name of configs/vips.ini|zm_cip.cfg file. In fact, no reason to change.
-#define VIPS_FILE "vips.ini"
-#define CONFIGS_FILE "zm_vip.cfg"
+#define VIPS_FILE "cso/vips.ini"
+#define CONFIGS_FILE "cso/zm_vip.cfg"
 // -------------------------------------------------------------------------------------------------
 //--------------- USER CONFIGURATION END --------------- USER CONFIGURATION END ---------------
 //--------------- USER CONFIGURATION END --------------- USER CONFIGURATION END ---------------

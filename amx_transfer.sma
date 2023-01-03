@@ -72,9 +72,8 @@ public plugin_init()
 	/* Register plugin cvars */
 	amx_show_activity = get_cvar_pointer("amx_show_activity");
 	
-	/* Register language file */
-	register_dictionary("amx_transfer.txt")
-	
+	/* Register language file */	
+	register_dictionary("zombie_plague.txt")
 }
 
 public cmd_transfer(id,level,cid)

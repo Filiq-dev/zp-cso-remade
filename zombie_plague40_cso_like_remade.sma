@@ -2,13 +2,13 @@
  [Plugin Customization]
 =================================================================================*/
 
-#define LOCATION_IN_CHAT
+// #define LOCATION_IN_CHAT
 
 // All customization settings have been moved
 // to external files to allow easier editing
-new const ZP_CUSTOMIZATION_FILE[] = "zombieplague.ini"
-new const ZP_EXTRAITEMS_FILE[] = "zp_extraitems.ini"
-new const ZP_ZOMBIECLASSES_FILE[] = "zp_zombieclasses.ini"
+new const ZP_CUSTOMIZATION_FILE[] = "cso/cso.ini"
+new const ZP_EXTRAITEMS_FILE[] = "cso/cso_extraitems.ini"
+new const ZP_ZOMBIECLASSES_FILE[] = "cso/cso_zombieclasses.ini"
 
 // Limiters for stuff not worth making dynamic arrays out of (increase if needed)
 const MAX_CSDM_SPAWNS = 128
@@ -1079,7 +1079,7 @@ public plugin_init()
 	if (!g_zclass_i) set_fail_state("No zombie classes loaded!")
 	
 	// Language files
-	register_dictionary("zombie_plague.txt")
+	register_dictionary("cso.txt")
 	
 	// Events
 	register_event("HLTV", "event_round_start", "a", "1=0", "2=0")
@@ -1473,7 +1473,7 @@ public plugin_cfg()
 	get_configsdir(cfgdir, charsmax(cfgdir))
 	
 	// Execute config file (zombieplague.cfg)
-	server_cmd("exec %s/zombieplague.cfg", cfgdir)
+	server_cmd("exec %s/cso/cso.cfg", cfgdir)
 	
 	// Prevent any more stuff from registering
 	g_arrays_created = false

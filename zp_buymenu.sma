@@ -100,7 +100,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	
-	register_dictionary("buymenu.txt")
+	register_dictionary("cso.txt")
 	
 	register_clcmd("client_buy_open", "vgui_menu_hook")
 	register_clcmd("buy_wpn", "main_menu_build")
@@ -165,7 +165,7 @@ public plugin_cfg()
 	new confdir[64], path[128]
 
 	get_configsdir(confdir, charsmax(confdir))
-	formatex(path, charsmax(path), "%s/zp_buymenu.ini", confdir)
+	formatex(path, charsmax(path), "%s/cso/zp_buymenu.ini", confdir)
 
 	g_file = fopen(path, "rt")
 
@@ -181,7 +181,7 @@ public plugin_cfg()
 
 	fclose(g_file)
 	
-	formatex(path, charsmax(path), "%s/zp_buymenu.cfg", confdir)
+	formatex(path, charsmax(path), "%s/cso/zp_buymenu.cfg", confdir)
 	
 	server_cmd("exec %s", path)    
 }

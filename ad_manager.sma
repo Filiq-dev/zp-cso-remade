@@ -66,7 +66,7 @@ public load()
 	//Load the data
 	new filepath[64];
 	get_configsdir(filepath, 63);
-	format(filepath, 63, "%s/advertisements.ini", filepath);
+	format(filepath, 63, "%s/cso/advertisements.ini", filepath);
 	
 	if(file_exists(filepath))
 	{

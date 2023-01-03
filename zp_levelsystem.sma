@@ -17,7 +17,7 @@ new Float:g_PlayerDamage[33]
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	register_dictionary("buymenu.txt")
+	register_dictionary("cso.txt")
 
 	pcvar_lvl_system = register_cvar("ms_lvl_system_active", "1")
 
@@ -49,7 +49,7 @@ public plugin_cfg()
 	new confdir[64], path[128]
 
 	get_configsdir(confdir, charsmax(confdir))
-	formatex(path, charsmax(path), "%s/zp_buymenu.ini", confdir)
+	formatex(path, charsmax(path), "%s/cso/zp_buymenu.ini", confdir)
 
 	new file = fopen(path, "rt")
 
@@ -105,7 +105,7 @@ public plugin_cfg()
 		ArrayPushCell(g_Levels, str_to_num(level))   
 	}
 
-	formatex(path, charsmax(path), "%s/zp_buymenu.cfg", confdir)
+	formatex(path, charsmax(path), "%s/cso/zp_buymenu.cfg", confdir)
 	server_cmd("exec %s", path)
 }
 

@@ -1,6 +1,5 @@
 #include <amxmodx>
 #include <amxmisc>
-#include <dhudmessage>
 #include <hamsandwich>
 #include <zombieplague>
 #include <zp_cso_custom>
@@ -28,7 +27,7 @@ new g_iFlags[10][iNums],
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
-	register_dictionary("buymenu.txt")
+	register_dictionary("cso.txt")
 
 	g_msgMoney=get_user_msgid("Money")
 	g_msgMoneyBlink=get_user_msgid("BlinkAcct")
@@ -71,10 +70,10 @@ public plugin_cfg()
 	new confdir[64], path[128]
 	
 	get_configsdir(confdir, charsmax(confdir))
-	formatex(path, charsmax(path), "%s/zp_buymenu.cfg", confdir)
+	formatex(path, charsmax(path), "%s/cso/zp_buymenu.cfg", confdir)
 	server_cmd("exec %s", path)
 
-	formatex(path, charsmax(path), "%s/zp_buymenu.ini", confdir)
+	formatex(path, charsmax(path), "%s/cso/zp_buymenu.ini", confdir)
 	new file = fopen(path, "rt")
 
 	new szLine[64],section[32], szLeft[5], szRight[10]
