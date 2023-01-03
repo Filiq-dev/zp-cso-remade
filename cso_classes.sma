@@ -725,6 +725,7 @@ public deimosAbility(id)
 
 	set_task(0.5, "launch_light", id+TASK_ATTACK)
 
+	set_task(1.0, "timerAbility", id, _, _, "b")
 }
 
 public resetDeimos(id)
