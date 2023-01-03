@@ -189,7 +189,8 @@ public fwKilled(id, killer)
 
 public fwSpawn(id)
 {
-	set_user_money(id, g_PlayerMoney[id])
+	if(is_user_loaded(id))
+		set_user_money(id, g_PlayerMoney[id])
 }
 
 public give_team_money(money_hum, money_zb)

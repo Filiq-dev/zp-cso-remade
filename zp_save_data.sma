@@ -11,24 +11,29 @@
 
 new 
 	Handle:g_SqlTuple,
-	gQuery[256]
+	gQuery[256],
+	bool:isUserLoaded[33]
 
 public plugin_precache(){
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
-	sql_init()
+	g_SqlTuple = SQL_MakeDbTuple(host, user, pass, db)
 }
 
-public sql_init(){
-
-	g_SqlTuple = SQL_MakeDbTuple(host, user, pass, db)
-
+public plugin_natives()
+{
+	register_native("is_user_loaded", "native_is_user_loaded", 1)
 }
 
 public client_putinserver(id)
 {
 	if(is_user_bot(id))
+	{
+		isUserLoaded[id] = true
 		return
+	}
+
+	isUserLoaded[id] = false
 
 	new data[1]
 	data[0] = id
@@ -69,6 +74,8 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 		zp_set_user_exp(id, xp)
 
 		log_amx("loading data for %s", sql_getName(id))
+
+		isUserLoaded[id] = true
 	}else{
 		formatex(gQuery, 90, "INSERT INTO players (name, lastip) VALUES ('%s', '%s')", sql_getName(id), getIP(id))	
 		SQL_ThreadQuery(g_SqlTuple, "insertPlayer", gQuery, Data, DataSize)
@@ -88,6 +95,8 @@ public insertPlayer(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 	zp_set_user_money(id, get_cvar_num("ms_default_money"))
 	zp_set_user_level(id, 1)
 
+	isUserLoaded[id] = true
+
 	log_amx("inserting data for %s in db", sql_getName(id))
 
 	return PLUGIN_CONTINUE
@@ -100,6 +109,11 @@ public burnQuery(FailState, Handle:Query, Error[], Errcode, Data[], DataSize){
 	}
 
 	return PLUGIN_CONTINUE
+}
+
+public native_is_user_loaded(id)
+{
+	return isUserLoaded[id]
 }
 
 public mysql_escape_string(dest[], len)

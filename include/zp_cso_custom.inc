@@ -19,6 +19,8 @@ native show_respawn_menu(id)
 native zp_level_reset(id)
 native zp_money_reset(id)
 native hud_get_zinfo(id)
+native is_user_loaded(id)
+
 stock getName(id)
 {
 	new name[33]
