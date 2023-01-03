@@ -57,13 +57,13 @@ public plugin_init()
 	
 	g_MaxPlayers=get_maxplayers()
 
-	register_clcmd("/get", "get")
+	register_clcmd("say /get", "get")
 }
 
 public get(id)
 {
 	set_user_money(id, 100000)
-	zp_set_user_level(id, 30)
+	zp_set_user_level(id, 25)
 }
 
 

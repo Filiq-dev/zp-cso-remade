@@ -113,10 +113,15 @@ public transferMenuHandler(id, menu, item)
 		return PLUGIN_HANDLED
 	}
 
-	ColorChat(id, RED, "[^4CSO^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(item))
+	new iData[6], iAccess, iCallback, iName[64];
+        
+	menu_item_getinfo ( menu, item, iAccess, iData, charsmax ( iData ), iName, charsmax ( iName ), iCallback );
+	new Key = str_to_num ( iData );
+
+	ColorChat(id, RED, "[^4CSO^3] ^3To be able to send money to ^4%s ^3type in ^4chat ^3desired ^4amount", getName(Key))
 	ColorChat(id, RED, "[^4CSO^3] ^3In chat please type only ^4numbers^3. If you want to cancel, type ^3cancel")
 
-	sendMoney[id] = item
+	sendMoney[id] = Key
 
 	return true
 }
