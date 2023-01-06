@@ -139,7 +139,7 @@ public fwTakeDamage(id, weapon, attacker, Float:damage)
 	if(zp_get_user_zombie(id)) client_print(attacker, print_center, "HP: %d", get_user_health(id))
 	else 
 	{
-		if(get_user_armor(id) > 0) client_print(attacker, print_center, "Armor: %d", get_user_armor(id))
+		if(get_user_armor(id) > 0 && zp_get_human_count() != 1) client_print(attacker, print_center, "Armor: %d", get_user_armor(id))
 		else client_print(attacker, print_center, "Health: %d", get_user_health(id))
 	}
 }
