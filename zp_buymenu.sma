@@ -463,7 +463,7 @@ public main_menu_handler(id, menu, item)
 	
 	if(item == ITEMS_KNIFES)
 	{
-		zp_knife_menu(id)
+		// zp_knife_menu(id)
 
 		return PLUGIN_HANDLED
 	}

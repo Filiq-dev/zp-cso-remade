@@ -8,6 +8,8 @@
 new 
     sendMoney[33] = -1
 
+#pragma compress 1
+
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR)

@@ -46,8 +46,6 @@ enum
 	SECTION_PLAYER_MODELS,
 	SECTION_WEAPON_MODELS,
 	SECTION_GRENADE_SPRITES,
-	SECTION_SOUNDS,
-	SECTION_AMBIENCE_SOUNDS,
 	SECTION_EXTRA_ITEMS_WEAPONS,
 	SECTION_HARD_CODED_ITEMS_COSTS,
 	SECTION_WEATHER_EFFECTS,
@@ -423,36 +421,213 @@ Array:g_zclass2_modelsstart, Array:g_zclass2_modelsend, Array:g_zclass2_playermo
 Array:g_zclass2_modelindex, Array:g_zclass2_clawmodel, Array:g_zclass2_hp,
 Array:g_zclass2_spd, Array:g_zclass2_grav, Array:g_zclass2_kb, Array:g_zclass_new
 
+new models_human[][] = {
+	"CSO_gerrard", 
+	"CSO_david",
+	"rbc",
+	"Spade_CSO"
+}
+new models_index[sizeof(models_human)]
+
+new models_nemesis[][] = {
+	"talrasha_dragon"
+}
+new nemesis_index[sizeof(models_nemesis)]
+
+new models_survior[][] = {
+	"zurvz1"
+}
+new survivor_index[sizeof(models_survior)]
+
+new models_zadmin[][] = {
+	"zombie_source"
+}
+new zadmin_index[sizeof(models_zadmin)]
+
+new models_hadmin[][] = {
+	"admin_neo"
+}
+new hadmin_index[sizeof(models_hadmin)]
+
+new sounds_wzombie[][] = {
+	"zombiecsofiliq/round/zombiewin1.mp3",
+	"zombiecsofiliq/round/zombiewin4.mp3",
+	"zombiecsofiliq/round/zombiewin2.mp3",
+	"zombiecsofiliq/round/zombiewin3.mp3",
+	"zombiecsofiliq/round/umb_zombie_win1.mp3",
+	"zombiecsofiliq/round/umb_zombie_win2.mp3",
+	"zombiecsofiliq/round/umb_zombie_win3.mp3"
+}
+
+new sounds_whumans[][] = {
+	"zombiecsofiliq/round/humanwin1.mp3",
+	"zombiecsofiliq/round/humanwin2.mp3",
+	"zombiecsofiliq/round/humanwin3.mp3",
+	"zombiecsofiliq/round/humanwin4.mp3",
+	"zombiecsofiliq/round/umb_win_human.mp3",
+	"zombiecsofiliq/round/umb_win_human_new.mp3",
+	"zombiecsofiliq/round/umb_win_human_new2.mp3",
+	"zombiecsofiliq/round/umb_win_human_new3.mp3"
+}
+
+new sounds_wnoone[][] = {
+	"zombiecsofiliq/round/noone.mp3",
+	"zombiecsofiliq/round/noone2.mp3"
+}
+
+new zombie_infect[][] = {
+	"nst_zombie/zombi_coming_1.wav", // de schimbat trb wav
+	"nst_zombie/zombi_comeback.wav",
+	"nst_zombie/zombi_coming_2.wav"
+}
+
+new zombie_pain[][] = {
+	"zombie_plague/zombie_pain1.wav"
+}
+
+new nemesis_pain[][] = {
+	"tox_cso/zmpain.wav",
+	"tox_cso/zompain.wav"
+}
+
+new zombie_die[][] = {
+	"zombie_plague/shaman/die_03.wav"
+}
+
+new zombie_fall[][] = {
+	"zombie_plague/zombie_fall1.wav"
+}
+
+new zombie_idle[][] = {
+	"tox_cso/zombi_evolution.wav",
+	"nst_zombie/zombi_evolution_female.wav"
+}
+
+new zombie_miss_wall[][] = {
+	"tox_cso/zombi_wall_1.wav"
+}
+
+new zombie_miss_slash[][] = {
+	"tox_cso/zombi_swing_3.wav",
+	"tox_cso/zombi_swing_2.wav"
+}
+
+new zombie_hit_normal[][] = {
+	"tox_cso/zombi_attack_2.wav"
+}
+
+new zombie_hit_stab[][] = {
+	"tox_cso/zombi_attack_2.wav"
+}
+
+new zombie_idle_last[][] = {
+	"nihilanth/nil_thelast.wav"
+}
+
+new zombie_madness[][] = {
+	"zombie_plague/zombi_coming_1_cn.wav"
+}
+
+new sound_nemesis[][] = {
+	"nst_zombie/zombi_pressure.wav"
+}
+
+new sound_survivor[][] = {
+	"zombie_plague/survivor1.wav",
+	"zombie_plague/survivor2.wav",
+	"ultimate_sounds/nade_ultimate.wav"
+}
+
+new sound_swarm[][] = {
+	"zombie_plague/BAD_BOY_.wav"
+}
+
+new sound_multi[][] = {
+	"zombie_plague/BAD_BOY_survivor4.wav"
+}
+
+new sound_plague[][] = {
+	"tox_cso/mods/suicide4_ultimate.wav"
+}
+
+new grenade_infect[][] = {
+	"zombie_plague/grenade_infect.wav",
+
+}
+
+new grenade_infect_player[][] = {
+	"scientist/scream20.wav"
+}
+
+new grenade_fire[][] = {
+	"weapons/nst_wpn/heartbomb_exp.wav"
+}
+
+new grenade_fire_player[][] = {
+	"zombie_plague/zombie_burn3.wav"
+}
+
+new grenade_frost[][] = {
+	"tox_cso/holywater_explosion.wav"
+}
+
+new grenade_frost_player[][] = {
+	"warcraft3/impalehit.wav"
+}
+
+new grenade_frost_break[][] = {
+	"warcraft3/impalelaunch1.wav"
+}
+
+new grenade_flare[][] = {
+	"items/nvg_on.wav"
+}
+
+new sound_antidote[][] = {
+	"misc/SpartAAA.wav"
+}
+
+new sound_thunder[][] = {
+	"zombie_plague/thunder1.wav",
+	"zombie_plague/thunder2.wav"
+}
+
+new ambience_infection[][][] = {
+	{"zombiecsofiliq/ambience_filiq/audiomachine2.mp3", "50"},
+	{"zombiecsofiliq/ambience_filiq/vinviu2.mp3", "50"},
+	{"zombiecsofiliq/ambience_filiq/anihilation.mp3", "50"}
+}
+
+new ambience_nemesis[][][] = {
+	{"zombie_plague/ambience.wav", "17"}
+}
+
+new ambience_survivor[][][] = {
+	{"zombie_plague/ambience.wav", "17"}
+}
+
+new ambience_swarm[][][] = {
+	{"zombie_plague/ambience.wav", "17"}
+}
+
+new ambience_plague[][][] = {
+	{"zombie_plague/ambience.wav", "17"}
+}
+
 // Customization vars
-new g_access_flag[MAX_ACCESS_FLAGS], Array:model_nemesis, Array:model_survivor, Array:model_human,
-Array:model_admin_zombie, Array:model_admin_human, Array:g_modelindex_human,
-Array:g_modelindex_nemesis, Array:g_modelindex_survivor, g_same_models_for_all,
-Array:g_modelindex_admin_zombie, Array:g_modelindex_admin_human, model_vknife_human[64],
+new g_access_flag[MAX_ACCESS_FLAGS], model_vknife_human[64],
 model_vknife_nemesis[64], model_vweapon_survivor[64], model_grenade_infect[64],
 model_grenade_fire[64], model_grenade_frost[64], model_grenade_flare[64],
 model_vknife_admin_human[64], model_vknife_admin_zombie[64],
 sprite_grenade_trail[64], sprite_grenade_ring[64], sprite_grenade_fire[64],
-sprite_grenade_smoke[64], sprite_grenade_glass[64], Array:sound_win_zombies,
-Array:sound_win_humans, Array:sound_win_no_one, Array:sound_win_zombies_ismp3,
-Array:sound_win_humans_ismp3, Array:sound_win_no_one_ismp3, Array:zombie_infect,
-Array:zombie_idle, Array:zombie_pain, Array:nemesis_pain, Array:zombie_die, Array:zombie_fall,
-Array:zombie_miss_wall, Array:zombie_hit_normal, Array:zombie_hit_stab, g_ambience_rain,
-Array:zombie_idle_last, Array:zombie_madness, Array:sound_nemesis, Array:sound_survivor,
-Array:sound_swarm, Array:sound_multi, Array:sound_plague, Array:grenade_infect,
-Array:grenade_infect_player, Array:grenade_fire, Array:grenade_fire_player,
-Array:grenade_frost, Array:grenade_frost_player, Array:grenade_frost_break,
-Array:grenade_flare, Array:sound_antidote, Array:sound_thunder, g_ambience_sounds[MAX_AMBIENCE_SOUNDS],
-Array:sound_ambience1, Array:sound_ambience2, Array:sound_ambience3, Array:sound_ambience4,
-Array:sound_ambience5, Array:sound_ambience1_duration, Array:sound_ambience2_duration,
-Array:sound_ambience3_duration, Array:sound_ambience4_duration,
-Array:sound_ambience5_duration, Array:sound_ambience1_ismp3, Array:sound_ambience2_ismp3,
-Array:sound_ambience3_ismp3, Array:sound_ambience4_ismp3, Array:sound_ambience5_ismp3,
+sprite_grenade_smoke[64], sprite_grenade_glass[64],
+g_ambience_rain,
 Array:g_extraweapon_names,
 Array:g_extraweapon_items, Array:g_extraweapon_costs, g_extra_costs2[EXTRA_WEAPONS_STARTID],
 g_ambience_snow, g_ambience_fog, g_fog_density[10], g_fog_color[12], g_sky_enable,
 Array:g_sky_names, Array:lights_thunder, Array:zombie_decals, Array:g_objective_ents,
 Float:g_modelchange_delay, g_set_modelindex_offset, g_handle_models_on_separate_ent,
-Float:kb_weapon_power[31] = { -1.0, ... }, Array:zombie_miss_slash, g_force_consistency
+Float:kb_weapon_power[31] = { -1.0, ... }, g_force_consistency, g_same_models_for_all
 
 // CVAR pointers
 new cvar_lighting, cvar_zombiefov, cvar_plague, cvar_plaguechance, cvar_zombiefirsthp,
@@ -578,64 +753,7 @@ public plugin_precache()
 	g_pluginenabled = true
 	
 	// Initialize a few dynamically sized arrays (alright, maybe more than just a few...)
-	model_human = ArrayCreate(32, 1)
-	model_nemesis = ArrayCreate(32, 1)
-	model_survivor = ArrayCreate(32, 1)
-	model_admin_human = ArrayCreate(32, 1)
-	model_admin_zombie = ArrayCreate(32, 1)
-	g_modelindex_human = ArrayCreate(1, 1)
-	g_modelindex_nemesis = ArrayCreate(1, 1)
-	g_modelindex_survivor = ArrayCreate(1, 1)
-	g_modelindex_admin_human = ArrayCreate(1, 1)
-	g_modelindex_admin_zombie = ArrayCreate(1, 1)
-	sound_win_zombies = ArrayCreate(64, 1)
-	sound_win_zombies_ismp3 = ArrayCreate(1, 1)
-	sound_win_humans = ArrayCreate(64, 1)
-	sound_win_humans_ismp3 = ArrayCreate(1, 1)
-	sound_win_no_one = ArrayCreate(64, 1)
-	sound_win_no_one_ismp3 = ArrayCreate(1, 1)
-	zombie_infect = ArrayCreate(64, 1)
-	zombie_pain = ArrayCreate(64, 1)
-	nemesis_pain = ArrayCreate(64, 1)
-	zombie_die = ArrayCreate(64, 1)
-	zombie_fall = ArrayCreate(64, 1)
-	zombie_miss_slash = ArrayCreate(64, 1)
-	zombie_miss_wall = ArrayCreate(64, 1)
-	zombie_hit_normal = ArrayCreate(64, 1)
-	zombie_hit_stab = ArrayCreate(64, 1)
-	zombie_idle = ArrayCreate(64, 1)
-	zombie_idle_last = ArrayCreate(64, 1)
-	zombie_madness = ArrayCreate(64, 1)
-	sound_nemesis = ArrayCreate(64, 1)
-	sound_survivor = ArrayCreate(64, 1)
-	sound_swarm = ArrayCreate(64, 1)
-	sound_multi = ArrayCreate(64, 1)
-	sound_plague = ArrayCreate(64, 1)
-	grenade_infect = ArrayCreate(64, 1)
-	grenade_infect_player = ArrayCreate(64, 1)
-	grenade_fire = ArrayCreate(64, 1)
-	grenade_fire_player = ArrayCreate(64, 1)
-	grenade_frost = ArrayCreate(64, 1)
-	grenade_frost_player = ArrayCreate(64, 1)
-	grenade_frost_break = ArrayCreate(64, 1)
-	grenade_flare = ArrayCreate(64, 1)
-	sound_antidote = ArrayCreate(64, 1)
-	sound_thunder = ArrayCreate(64, 1)
-	sound_ambience1 = ArrayCreate(64, 1)
-	sound_ambience2 = ArrayCreate(64, 1)
-	sound_ambience3 = ArrayCreate(64, 1)
-	sound_ambience4 = ArrayCreate(64, 1)
-	sound_ambience5 = ArrayCreate(64, 1)
-	sound_ambience1_duration = ArrayCreate(1, 1)
-	sound_ambience2_duration = ArrayCreate(1, 1)
-	sound_ambience3_duration = ArrayCreate(1, 1)
-	sound_ambience4_duration = ArrayCreate(1, 1)
-	sound_ambience5_duration = ArrayCreate(1, 1)
-	sound_ambience1_ismp3 = ArrayCreate(1, 1)
-	sound_ambience2_ismp3 = ArrayCreate(1, 1)
-	sound_ambience3_ismp3 = ArrayCreate(1, 1)
-	sound_ambience4_ismp3 = ArrayCreate(1, 1)
-	sound_ambience5_ismp3 = ArrayCreate(1, 1) 
+	
 	g_extraweapon_names = ArrayCreate(32, 1)
 	g_extraweapon_items = ArrayCreate(32, 1)
 	g_extraweapon_costs = ArrayCreate(1, 1)
@@ -696,63 +814,11 @@ public plugin_precache()
 		ArrayGetString(g_extraweapon_names, i, buffer, charsmax(buffer))
 		native_register_extra_item2(buffer, ArrayGetCell(g_extraweapon_costs, i), ZP_TEAM_HUMAN)
 	}
-	
-	// Custom player models
-	for (i = 0; i < ArraySize(model_human); i++)
-	{
-		ArrayGetString(model_human, i, buffer, charsmax(buffer))
-		format(buffer, charsmax(buffer), "models/player/%s/%s.mdl", buffer, buffer)
-		ArrayPushCell(g_modelindex_human, engfunc(EngFunc_PrecacheModel, buffer))
-		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, buffer)
-		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, buffer)
-		// Precache modelT.mdl files too
-		copy(buffer[strlen(buffer)-4], charsmax(buffer) - (strlen(buffer)-4), "T.mdl")
-		if (file_exists(buffer)) engfunc(EngFunc_PrecacheModel, buffer)
-	}
-	for (i = 0; i < ArraySize(model_nemesis); i++)
-	{
-		ArrayGetString(model_nemesis, i, buffer, charsmax(buffer))
-		format(buffer, charsmax(buffer), "models/player/%s/%s.mdl", buffer, buffer)
-		ArrayPushCell(g_modelindex_nemesis, engfunc(EngFunc_PrecacheModel, buffer))
-		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, buffer)
-		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, buffer)
-		// Precache modelT.mdl files too
-		copy(buffer[strlen(buffer)-4], charsmax(buffer) - (strlen(buffer)-4), "T.mdl")
-		if (file_exists(buffer)) engfunc(EngFunc_PrecacheModel, buffer)
-	}
-	for (i = 0; i < ArraySize(model_survivor); i++)
-	{
-		ArrayGetString(model_survivor, i, buffer, charsmax(buffer))
-		format(buffer, charsmax(buffer), "models/player/%s/%s.mdl", buffer, buffer)
-		ArrayPushCell(g_modelindex_survivor, engfunc(EngFunc_PrecacheModel, buffer))
-		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, buffer)
-		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, buffer)
-		// Precache modelT.mdl files too
-		copy(buffer[strlen(buffer)-4], charsmax(buffer) - (strlen(buffer)-4), "T.mdl")
-		if (file_exists(buffer)) engfunc(EngFunc_PrecacheModel, buffer)
-	}
-	for (i = 0; i < ArraySize(model_admin_zombie); i++)
-	{
-		ArrayGetString(model_admin_zombie, i, buffer, charsmax(buffer))
-		format(buffer, charsmax(buffer), "models/player/%s/%s.mdl", buffer, buffer)
-		ArrayPushCell(g_modelindex_admin_zombie, engfunc(EngFunc_PrecacheModel, buffer))
-		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, buffer)
-		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, buffer)
-		// Precache modelT.mdl files too
-		copy(buffer[strlen(buffer)-4], charsmax(buffer) - (strlen(buffer)-4), "T.mdl")
-		if (file_exists(buffer)) engfunc(EngFunc_PrecacheModel, buffer)
-	}
-	for (i = 0; i < ArraySize(model_admin_human); i++)
-	{
-		ArrayGetString(model_admin_human, i, buffer, charsmax(buffer))
-		format(buffer, charsmax(buffer), "models/player/%s/%s.mdl", buffer, buffer)
-		ArrayPushCell(g_modelindex_admin_human, engfunc(EngFunc_PrecacheModel, buffer))
-		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, buffer)
-		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, buffer)
-		// Precache modelT.mdl files too
-		copy(buffer[strlen(buffer)-4], charsmax(buffer) - (strlen(buffer)-4), "T.mdl")
-		if (file_exists(buffer)) engfunc(EngFunc_PrecacheModel, buffer)
-	}
+	precacheModels(sizeof models_human, models_human, models_index)
+	precacheModels(sizeof models_nemesis, models_nemesis, nemesis_index)
+	precacheModels(sizeof models_survior, models_survior, survivor_index)
+	precacheModels(sizeof models_zadmin, models_zadmin, zadmin_index)
+	precacheModels(sizeof models_hadmin, models_hadmin, hadmin_index)
 	
 	// Custom weapon models
 	engfunc(EngFunc_PrecacheModel, model_vknife_human)
@@ -773,268 +839,41 @@ public plugin_precache()
 	g_glassSpr = engfunc(EngFunc_PrecacheModel, sprite_grenade_glass)
 	
 	// Custom sounds
-	for (i = 0; i < ArraySize(sound_win_zombies); i++)
-	{
-		ArrayGetString(sound_win_zombies, i, buffer, charsmax(buffer))
-		if (ArrayGetCell(sound_win_zombies_ismp3, i))
-		{
-			format(buffer, charsmax(buffer), "sound/%s", buffer)
-			engfunc(EngFunc_PrecacheGeneric, buffer)
-		}
-		else
-		{
-			engfunc(EngFunc_PrecacheSound, buffer)
-		}
-	}
-	for (i = 0; i < ArraySize(sound_win_humans); i++)
-	{
-		ArrayGetString(sound_win_humans, i, buffer, charsmax(buffer))
-		if (ArrayGetCell(sound_win_humans_ismp3, i))
-		{
-			format(buffer, charsmax(buffer), "sound/%s", buffer)
-			engfunc(EngFunc_PrecacheGeneric, buffer)
-		}
-		else
-		{
-			engfunc(EngFunc_PrecacheSound, buffer)
-		}
-	}
-	for (i = 0; i < ArraySize(sound_win_no_one); i++)
-	{
-		ArrayGetString(sound_win_no_one, i, buffer, charsmax(buffer))
-		if (ArrayGetCell(sound_win_no_one_ismp3, i))
-		{
-			format(buffer, charsmax(buffer), "sound/%s", buffer)
-			engfunc(EngFunc_PrecacheGeneric, buffer)
-		}
-		else
-		{
-			engfunc(EngFunc_PrecacheSound, buffer)
-		}
-	}
-	for (i = 0; i < ArraySize(zombie_infect); i++)
-	{
-		ArrayGetString(zombie_infect, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_pain); i++)
-	{
-		ArrayGetString(zombie_pain, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(nemesis_pain); i++)
-	{
-		ArrayGetString(nemesis_pain, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_die); i++)
-	{
-		ArrayGetString(zombie_die, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_fall); i++)
-	{
-		ArrayGetString(zombie_fall, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_miss_slash); i++)
-	{
-		ArrayGetString(zombie_miss_slash, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_miss_wall); i++)
-	{
-		ArrayGetString(zombie_miss_wall, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_hit_normal); i++)
-	{
-		ArrayGetString(zombie_hit_normal, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_hit_stab); i++)
-	{
-		ArrayGetString(zombie_hit_stab, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_idle); i++)
-	{
-		ArrayGetString(zombie_idle, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_idle_last); i++)
-	{
-		ArrayGetString(zombie_idle_last, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(zombie_madness); i++)
-	{
-		ArrayGetString(zombie_madness, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_nemesis); i++)
-	{
-		ArrayGetString(sound_nemesis, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_survivor); i++)
-	{
-		ArrayGetString(sound_survivor, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_swarm); i++)
-	{
-		ArrayGetString(sound_swarm, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_multi); i++)
-	{
-		ArrayGetString(sound_multi, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_plague); i++)
-	{
-		ArrayGetString(sound_plague, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_infect); i++)
-	{
-		ArrayGetString(grenade_infect, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_infect_player); i++)
-	{
-		ArrayGetString(grenade_infect_player, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_fire); i++)
-	{
-		ArrayGetString(grenade_fire, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_fire_player); i++)
-	{
-		ArrayGetString(grenade_fire_player, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_frost); i++)
-	{
-		ArrayGetString(grenade_frost, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_frost_player); i++)
-	{
-		ArrayGetString(grenade_frost_player, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_frost_break); i++)
-	{
-		ArrayGetString(grenade_frost_break, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(grenade_flare); i++)
-	{
-		ArrayGetString(grenade_flare, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_antidote); i++)
-	{
-		ArrayGetString(sound_antidote, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	for (i = 0; i < ArraySize(sound_thunder); i++)
-	{
-		ArrayGetString(sound_thunder, i, buffer, charsmax(buffer))
-		engfunc(EngFunc_PrecacheSound, buffer)
-	}
-	
-	// Ambience Sounds
-	if (g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION])
-	{
-		for (i = 0; i < ArraySize(sound_ambience1); i++)
-		{
-			ArrayGetString(sound_ambience1, i, buffer, charsmax(buffer))
-			
-			if (ArrayGetCell(sound_ambience1_ismp3, i))
-			{
-				format(buffer, charsmax(buffer), "sound/%s", buffer)
-				engfunc(EngFunc_PrecacheGeneric, buffer)
-			}
-			else
-			{
-				engfunc(EngFunc_PrecacheSound, buffer)
-			}
-		}
-	}
-	if (g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS])
-	{
-		for (i = 0; i < ArraySize(sound_ambience2); i++)
-		{
-			ArrayGetString(sound_ambience2, i, buffer, charsmax(buffer))
-			
-			if (ArrayGetCell(sound_ambience2_ismp3, i))
-			{
-				format(buffer, charsmax(buffer), "sound/%s", buffer)
-				engfunc(EngFunc_PrecacheGeneric, buffer)
-			}
-			else
-			{
-				engfunc(EngFunc_PrecacheSound, buffer)
-			}
-		}
-	}
-	if (g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR])
-	{
-		for (i = 0; i < ArraySize(sound_ambience3); i++)
-		{
-			ArrayGetString(sound_ambience3, i, buffer, charsmax(buffer))
-			
-			if (ArrayGetCell(sound_ambience3_ismp3, i))
-			{
-				format(buffer, charsmax(buffer), "sound/%s", buffer)
-				engfunc(EngFunc_PrecacheGeneric, buffer)
-			}
-			else
-			{
-				engfunc(EngFunc_PrecacheSound, buffer)
-			}
-		}
-	}
-	if (g_ambience_sounds[AMBIENCE_SOUNDS_SWARM])
-	{
-		for (i = 0; i < ArraySize(sound_ambience4); i++)
-		{
-			ArrayGetString(sound_ambience4, i, buffer, charsmax(buffer))
-			
-			if (ArrayGetCell(sound_ambience4_ismp3, i))
-			{
-				format(buffer, charsmax(buffer), "sound/%s", buffer)
-				engfunc(EngFunc_PrecacheGeneric, buffer)
-			}
-			else
-			{
-				engfunc(EngFunc_PrecacheSound, buffer)
-			}
-		}
-	}
-	if (g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE])
-	{
-		for (i = 0; i < ArraySize(sound_ambience5); i++)
-		{
-			ArrayGetString(sound_ambience5, i, buffer, charsmax(buffer))
-			
-			if (ArrayGetCell(sound_ambience5_ismp3, i))
-			{
-				format(buffer, charsmax(buffer), "sound/%s", buffer)
-				engfunc(EngFunc_PrecacheGeneric, buffer)
-			}
-			else
-			{
-				engfunc(EngFunc_PrecacheSound, buffer)
-			}
-		}
-	}
-	
+	precacheSounds(sounds_wzombie, sizeof(sounds_wzombie))
+	precacheSounds(sounds_whumans, sizeof(sounds_whumans))
+	precacheSounds(sounds_wnoone, sizeof(sounds_wnoone))
+	precacheSounds(zombie_infect, sizeof(zombie_infect))
+	precacheSounds(zombie_pain, sizeof(zombie_pain))
+	precacheSounds(nemesis_pain, sizeof(nemesis_pain))
+	precacheSounds(zombie_die, sizeof(zombie_die))
+	precacheSounds(zombie_fall, sizeof(zombie_fall))
+	precacheSounds(zombie_idle, sizeof(zombie_idle))
+	precacheSounds(zombie_miss_wall, sizeof(zombie_miss_wall))
+	precacheSounds(zombie_miss_slash, sizeof(zombie_miss_slash))
+	precacheSounds(zombie_hit_normal, sizeof(zombie_hit_normal))
+	precacheSounds(zombie_hit_stab, sizeof(zombie_hit_stab))
+	precacheSounds(zombie_madness, sizeof(zombie_madness))
+	precacheSounds(sound_nemesis, sizeof(sound_nemesis))
+	precacheSounds(sound_survivor, sizeof(sound_survivor))
+	precacheSounds(sound_swarm, sizeof(sound_swarm))
+	precacheSounds(sound_multi, sizeof(sound_multi))
+	precacheSounds(sound_plague, sizeof(sound_plague))
+	precacheSounds(grenade_infect, sizeof(grenade_infect))
+	precacheSounds(grenade_infect_player, sizeof(grenade_infect_player))
+	precacheSounds(grenade_fire, sizeof(grenade_fire))
+	precacheSounds(grenade_fire_player, sizeof(grenade_fire_player))
+	precacheSounds(grenade_frost, sizeof(grenade_frost))
+	precacheSounds(grenade_frost_player, sizeof(grenade_frost_player))
+	precacheSounds(grenade_frost_break, sizeof(grenade_frost_break))
+	precacheSounds(grenade_flare, sizeof(grenade_flare))
+	precacheSounds(sound_antidote, sizeof(sound_antidote))
+
+	precacheAmbiance(ambience_infection, sizeof(ambience_infection))
+	precacheAmbiance(ambience_nemesis, sizeof(ambience_nemesis))
+	precacheAmbiance(ambience_survivor, sizeof(ambience_survivor))
+	precacheAmbiance(ambience_swarm, sizeof(ambience_swarm))
+	precacheAmbiance(ambience_plague, sizeof(ambience_plague))
+
 	// CS sounds (just in case)
 	engfunc(EngFunc_PrecacheSound, sound_flashlight)
 	engfunc(EngFunc_PrecacheSound, sound_buyammo)
@@ -1086,8 +925,7 @@ public plugin_init()
 	register_logevent("logevent_round_start",2, "1=Round_Start")
 	register_logevent("logevent_round_end", 2, "1=Round_End")
 	register_event("AmmoX", "event_ammo_x", "be")
-	if (g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION] || g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS] || g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR] || g_ambience_sounds[AMBIENCE_SOUNDS_SWARM] || g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE])
-		register_event("30", "event_intermission", "a")
+	register_event("30", "event_intermission", "a")
 	
 	// HAM Forwards
 	RegisterHam(Ham_Spawn, "player", "fw_PlayerSpawn_Post", 1)
@@ -1571,11 +1409,8 @@ public logevent_round_end()
 	remove_task(TASK_MAKEZOMBIE)
 	
 	// Stop ambience sounds
-	if ((g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS] && g_nemround) || (g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR] && g_survround) || (g_ambience_sounds[AMBIENCE_SOUNDS_SWARM] && g_swarmround) || (g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE] && g_plagueround) || (g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION] && !g_nemround && !g_survround && !g_swarmround && !g_plagueround))
-	{
-		remove_task(TASK_AMBIENCESOUNDS)
-		ambience_sound_stop()
-	}
+	remove_task(TASK_AMBIENCESOUNDS)
+	ambience_sound_stop()
 	
 	// Show HUD notice, play win sound, update team scores...
 	static sound[64]
@@ -1586,8 +1421,9 @@ public logevent_round_end()
 		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_HUMAN")
 
 		// Play win sound and increase score, unless game commencing
-		ArrayGetString(sound_win_humans, random_num(0, ArraySize(sound_win_humans) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sounds_whumans[random_num(0, charsmax(sounds_whumans))])
 		PlaySound(sound)
+		
 		if (!g_gamecommencing) g_scorehumans++
 		
 		// Round end forward
@@ -1600,8 +1436,9 @@ public logevent_round_end()
 		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_ZOMBIE")
 
 		// Play win sound and increase score, unless game commencing
-		ArrayGetString(sound_win_zombies, random_num(0, ArraySize(sound_win_zombies) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sounds_wzombie[random_num(0, charsmax(sounds_wzombie))])
 		PlaySound(sound)
+		
 		if (!g_gamecommencing) g_scorezombies++
 		
 		// Round end forward
@@ -1615,7 +1452,7 @@ public logevent_round_end()
 		show_dhudmessage(0, "%L", LANG_PLAYER, "WIN_NO_ONE")
 		// Play win sound
 
-		ArrayGetString(sound_win_no_one, random_num(0, ArraySize(sound_win_no_one) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sounds_wnoone[random_num(0, charsmax(sounds_wnoone))])
 		PlaySound(sound)
 		
 		// Round end forward
@@ -1782,24 +1619,13 @@ public fw_PlayerSpawn_Post(id)
 	}
 	
 	// Custom models stuff
-	static currentmodel[32], tempmodel[32], already_has_model, i, iRand, size
-	already_has_model = false
-	
 	if (g_handle_models_on_separate_ent)
 	{
 		// Set the right model
 		if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
-		{
-			iRand = random_num(0, ArraySize(model_admin_human) - 1)
-			ArrayGetString(model_admin_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-			if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_admin_human, iRand))
-		}
+			setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
 		else
-		{
-			iRand = random_num(0, ArraySize(model_human) - 1)
-			ArrayGetString(model_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-			if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_human, iRand))
-		}
+			setRandomModel(id, models_human, charsmax(models_human), models_index)
 		
 		// Set model on player model entity
 		fm_set_playermodel_ent(id)
@@ -1809,52 +1635,20 @@ public fw_PlayerSpawn_Post(id)
 	}
 	else
 	{
+		static currentmodel[32]
 		// Get current model for comparing it with the current one
 		fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
 		
 		// Set the right model, after checking that we don't already have it
 		if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 		{
-			size = ArraySize(model_admin_human)
-			for (i = 0; i < size; i++)
-			{
-				ArrayGetString(model_admin_human, i, tempmodel, charsmax(tempmodel))
-				if (equal(currentmodel, tempmodel)) already_has_model = true
-			}
-			
-			if (!already_has_model)
-			{
-				iRand = random_num(0, size - 1)
-				ArrayGetString(model_admin_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_admin_human, iRand))
-			}
+			if (!haveThisModel(currentmodel, models_hadmin, sizeof(models_hadmin), id))
+				setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
 		}
 		else
 		{
-			size = ArraySize(model_human)
-			for (i = 0; i < size; i++)
-			{
-				ArrayGetString(model_human, i, tempmodel, charsmax(tempmodel))
-				if (equal(currentmodel, tempmodel)) already_has_model = true
-			}
-			
-			if (!already_has_model)
-			{
-				iRand = random_num(0, size - 1)
-				ArrayGetString(model_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_human, iRand))
-			}
-		}
-		
-		// Need to change the model?
-		if (!already_has_model)
-		{
-			// An additional delay is offset at round start
-			// since SVC_BAD is more likely to be triggered there
-			if (g_newround)
-				set_task(5.0 * g_modelchange_delay, "fm_user_model_update", id+TASK_MODEL)
-			else
-				fm_user_model_update(id+TASK_MODEL)
+			if (!haveThisModel(currentmodel, models_human, sizeof(models_human), id))
+				setRandomModel(id, models_human, charsmax(models_human), models_index)
 		}
 		
 		// Remove glow
@@ -2482,12 +2276,12 @@ public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags
 	{
 		if (g_nemesis[id])
 		{
-			ArrayGetString(nemesis_pain, random_num(0, ArraySize(nemesis_pain) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), nemesis_pain[random_num(0, charsmax(nemesis_pain))])
 			emit_sound(id, channel, sound, volume, attn, flags, pitch)
 		}
 		else
 		{
-			ArrayGetString(zombie_pain, random_num(0, ArraySize(zombie_pain) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), nemesis_pain[random_num(0, charsmax(nemesis_pain))])
 			emit_sound(id, channel, sound, volume, attn, flags, pitch)
 		}
 		return FMRES_SUPERCEDE;
@@ -2498,7 +2292,7 @@ public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags
 	{
 		if (sample[14] == 's' && sample[15] == 'l' && sample[16] == 'a') // slash
 		{
-			ArrayGetString(zombie_miss_slash, random_num(0, ArraySize(zombie_miss_slash) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), zombie_miss_slash[random_num(0, charsmax(zombie_miss_slash))])
 			emit_sound(id, channel, sound, volume, attn, flags, pitch)
 			return FMRES_SUPERCEDE;
 		}
@@ -2506,20 +2300,20 @@ public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags
 		{
 			if (sample[17] == 'w') // wall
 			{
-				ArrayGetString(zombie_miss_wall, random_num(0, ArraySize(zombie_miss_wall) - 1), sound, charsmax(sound))
+				copy(sound, charsmax(sound), zombie_miss_wall[random_num(0, charsmax(zombie_miss_wall))])
 				emit_sound(id, channel, sound, volume, attn, flags, pitch)
 				return FMRES_SUPERCEDE;
 			}
 			else
 			{
-				ArrayGetString(zombie_hit_normal, random_num(0, ArraySize(zombie_hit_normal) - 1), sound, charsmax(sound))
+				copy(sound, charsmax(sound), zombie_hit_normal[random_num(0, charsmax(zombie_hit_normal))])
 				emit_sound(id, channel, sound, volume, attn, flags, pitch)
 				return FMRES_SUPERCEDE;
 			}
 		}
 		if (sample[14] == 's' && sample[15] == 't' && sample[16] == 'a') // stab
 		{
-			ArrayGetString(zombie_hit_stab, random_num(0, ArraySize(zombie_hit_stab) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), zombie_hit_stab[random_num(0, charsmax(zombie_hit_stab))])
 			emit_sound(id, channel, sound, volume, attn, flags, pitch)
 			return FMRES_SUPERCEDE;
 		}
@@ -2528,7 +2322,7 @@ public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags
 	// Zombie dies
 	if (sample[7] == 'd' && ((sample[8] == 'i' && sample[9] == 'e') || (sample[8] == 'e' && sample[9] == 'a')))
 	{
-		ArrayGetString(zombie_die, random_num(0, ArraySize(zombie_die) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), zombie_die[random_num(0, charsmax(zombie_die))])
 		emit_sound(id, channel, sound, volume, attn, flags, pitch)
 		return FMRES_SUPERCEDE;
 	}
@@ -2536,7 +2330,7 @@ public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags
 	// Zombie falls off
 	if (sample[10] == 'f' && sample[11] == 'a' && sample[12] == 'l' && sample[13] == 'l')
 	{
-		ArrayGetString(zombie_fall, random_num(0, ArraySize(zombie_fall) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), zombie_fall[random_num(0, charsmax(zombie_fall))])
 		emit_sound(id, channel, sound, volume, attn, flags, pitch)
 		return FMRES_SUPERCEDE;
 	}
@@ -2831,7 +2625,7 @@ public fw_ThinkGrenade(entity)
 			{
 				// Flare sound
 				static sound[64]
-				ArrayGetString(grenade_flare, random_num(0, ArraySize(grenade_flare) - 1), sound, charsmax(sound))
+				copy(sound, charsmax(sound), grenade_flare[random_num(0, charsmax(grenade_flare))])
 				emit_sound(entity, CHAN_WEAPON, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 				
 				// Set duration and start lightning loop on next think
@@ -3662,7 +3456,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 			set_task(get_pcvar_float(cvar_madnessduration), "madness_over", id+TASK_BLOOD)
 			
 			static sound[64]
-			ArrayGetString(zombie_madness, random_num(0, ArraySize(zombie_madness) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), zombie_madness[random_num(0, charsmax(zombie_madness))])
 			emit_sound(id, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		}
 		case EXTRA_INFBOMB: // Infection Bomb
@@ -4593,7 +4387,7 @@ make_a_zombie(mode, id)
 		}
 		
 		// Play survivor sound
-		ArrayGetString(sound_survivor, random_num(0, ArraySize(sound_survivor) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sound_survivor[random_num(0, charsmax(sound_survivor))])
 		PlaySound(sound);
 		
 		// Show Survivor HUD notice
@@ -4646,7 +4440,7 @@ make_a_zombie(mode, id)
 		}
 		
 		// Play swarm sound
-		ArrayGetString(sound_swarm, random_num(0, ArraySize(sound_swarm) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sound_swarm[random_num(0, charsmax(sound_swarm))])
 		PlaySound(sound);
 		
 		// Show Swarm HUD notice
@@ -4704,7 +4498,7 @@ make_a_zombie(mode, id)
 		}
 		
 		// Play multi infection sound
-		ArrayGetString(sound_multi, random_num(0, ArraySize(sound_multi) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sound_multi[random_num(0, charsmax(sound_multi))])
 		PlaySound(sound);
 		
 		// Show Multi Infection HUD notice
@@ -4808,7 +4602,7 @@ make_a_zombie(mode, id)
 		}
 		
 		// Play plague sound
-		ArrayGetString(sound_plague, random_num(0, ArraySize(sound_plague) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sound_plague[random_num(0, charsmax(sound_plague))])
 		PlaySound(sound);
 		
 		// Show Plague HUD notice
@@ -4873,7 +4667,7 @@ make_a_zombie(mode, id)
 		if (g_nemround)
 		{
 			// Play Nemesis sound
-			ArrayGetString(sound_nemesis, random_num(0, ArraySize(sound_nemesis) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), sound_nemesis[random_num(0, charsmax(sound_nemesis))])
 			PlaySound(sound);
 			
 			// Show Nemesis HUD notice
@@ -4901,11 +4695,8 @@ make_a_zombie(mode, id)
 	}
 	
 	// Start ambience sounds after a mode begins
-	if ((g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS] && g_nemround) || (g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR] && g_survround) || (g_ambience_sounds[AMBIENCE_SOUNDS_SWARM] && g_swarmround) || (g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE] && g_plagueround) || (g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION] && !g_nemround && !g_survround && !g_swarmround && !g_plagueround))
-	{
-		remove_task(TASK_AMBIENCESOUNDS)
-		set_task(2.0, "ambience_sound_effects", TASK_AMBIENCESOUNDS)
-	}
+	remove_task(TASK_AMBIENCESOUNDS)
+	set_task(2.0, "ambience_sound_effects", TASK_AMBIENCESOUNDS)
 }
 
 // Zombie Me Function (player id, infector, turn into a nemesis, silent mode, deathmsg and rewards)
@@ -5009,7 +4800,7 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 			ExecuteHamB(Ham_Player_ResetMaxSpeed, id)
 			
 			// Infection sound
-			ArrayGetString(zombie_infect, random_num(0, ArraySize(zombie_infect) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), zombie_infect[random_num(0, charsmax(zombie_infect))])
 			emit_sound(id, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		}
 		else
@@ -5027,7 +4818,7 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 			ExecuteHamB(Ham_Player_ResetMaxSpeed, id)
 			
 			// Infection sound
-			ArrayGetString(zombie_infect, random_num(0, ArraySize(zombie_infect) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), zombie_infect[random_num(0, charsmax(zombie_infect))])
 			emit_sound(id, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			
 			// Show Infection HUD notice
@@ -5069,25 +4860,17 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 	}
 	
 	// Custom models stuff
-	static currentmodel[32], tempmodel[32], already_has_model, i, iRand, size
-	already_has_model = false
+	static currentmodel[32], tempmodel[32], already_has_model = false, i, iRand
 	
 	if (g_handle_models_on_separate_ent)
 	{
 		// Set the right model
-		if (g_nemesis[id])
-		{
-			iRand = random_num(0, ArraySize(model_nemesis) - 1)
-			ArrayGetString(model_nemesis, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-			if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_nemesis, iRand))
-		}
+		if (g_nemesis[id]) setRandomModel(id, models_nemesis, charsmax(models_nemesis), nemesis_index)
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelszombie) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
-				iRand = random_num(0, ArraySize(model_admin_zombie) - 1)
-				ArrayGetString(model_admin_zombie, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_admin_zombie, iRand))
+				setRandomModel(id, models_zadmin, charsmax(models_zadmin), zadmin_index)
 			}
 			else
 			{
@@ -5117,37 +4900,15 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 		// Set the right model, after checking that we don't already have it
 		if (g_nemesis[id])
 		{
-			size = ArraySize(model_nemesis)
-			for (i = 0; i < size; i++)
-			{
-				ArrayGetString(model_nemesis, i, tempmodel, charsmax(tempmodel))
-				if (equal(currentmodel, tempmodel)) already_has_model = true
-			}
-			
-			if (!already_has_model)
-			{
-				iRand = random_num(0, size - 1)
-				ArrayGetString(model_nemesis, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_nemesis, iRand))
-			}
+			if (!haveThisModel(currentmodel, models_nemesis, sizeof(models_nemesis), id))
+				setRandomModel(id, models_nemesis, charsmax(models_nemesis), nemesis_index)
 		}
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelszombie) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
-				size = ArraySize(model_admin_zombie)
-				for (i = 0; i < size; i++)
-				{
-					ArrayGetString(model_admin_zombie, i, tempmodel, charsmax(tempmodel))
-					if (equal(currentmodel, tempmodel)) already_has_model = true
-				}
-				
-				if (!already_has_model)
-				{
-					iRand = random_num(0, size - 1)
-					ArrayGetString(model_admin_zombie, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-					if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_admin_zombie, iRand))
-				}
+				if (!haveThisModel(currentmodel, models_zadmin, sizeof(models_zadmin), id))
+					setRandomModel(id, models_zadmin, charsmax(models_zadmin), zadmin_index)
 			}
 			else
 			{
@@ -5401,7 +5162,7 @@ humanme(id, survivor, silentmode)
 		{
 			// Antidote sound
 			static sound[64]
-			ArrayGetString(sound_antidote, random_num(0, ArraySize(sound_antidote) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), sound_antidote[random_num(0, charsmax(sound_antidote))])
 			emit_sound(id, CHAN_ITEM, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			
 			// Show Antidote HUD notice
@@ -5419,32 +5180,17 @@ humanme(id, survivor, silentmode)
 	}
 	
 	// Custom models stuff
-	static currentmodel[32], tempmodel[32], already_has_model, i, iRand, size
-	already_has_model = false
-	
 	if (g_handle_models_on_separate_ent)
 	{
 		// Set the right model
 		if (g_survivor[id])
-		{
-			iRand = random_num(0, ArraySize(model_survivor) - 1)
-			ArrayGetString(model_survivor, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-			if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_survivor, iRand))
-		}
+			setRandomModel(id, models_survior, charsmax(models_survior), survivor_index)
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
-			{
-				iRand = random_num(0, ArraySize(model_admin_human) - 1)
-				ArrayGetString(model_admin_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_admin_human, iRand))
-			}
+				setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
 			else
-			{
-				iRand = random_num(0, ArraySize(model_human) - 1)
-				ArrayGetString(model_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_human, iRand))
-			}
+				setRandomModel(id, models_human, charsmax(models_human), models_index)
 		}
 		
 		// Set model on player model entity
@@ -5461,73 +5207,30 @@ humanme(id, survivor, silentmode)
 	}
 	else
 	{
+		static currentmodel[32]
 		// Get current model for comparing it with the current one
 		fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
 		
 		// Set the right model, after checking that we don't already have it
 		if (g_survivor[id])
 		{
-			size = ArraySize(model_survivor)
-			for (i = 0; i < size; i++)
-			{
-				ArrayGetString(model_survivor, i, tempmodel, charsmax(tempmodel))
-				if (equal(currentmodel, tempmodel)) already_has_model = true
-			}
-			
-			if (!already_has_model)
-			{
-				iRand = random_num(0, size - 1)
-				ArrayGetString(model_survivor, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-				if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_survivor, iRand))
-			}
+			if (!haveThisModel(currentmodel, models_survior, sizeof(models_survior), id))
+				setRandomModel(id, models_survior, charsmax(models_survior), survivor_index)
 		}
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
-				size = ArraySize(model_admin_human)
-				for (i = 0; i < size; i++)
-				{
-					ArrayGetString(model_admin_human, i, tempmodel, charsmax(tempmodel))
-					if (equal(currentmodel, tempmodel)) already_has_model = true
-				}
-				
-				if (!already_has_model)
-				{
-					iRand = random_num(0, size - 1)
-					ArrayGetString(model_admin_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-					if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_admin_human, iRand))
-				}
+				if (!haveThisModel(currentmodel, models_hadmin, sizeof(models_hadmin), id))
+					setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
 			}
 			else
 			{
-				size = ArraySize(model_human)
-				for (i = 0; i < size; i++)
-				{
-					ArrayGetString(model_human, i, tempmodel, charsmax(tempmodel))
-					if (equal(currentmodel, tempmodel)) already_has_model = true
-				}
-				
-				if (!already_has_model)
-				{
-					iRand = random_num(0, size - 1)
-					ArrayGetString(model_human, iRand, g_playermodel[id], charsmax(g_playermodel[]))
-					if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, ArrayGetCell(g_modelindex_human, iRand))
-				}
+				if (!haveThisModel(currentmodel, models_human, sizeof(models_human), id))
+					setRandomModel(id, models_human, charsmax(models_human), models_index)
 			}
 		}
-		
-		// Need to change the model?
-		if (!already_has_model)
-		{
-			// An additional delay is offset at round start
-			// since SVC_BAD is more likely to be triggered there
-			if (g_newround)
-				set_task(5.0 * g_modelchange_delay, "fm_user_model_update", id+TASK_MODEL)
-			else
-				fm_user_model_update(id+TASK_MODEL)
-		}
-		
+
 		// Set survivor glow / remove glow, unless frozen
 		if (!g_frozen[id])
 		{
@@ -5661,72 +5364,7 @@ load_customization_from_files()
 			}
 			case SECTION_PLAYER_MODELS:
 			{
-				if (equal(key, "HUMAN"))
-				{
-					// Parse models
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to models array
-						ArrayPushString(model_human, key)
-					}
-				}
-				else if (equal(key, "NEMESIS"))
-				{
-					// Parse models
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to models array
-						ArrayPushString(model_nemesis, key)
-					}
-				}
-				else if (equal(key, "SURVIVOR"))
-				{
-					// Parse models
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to models array
-						ArrayPushString(model_survivor, key)
-					}
-				}
-				else if (equal(key, "ADMIN ZOMBIE"))
-				{
-					// Parse models
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to models array
-						ArrayPushString(model_admin_zombie, key)
-					}
-				}
-				else if (equal(key, "ADMIN HUMAN"))
-				{
-					// Parse models
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to models array
-						ArrayPushString(model_admin_human, key)
-					}
-				}
-				else if (equal(key, "FORCE CONSISTENCY"))
+				if (equal(key, "FORCE CONSISTENCY"))
 					g_force_consistency = str_to_num(value)
 				else if (equal(key, "SAME MODELS FOR ALL"))
 					g_same_models_for_all = str_to_num(value)
@@ -5788,550 +5426,6 @@ load_customization_from_files()
 					copy(sprite_grenade_smoke, charsmax(sprite_grenade_smoke), value)
 				else if (equal(key, "GLASS"))
 					copy(sprite_grenade_glass, charsmax(sprite_grenade_glass), value)
-			}
-			case SECTION_SOUNDS:
-			{
-				if (equal(key, "WIN ZOMBIES"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_win_zombies, key)
-						ArrayPushCell(sound_win_zombies_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (equal(key, "WIN HUMANS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_win_humans, key)
-						ArrayPushCell(sound_win_humans_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (equal(key, "WIN NO ONE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_win_no_one, key)
-						ArrayPushCell(sound_win_no_one_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (equal(key, "ZOMBIE INFECT"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_infect, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE PAIN"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_pain, key)
-					}
-				}
-				else if (equal(key, "NEMESIS PAIN"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(nemesis_pain, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE DIE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_die, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE FALL"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_fall, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE MISS SLASH"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_miss_slash, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE MISS WALL"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_miss_wall, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE HIT NORMAL"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_hit_normal, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE HIT STAB"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_hit_stab, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE IDLE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_idle, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE IDLE LAST"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_idle_last, key)
-					}
-				}
-				else if (equal(key, "ZOMBIE MADNESS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(zombie_madness, key)
-					}
-				}
-				else if (equal(key, "ROUND NEMESIS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_nemesis, key)
-					}
-				}
-				else if (equal(key, "ROUND SURVIVOR"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_survivor, key)
-					}
-				}
-				else if (equal(key, "ROUND SWARM"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_swarm, key)
-					}
-				}
-				else if (equal(key, "ROUND MULTI"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_multi, key)
-					}
-				}
-				else if (equal(key, "ROUND PLAGUE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_plague, key)
-					}
-				}
-				else if (equal(key, "GRENADE INFECT EXPLODE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_infect, key)
-					}
-				}
-				else if (equal(key, "GRENADE INFECT PLAYER"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_infect_player, key)
-					}
-				}
-				else if (equal(key, "GRENADE FIRE EXPLODE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_fire, key)
-					}
-				}
-				else if (equal(key, "GRENADE FIRE PLAYER"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_fire_player, key)
-					}
-				}
-				else if (equal(key, "GRENADE FROST EXPLODE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_frost, key)
-					}
-				}
-				else if (equal(key, "GRENADE FROST PLAYER"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_frost_player, key)
-					}
-				}
-				else if (equal(key, "GRENADE FROST BREAK"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_frost_break, key)
-					}
-				}
-				else if (equal(key, "GRENADE FLARE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(grenade_flare, key)
-					}
-				}
-				else if (equal(key, "ANTIDOTE"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_antidote, key)
-					}
-				}
-				else if (equal(key, "THUNDER"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_thunder, key)
-					}
-				}
-			}
-			case SECTION_AMBIENCE_SOUNDS:
-			{
-				if (equal(key, "INFECTION ENABLE"))
-					g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION] = str_to_num(value)
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION] && equal(key, "INFECTION SOUNDS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_ambience1, key)
-						ArrayPushCell(sound_ambience1_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_INFECTION] && equal(key, "INFECTION DURATIONS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushCell(sound_ambience1_duration, str_to_num(key))
-					}
-				}
-				else if (equal(key, "NEMESIS ENABLE"))
-					g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS] = str_to_num(value)
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS] && equal(key, "NEMESIS SOUNDS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_ambience2, key)
-						ArrayPushCell(sound_ambience2_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_NEMESIS] && equal(key, "NEMESIS DURATIONS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushCell(sound_ambience2_duration, str_to_num(key))
-					}
-				}
-				else if (equal(key, "SURVIVOR ENABLE"))
-					g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR] = str_to_num(value)
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR] && equal(key, "SURVIVOR SOUNDS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_ambience3, key)
-						ArrayPushCell(sound_ambience3_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_SURVIVOR] && equal(key, "SURVIVOR DURATIONS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushCell(sound_ambience3_duration, str_to_num(key))
-					}
-				}
-				else if (equal(key, "SWARM ENABLE"))
-					g_ambience_sounds[AMBIENCE_SOUNDS_SWARM] = str_to_num(value)
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_SWARM] && equal(key, "SWARM SOUNDS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_ambience4, key)
-						ArrayPushCell(sound_ambience4_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_SWARM] && equal(key, "SWARM DURATIONS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushCell(sound_ambience4_duration, str_to_num(key))
-					}
-				}
-				else if (equal(key, "PLAGUE ENABLE"))
-					g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE] = str_to_num(value)
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE] && equal(key, "PLAGUE SOUNDS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushString(sound_ambience5, key)
-						ArrayPushCell(sound_ambience5_ismp3, equal(key[strlen(key)-4], ".mp3") ? 1 : 0)
-					}
-				}
-				else if (g_ambience_sounds[AMBIENCE_SOUNDS_PLAGUE] && equal(key, "PLAGUE DURATIONS"))
-				{
-					// Parse sounds
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to sounds array
-						ArrayPushCell(sound_ambience5_duration, str_to_num(key))
-					}
-				}
 			}
 			case SECTION_EXTRA_ITEMS_WEAPONS:
 			{
@@ -7118,7 +6212,7 @@ public thunderclap()
 	if (g_lights_i == 0)
 	{
 		static sound[64]
-		ArrayGetString(sound_thunder, random_num(0, ArraySize(sound_thunder) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), sound_thunder[random_num(0, charsmax(sound_thunder))])
 		PlaySound(sound)
 	}
 	
@@ -7144,41 +6238,18 @@ public thunderclap()
 public ambience_sound_effects(taskid)
 {
 	// Play a random sound depending on the round
-	static sound[64], iRand, duration
+	static duration
 	
 	if (g_nemround) // Nemesis Mode
-	{
-		iRand = random_num(0, ArraySize(sound_ambience2) - 1)
-		ArrayGetString(sound_ambience2, iRand, sound, charsmax(sound))
-		duration = ArrayGetCell(sound_ambience2_duration, iRand)
-	}
+		duration = setRandomAmbience(ambience_nemesis, charsmax(ambience_nemesis))
 	else if (g_survround) // Survivor Mode
-	{
-		iRand = random_num(0, ArraySize(sound_ambience3) - 1)
-		ArrayGetString(sound_ambience3, iRand, sound, charsmax(sound))
-		duration = ArrayGetCell(sound_ambience3_duration, iRand)
-	}
+		duration = setRandomAmbience(ambience_survivor, charsmax(ambience_survivor))
 	else if (g_swarmround) // Swarm Mode
-	{
-		iRand = random_num(0, ArraySize(sound_ambience4) - 1)
-		ArrayGetString(sound_ambience4, iRand, sound, charsmax(sound))
-		duration = ArrayGetCell(sound_ambience4_duration, iRand)
-	}
+		duration = setRandomAmbience(ambience_swarm, charsmax(ambience_swarm))
 	else if (g_plagueround) // Plague Mode
-	{
-		iRand = random_num(0, ArraySize(sound_ambience5) - 1)
-		ArrayGetString(sound_ambience5, iRand, sound, charsmax(sound))
-		duration = ArrayGetCell(sound_ambience5_duration, iRand)
-	}
+		duration = setRandomAmbience(ambience_plague, charsmax(ambience_plague))
 	else // Infection Mode
-	{
-		iRand = random_num(0, ArraySize(sound_ambience1) - 1)
-		ArrayGetString(sound_ambience1, iRand, sound, charsmax(sound))
-		duration = 50
-	}
-	
-	// Play it on clients
-	PlaySound(sound)
+		duration = setRandomAmbience(ambience_infection, charsmax(ambience_infection))
 	
 	// Set the task for when the sound is done playing
 	set_task(float(duration), "ambience_sound_effects", TASK_AMBIENCESOUNDS)
@@ -7325,7 +6396,7 @@ infection_explode(ent)
 	
 	// Infection nade explode sound
 	static sound[64]
-	ArrayGetString(grenade_infect, random_num(0, ArraySize(grenade_infect) - 1), sound, charsmax(sound))
+	copy(sound, charsmax(sound), grenade_infect[random_num(0, charsmax(grenade_infect))])
 	emit_sound(ent, CHAN_WEAPON, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	// Get attacker
@@ -7358,7 +6429,7 @@ infection_explode(ent)
 		}
 		
 		// Infected victim's sound
-		ArrayGetString(grenade_infect_player, random_num(0, ArraySize(grenade_infect_player) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), grenade_infect_player[random_num(0, charsmax(grenade_infect_player))])
 		emit_sound(victim, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		
 		// Turn into zombie
@@ -7381,7 +6452,7 @@ fire_explode(ent)
 	
 	// Fire nade explode sound
 	static sound[64]
-	ArrayGetString(grenade_fire, random_num(0, ArraySize(grenade_fire) - 1), sound, charsmax(sound))
+	copy(sound, charsmax(sound), grenade_fire[random_num(0, charsmax(grenade_fire))])
 	emit_sound(ent, CHAN_WEAPON, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	// Collisions
@@ -7433,7 +6504,7 @@ frost_explode(ent)
 	
 	// Frost nade explode sound
 	static sound[64]
-	ArrayGetString(grenade_frost, random_num(0, ArraySize(grenade_frost) - 1), sound, charsmax(sound))
+	copy(sound, charsmax(sound), grenade_frost[random_num(0, charsmax(grenade_frost))])
 	emit_sound(ent, CHAN_WEAPON, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	// Collisions
@@ -7454,7 +6525,7 @@ frost_explode(ent)
 			get_user_origin(victim, origin2)
 			
 			// Broken glass sound
-			ArrayGetString(grenade_frost_break, random_num(0, ArraySize(grenade_frost_break) - 1), sound, charsmax(sound))
+			copy(sound, charsmax(sound), grenade_frost_break[random_num(0, charsmax(grenade_frost_break))])
 			emit_sound(victim, CHAN_BODY, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			
 			// Glass shatter
@@ -7499,7 +6570,7 @@ frost_explode(ent)
 			fm_set_rendering(victim, kRenderFxGlowShell, 0, 100, 200, kRenderNormal, 25)
 		
 		// Freeze sound
-		ArrayGetString(grenade_frost_player, random_num(0, ArraySize(grenade_frost_player) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), grenade_frost_player[random_num(0, charsmax(grenade_frost_player))])
 		emit_sound(victim, CHAN_BODY, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 		
 		// Add a blue tint to their screen
@@ -7585,7 +6656,7 @@ public remove_freeze(id)
 	
 	// Broken glass sound
 	static sound[64]
-	ArrayGetString(grenade_frost_break, random_num(0, ArraySize(grenade_frost_break) - 1), sound, charsmax(sound))
+	copy(sound, charsmax(sound), grenade_frost_break[random_num(0, charsmax(grenade_frost_break))])
 	emit_sound(id, CHAN_BODY, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	// Get player's origin
@@ -7795,12 +6866,12 @@ public zombie_play_idle(taskid)
 	// Last zombie?
 	if (g_lastzombie[ID_BLOOD])
 	{
-		ArrayGetString(zombie_idle_last, random_num(0, ArraySize(zombie_idle_last) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), zombie_idle_last[random_num(0, charsmax(zombie_idle_last))])
 		emit_sound(ID_BLOOD, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	}
 	else
 	{
-		ArrayGetString(zombie_idle, random_num(0, ArraySize(zombie_idle) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), zombie_idle[random_num(0, charsmax(zombie_idle))])
 		emit_sound(ID_BLOOD, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	}
 }
@@ -9695,7 +8766,7 @@ public burning_flame(taskid)
 	if (!g_nemesis[ID_BURN] && !random_num(0, 20))
 	{
 		static sound[64]
-		ArrayGetString(grenade_fire_player, random_num(0, ArraySize(grenade_fire_player) - 1), sound, charsmax(sound))
+		copy(sound, charsmax(sound), grenade_fire_player[random_num(0, charsmax(grenade_fire_player))])
 		emit_sound(ID_BURN, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	}
 	
@@ -10193,7 +9264,7 @@ stock load_spawns()
 	new cfgdir[32], mapname[32], filepath[100], linedata[64]
 	get_configsdir(cfgdir, charsmax(cfgdir))
 	get_mapname(mapname, charsmax(mapname))
-	formatex(filepath, charsmax(filepath), "%s/csdm/%s.spawns.cfg", cfgdir, mapname)
+	formatex(filepath, charsmax(filepath), "%s/cso/csdm/%s.spawns.cfg", cfgdir, mapname)
 	
 	// Load CSDM spawns if present
 	if (file_exists(filepath))
@@ -10562,4 +9633,95 @@ public fm_user_model_update(taskid)
 		set_task((g_models_targettime + g_modelchange_delay) - current_time, "fm_cs_set_user_model", taskid)
 		g_models_targettime = g_models_targettime + g_modelchange_delay
 	}
+}
+
+// nu e nevoie de current model de modificat
+public haveThisModel(const currentmodel[], const model[][], model_size, id)
+{
+	for (new i = 0; i < model_size; i++)
+	{
+		if (equal(currentmodel, model[i])) 
+			return true
+
+		return false
+	}
+
+	return false
+}
+     
+public setRandomModel(id, const model[][], model_size, const model_index[])
+{
+	new iRand = random_num(0, model_size)
+	copy(g_playermodel[id], charsmax(g_playermodel[]), model[iRand])
+	
+	if (g_set_modelindex_offset) fm_cs_set_user_model_index(id, model_index[iRand])
+
+	// An additional delay is offset at round start
+	// since SVC_BAD is more likely to be triggered there
+	if (g_newround)
+		set_task(5.0 * g_modelchange_delay, "fm_user_model_update", id+TASK_MODEL)
+	else
+		fm_user_model_update(id+TASK_MODEL)
+}
+
+public precacheModels(models_size, model[][], index_models[])
+{
+	static buffer[100]
+
+	for (new i = 0; i < models_size; i++)
+	{
+		formatex(buffer, charsmax(buffer), "models/player/%s/%s.mdl", model[i], model[i])
+		index_models[i] = engfunc(EngFunc_PrecacheModel, buffer)
+
+		server_print(buffer)
+
+		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, buffer)
+		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, buffer)
+
+		// Precache modelT.mdl files too
+		copy(buffer[strlen(buffer)-4], charsmax(buffer) - (strlen(buffer)-4), "T.mdl")
+		if (file_exists(buffer)) engfunc(EngFunc_PrecacheModel, buffer)
+	}
+}
+
+public precacheSounds(sound[][], sounds_size)
+{
+	for(new i = 0; i < sounds_size; i++)
+	{
+		if(containi(sound[i], "mp3") != -1)
+		{
+			static buffer[100]	
+		
+			formatex(buffer, charsmax(buffer), "sound/%s", sound[i])
+			engfunc(EngFunc_PrecacheGeneric, buffer)
+		}
+		else
+			engfunc(EngFunc_PrecacheSound, sound[i])
+	}
+}
+
+public precacheAmbiance(sound[][][], sounds_size)
+{
+	for(new i = 0; i < sounds_size; i++)
+	{
+		if(containi(sound[i][0], "mp3") != -1)
+		{
+			static buffer[100]	
+		
+			formatex(buffer, charsmax(buffer), "sound/%s", sound[i][0])
+			engfunc(EngFunc_PrecacheGeneric, buffer)
+		}
+		else
+			engfunc(EngFunc_PrecacheSound, sound[i][0])
+	}
+}
+
+stock setRandomAmbience(const sound[][][], sound_size)
+{
+	new iRand = random_num(0, sound_size - 1)
+	new duration = str_to_num(sound[iRand][1])
+
+	PlaySound(sound[iRand][0])
+
+	return duration
 }

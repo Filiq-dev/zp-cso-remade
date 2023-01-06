@@ -1,3 +1,5 @@
+#pragma compress 1
+
 #define host "localhost"
 #define user "root"
 #define pass ""
