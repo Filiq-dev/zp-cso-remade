@@ -221,6 +221,9 @@ public zp_user_infected_post(id)
 	if(zp_get_user_zombie_class(id) == -1)
 		return PLUGIN_HANDLED
 
+	if(zp_get_user_nemesis(id))
+		return PLUGIN_HANDLED
+
 	new class = zp_get_user_zombie_class(id)
 
 	client_print_color(id, 0, "^4[CSO] ^1Your class is ^4[%s]^1, your health ^1is now ^4[%d] ^1and you can access the ability ^1on ^4[G]", classData[class][zName], classData[class][zHP])
@@ -252,7 +255,7 @@ public useAbility(id)
 	if(!is_user_alive(id))
 		return PLUGIN_HANDLED
 
-	if(zp_get_user_zombie(id))
+	if(zp_get_user_zombie(id) && !zp_get_user_nemesis(id))
 	{
 		if(abilityUse[id] != -1)
 			return PLUGIN_HANDLED
