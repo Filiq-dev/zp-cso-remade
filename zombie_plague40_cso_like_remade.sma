@@ -4,12 +4,6 @@
 
 // #define LOCATION_IN_CHAT
 
-// All customization settings have been moved
-// to external files to allow easier editing
-new const ZP_CUSTOMIZATION_FILE[] = "cso/cso.ini"
-new const ZP_EXTRAITEMS_FILE[] = "cso/cso_extraitems.ini"
-new const ZP_ZOMBIECLASSES_FILE[] = "cso/cso_zombieclasses.ini"
-
 // Limiters for stuff not worth making dynamic arrays out of (increase if needed)
 const MAX_CSDM_SPAWNS = 128
 const MAX_STATS_SAVED = 64
@@ -592,7 +586,9 @@ new sound_thunder[][] = {
 new ambience_infection[][][] = {
 	{"zombiecsofiliq/ambience_filiq/audiomachine2.mp3", "50"},
 	{"zombiecsofiliq/ambience_filiq/vinviu2.mp3", "50"},
-	{"zombiecsofiliq/ambience_filiq/anihilation.mp3", "50"}
+	{"zombiecsofiliq/ambience_filiq/anihilation.mp3", "50"},
+	{"zombiecsofiliq/ambience_filiq/cubrigada.mp3", "120"},
+	{"zombiecsofiliq/ambience_filiq/endgame.mp3", "110"}
 }
 
 new ambience_nemesis[][][] = {
@@ -822,8 +818,6 @@ public plugin_precache()
 		copy(temp[strlen(temp)-4], charsmax(temp) - (strlen(temp)-4), "T.mdl")
 		if (file_exists(temp)) engfunc(EngFunc_PrecacheModel, temp)
 	}
-
-	new i, buffer[100]
 	
 	// Load up the hard coded extra items
 	native_register_extra_item2("NightVision", g_extra_costs2[EXTRA_NVISION], ZP_TEAM_HUMAN)
@@ -831,12 +825,13 @@ public plugin_precache()
 	native_register_extra_item2("Zombie Madness", g_extra_costs2[EXTRA_MADNESS], ZP_TEAM_ZOMBIE)
 	native_register_extra_item2("Infection Bomb", g_extra_costs2[EXTRA_INFBOMB], ZP_TEAM_ZOMBIE)
 	
+	new buffer[100]
 	// Extra weapons
-	// for (i = 0; i < ArraySize(g_extraweapon_names); i++)
-	// {
-	// 	ArrayGetString(g_extraweapon_names, i, buffer, charsmax(buffer))
-	// 	native_register_extra_item2(buffer, ArrayGetCell(g_extraweapon_costs, i), ZP_TEAM_HUMAN)
-	// }
+	for (new i = 0; i < ArraySize(g_extraweapon_names); i++)
+	{
+		ArrayGetString(g_extraweapon_names, i, buffer, charsmax(buffer))
+		native_register_extra_item2(buffer, ArrayGetCell(g_extraweapon_costs, i), ZP_TEAM_HUMAN)
+	}
 	precacheModels(sizeof models_human, models_human, models_index)
 	precacheModels(sizeof models_nemesis, models_nemesis, nemesis_index)
 	precacheModels(sizeof models_survior, models_survior, survivor_index)
@@ -875,6 +870,7 @@ public plugin_precache()
 	precacheSounds(zombie_miss_slash, sizeof(zombie_miss_slash))
 	precacheSounds(zombie_hit_normal, sizeof(zombie_hit_normal))
 	precacheSounds(zombie_hit_stab, sizeof(zombie_hit_stab))
+	precacheSounds(zombie_idle_last, sizeof(zombie_idle_last))
 	precacheSounds(zombie_madness, sizeof(zombie_madness))
 	precacheSounds(sound_nemesis, sizeof(sound_nemesis))
 	precacheSounds(sound_survivor, sizeof(sound_survivor))
@@ -1654,9 +1650,9 @@ public fw_PlayerSpawn_Post(id)
 	{
 		// Set the right model
 		if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
-			setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
+			setRandomModel(id, models_hadmin, sizeof(models_hadmin), hadmin_index)
 		else
-			setRandomModel(id, models_human, charsmax(models_human), models_index)
+			setRandomModel(id, models_human, sizeof(models_human), models_index)
 		
 		// Set model on player model entity
 		fm_set_playermodel_ent(id)
@@ -1670,12 +1666,12 @@ public fw_PlayerSpawn_Post(id)
 		if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 		{
 			if (!haveThisModel(models_hadmin, sizeof(models_hadmin), id))
-				setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
+				setRandomModel(id, models_hadmin, sizeof(models_hadmin), hadmin_index)
 		}
 		else
 		{
 			if (!haveThisModel(models_human, sizeof(models_human), id))
-				setRandomModel(id, models_human, charsmax(models_human), models_index)
+				setRandomModel(id, models_human, sizeof(models_human), models_index)
 		}
 		
 		// Remove glow
@@ -4892,12 +4888,12 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 	if (g_handle_models_on_separate_ent)
 	{
 		// Set the right model
-		if (g_nemesis[id]) setRandomModel(id, models_nemesis, charsmax(models_nemesis), nemesis_index)
+		if (g_nemesis[id]) setRandomModel(id, models_nemesis, sizeof(models_nemesis), nemesis_index)
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelszombie) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
-				setRandomModel(id, models_zadmin, charsmax(models_zadmin), zadmin_index)
+				setRandomModel(id, models_zadmin, sizeof(models_zadmin), zadmin_index)
 			}
 			else
 			{
@@ -4926,14 +4922,14 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 		if (g_nemesis[id])
 		{
 			if (!haveThisModel(models_nemesis, sizeof(models_nemesis), id))
-				setRandomModel(id, models_nemesis, charsmax(models_nemesis), nemesis_index)
+				setRandomModel(id, models_nemesis, sizeof(models_nemesis), nemesis_index)
 		}
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelszombie) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
 				if (!haveThisModel(models_zadmin, sizeof(models_zadmin), id))
-					setRandomModel(id, models_zadmin, charsmax(models_zadmin), zadmin_index)
+					setRandomModel(id, models_zadmin, sizeof(models_zadmin), zadmin_index)
 			}
 			else
 			{
@@ -5212,13 +5208,13 @@ humanme(id, survivor, silentmode)
 	{
 		// Set the right model
 		if (g_survivor[id])
-			setRandomModel(id, models_survior, charsmax(models_survior), survivor_index)
+			setRandomModel(id, models_survior, sizeof(models_survior), survivor_index)
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
-				setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
+				setRandomModel(id, models_hadmin, sizeof(models_hadmin), hadmin_index)
 			else
-				setRandomModel(id, models_human, charsmax(models_human), models_index)
+				setRandomModel(id, models_human, sizeof(models_human), models_index)
 		}
 		
 		// Set model on player model entity
@@ -5239,19 +5235,19 @@ humanme(id, survivor, silentmode)
 		if (g_survivor[id])
 		{
 			if (!haveThisModel(models_survior, sizeof(models_survior), id))
-				setRandomModel(id, models_survior, charsmax(models_survior), survivor_index)
+				setRandomModel(id, models_survior, sizeof(models_survior), survivor_index)
 		}
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
 				if (!haveThisModel(models_hadmin, sizeof(models_hadmin), id))
-					setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
+					setRandomModel(id, models_hadmin, sizeof(models_hadmin), hadmin_index)
 			}
 			else
 			{
 				if (!haveThisModel(models_human, sizeof(models_human), id))
-					setRandomModel(id, models_human, charsmax(models_human), models_index)
+					setRandomModel(id, models_human, sizeof(models_human), models_index)
 			}
 		}
 
@@ -5311,7 +5307,7 @@ load_customization_from_files()
 	// Build customization file path
 	new path[64]
 	get_configsdir(path, charsmax(path))
-	format(path, charsmax(path), "%s/%s", path, ZP_CUSTOMIZATION_FILE)
+	format(path, charsmax(path), "%s/cso/cso.ini", path)
 	
 	// File not present
 	if (!file_exists(path))
@@ -5544,7 +5540,7 @@ load_customization_from_files()
 	
 	// Build zombie classes file path
 	get_configsdir(path, charsmax(path))
-	format(path, charsmax(path), "%s/%s", path, ZP_ZOMBIECLASSES_FILE)
+	format(path, charsmax(path), "%s/cso/cso_zombieclasses.ini", path)
 	
 	// Parse if present
 	if (file_exists(path))
@@ -5622,7 +5618,7 @@ load_customization_from_files()
 	
 	// Build extra items file path
 	get_configsdir(path, charsmax(path))
-	format(path, charsmax(path), "%s/%s", path, ZP_EXTRAITEMS_FILE)
+	format(path, charsmax(path), "%s/cso/cso_extraitems.ini", path)
 	
 	// Parse if present
 	if (file_exists(path))
@@ -5701,7 +5697,7 @@ save_customization()
 	// Build zombie classes file path
 	new path[64]
 	get_configsdir(path, charsmax(path))
-	format(path, charsmax(path), "%s/%s", path, ZP_ZOMBIECLASSES_FILE)
+	format(path, charsmax(path), "%s/cso/cso_zombieclasses.ini", path)
 	
 	// Open zombie classes file for appending data
 	new file = fopen(path, "at"), size = ArraySize(g_zclass_name)
@@ -5770,7 +5766,7 @@ save_customization()
 	
 	// Build extra items file path
 	get_configsdir(path, charsmax(path))
-	format(path, charsmax(path), "%s/%s", path, ZP_EXTRAITEMS_FILE)
+	format(path, charsmax(path), "%s/cso/cso_extraitems.ini", path)
 	
 	// Open extra items file for appending data
 	file = fopen(path, "at")
@@ -6188,15 +6184,15 @@ public ambience_sound_effects(taskid)
 	static duration
 	
 	if (g_nemround) // Nemesis Mode
-		duration = setRandomAmbience(ambience_nemesis, charsmax(ambience_nemesis))
+		duration = setRandomAmbience(ambience_nemesis, sizeof(ambience_nemesis))
 	else if (g_survround) // Survivor Mode
-		duration = setRandomAmbience(ambience_survivor, charsmax(ambience_survivor))
+		duration = setRandomAmbience(ambience_survivor, sizeof(ambience_survivor))
 	else if (g_swarmround) // Swarm Mode
-		duration = setRandomAmbience(ambience_swarm, charsmax(ambience_swarm))
+		duration = setRandomAmbience(ambience_swarm, sizeof(ambience_swarm))
 	else if (g_plagueround) // Plague Mode
-		duration = setRandomAmbience(ambience_plague, charsmax(ambience_plague))
+		duration = setRandomAmbience(ambience_plague, sizeof(ambience_plague))
 	else // Infection Mode
-		duration = setRandomAmbience(ambience_infection, charsmax(ambience_infection))
+		duration = setRandomAmbience(ambience_infection, sizeof(ambience_infection))
 	
 	// Set the task for when the sound is done playing
 	set_task(float(duration), "ambience_sound_effects", TASK_AMBIENCESOUNDS)
@@ -9670,6 +9666,11 @@ stock setRandomAmbience(const sound[][][], sound_size)
 {
 	new iRand = random_num(0, sound_size - 1)
 	new duration = str_to_num(sound[iRand][1])
+
+	for(new i = 0; i < sizeof(ambience_infection); i++)
+		log_amx("%s", ambience_infection[i][0])
+
+	log_amx("play ambiance: %s", sound[iRand][0])
 
 	PlaySound(sound[iRand][0])
 
