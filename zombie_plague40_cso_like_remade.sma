@@ -43,17 +43,14 @@ enum
 {
 	SECTION_NONE = 0,
 	SECTION_ACCESS_FLAGS,
-	SECTION_PLAYER_MODELS,
 	SECTION_WEAPON_MODELS,
 	SECTION_GRENADE_SPRITES,
 	SECTION_EXTRA_ITEMS_WEAPONS,
 	SECTION_HARD_CODED_ITEMS_COSTS,
 	SECTION_WEATHER_EFFECTS,
-	SECTION_SKY,
 	SECTION_LIGHTNING,
 	SECTION_ZOMBIE_DECALS,
 	SECTION_KNOCKBACK,
-	SECTION_OBJECTIVE_ENTS,
 	SECTION_SVC_BAD
 }
 
@@ -624,10 +621,22 @@ sprite_grenade_smoke[64], sprite_grenade_glass[64],
 g_ambience_rain,
 Array:g_extraweapon_names,
 Array:g_extraweapon_items, Array:g_extraweapon_costs, g_extra_costs2[EXTRA_WEAPONS_STARTID],
-g_ambience_snow, g_ambience_fog, g_fog_density[10], g_fog_color[12], g_sky_enable,
-Array:g_sky_names, Array:lights_thunder, Array:zombie_decals, Array:g_objective_ents,
+g_ambience_snow, g_ambience_fog, g_fog_density[10], g_fog_color[12], 
+Array:lights_thunder, Array:zombie_decals,
 Float:g_modelchange_delay, g_set_modelindex_offset, g_handle_models_on_separate_ent,
-Float:kb_weapon_power[31] = { -1.0, ... }, g_force_consistency, g_same_models_for_all
+Float:kb_weapon_power[31] = { -1.0, ... }
+
+// ; If you don't want people using altered player models, enable the following.
+// ; 1 = Bounds Check (model's geometry must fit in the same bbox)
+// ; 2 = CRC Check (file on client must exactly match server's file)
+new g_force_consistency = 0
+
+// ; By default, zombie models are class specific. You can edit them separately in your zp_zombieclasses.ini
+// ; If, however, you want all zombies to use the same models regardless of class, you can enable this
+// ; setting and add your global zombie models to the "ZOMBIE" line.
+new g_same_models_for_all = 0
+
+new const ZOMBIEMODELS[] = "zombie_source" 
 
 // CVAR pointers
 new cvar_lighting, cvar_zombiefov, cvar_plague, cvar_plaguechance, cvar_zombiefirsthp,
@@ -757,10 +766,8 @@ public plugin_precache()
 	g_extraweapon_names = ArrayCreate(32, 1)
 	g_extraweapon_items = ArrayCreate(32, 1)
 	g_extraweapon_costs = ArrayCreate(1, 1)
-	g_sky_names = ArrayCreate(32, 1)
 	lights_thunder = ArrayCreate(32, 1)
 	zombie_decals = ArrayCreate(1, 1)
-	g_objective_ents = ArrayCreate(32, 1)
 	g_extraitem_name = ArrayCreate(32, 1)
 	g_extraitem_cost = ArrayCreate(1, 1)
 	g_extraitem_team = ArrayCreate(1, 1)
@@ -799,7 +806,23 @@ public plugin_precache()
 	
 	// Load customization data
 	load_customization_from_files()
-	
+
+	if(g_same_models_for_all)
+	{
+		new temp[100]
+		// Add to models array
+		ArrayPushString(g_zclass_playermodel, ZOMBIEMODELS)
+		
+		// Precache model and retrieve its modelindex
+		formatex(temp, charsmax(temp), "models/player/%s/%s.mdl", ZOMBIEMODELS)
+		ArrayPushCell(g_zclass_modelindex, engfunc(EngFunc_PrecacheModel, temp))
+		if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, temp)
+		if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, temp)
+		// Precache modelT.mdl files too
+		copy(temp[strlen(temp)-4], charsmax(temp) - (strlen(temp)-4), "T.mdl")
+		if (file_exists(temp)) engfunc(EngFunc_PrecacheModel, temp)
+	}
+
 	new i, buffer[100]
 	
 	// Load up the hard coded extra items
@@ -809,11 +832,11 @@ public plugin_precache()
 	native_register_extra_item2("Infection Bomb", g_extra_costs2[EXTRA_INFBOMB], ZP_TEAM_ZOMBIE)
 	
 	// Extra weapons
-	for (i = 0; i < ArraySize(g_extraweapon_names); i++)
-	{
-		ArrayGetString(g_extraweapon_names, i, buffer, charsmax(buffer))
-		native_register_extra_item2(buffer, ArrayGetCell(g_extraweapon_costs, i), ZP_TEAM_HUMAN)
-	}
+	// for (i = 0; i < ArraySize(g_extraweapon_names); i++)
+	// {
+	// 	ArrayGetString(g_extraweapon_names, i, buffer, charsmax(buffer))
+	// 	native_register_extra_item2(buffer, ArrayGetCell(g_extraweapon_costs, i), ZP_TEAM_HUMAN)
+	// }
 	precacheModels(sizeof models_human, models_human, models_index)
 	precacheModels(sizeof models_nemesis, models_nemesis, nemesis_index)
 	precacheModels(sizeof models_survior, models_survior, survivor_index)
@@ -1052,7 +1075,7 @@ public plugin_init()
 	
 	
 	// CVARS - Deathmatch
-	cvar_deathmatch = register_cvar("zp_deathmatch", "1")
+	cvar_deathmatch = register_cvar("zp_deathmatch", "2")
 	cvar_spawndelay = register_cvar("zp_spawn_delay", "5")
 	cvar_spawnprotection = register_cvar("zp_spawn_protection", "5")
 	cvar_respawnonsuicide = register_cvar("zp_respawn_on_suicide", "0")
@@ -1244,14 +1267,6 @@ public plugin_init()
 	
 	// Collect random spawn points
 	load_spawns()
-	
-	// Set a random skybox?
-	if (g_sky_enable)
-	{
-		new sky[32]
-		ArrayGetString(g_sky_names, random_num(0, ArraySize(g_sky_names) - 1), sky, charsmax(sky))
-		set_cvar_string("sv_skyname", sky)
-	}
 	
 	// Disable sky lighting so it doesn't mess with our custom lighting
 	set_cvar_num("sv_skycolor_r", 0)
@@ -1532,15 +1547,31 @@ public fw_Spawn(entity)
 	if (!pev_valid(entity)) return FMRES_IGNORED;
 	
 	// Get classname
-	new classname[32], objective[32], size = ArraySize(g_objective_ents)
+	new 
+		classname[32],
+		objective[][] = {
+			"func_bomb_target", 
+			"info_bomb_target", 
+			"info_vip_start", 
+			"func_vip_safetyzone", 
+			"func_escapezone", 
+			"hostage_entity", 
+			"monster_scientist", 
+			"func_hostage_rescue", 
+			"info_hostage_rescue", 
+			"env_fog", 
+			"env_rain", 
+			"env_snow", 
+			"item_longjump", 
+			"func_vehicle"
+		}
+
 	pev(entity, pev_classname, classname, charsmax(classname))
 	
 	// Check whether it needs to be removed
-	for (new i = 0; i < size; i++)
+	for (new i = 0; i < sizeof(objective); i++)
 	{
-		ArrayGetString(g_objective_ents, i, objective, charsmax(objective))
-		
-		if (equal(classname, objective))
+		if (equal(classname, objective[i]))
 		{
 			engfunc(EngFunc_RemoveEntity, entity)
 			return FMRES_SUPERCEDE;
@@ -1635,19 +1666,15 @@ public fw_PlayerSpawn_Post(id)
 	}
 	else
 	{
-		static currentmodel[32]
-		// Get current model for comparing it with the current one
-		fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
-		
 		// Set the right model, after checking that we don't already have it
 		if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 		{
-			if (!haveThisModel(currentmodel, models_hadmin, sizeof(models_hadmin), id))
+			if (!haveThisModel(models_hadmin, sizeof(models_hadmin), id))
 				setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
 		}
 		else
 		{
-			if (!haveThisModel(currentmodel, models_human, sizeof(models_human), id))
+			if (!haveThisModel(models_human, sizeof(models_human), id))
 				setRandomModel(id, models_human, charsmax(models_human), models_index)
 		}
 		
@@ -4860,7 +4887,7 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 	}
 	
 	// Custom models stuff
-	static currentmodel[32], tempmodel[32], already_has_model = false, i, iRand
+	static tempmodel[32], already_has_model = false, i, iRand
 	
 	if (g_handle_models_on_separate_ent)
 	{
@@ -4894,28 +4921,29 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 	}
 	else
 	{
-		// Get current model for comparing it with the current one
-		fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
 		
 		// Set the right model, after checking that we don't already have it
 		if (g_nemesis[id])
 		{
-			if (!haveThisModel(currentmodel, models_nemesis, sizeof(models_nemesis), id))
+			if (!haveThisModel(models_nemesis, sizeof(models_nemesis), id))
 				setRandomModel(id, models_nemesis, charsmax(models_nemesis), nemesis_index)
 		}
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelszombie) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
-				if (!haveThisModel(currentmodel, models_zadmin, sizeof(models_zadmin), id))
+				if (!haveThisModel(models_zadmin, sizeof(models_zadmin), id))
 					setRandomModel(id, models_zadmin, charsmax(models_zadmin), zadmin_index)
 			}
 			else
 			{
+				static currentmodel[32]
+				fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
+
 				for (i = ArrayGetCell(g_zclass_modelsstart, g_zombieclass[id]); i < ArrayGetCell(g_zclass_modelsend, g_zombieclass[id]); i++)
 				{
 					ArrayGetString(g_zclass_playermodel, i, tempmodel, charsmax(tempmodel))
-					if (equal(currentmodel, tempmodel)) already_has_model = true
+					if (equal(tempmodel, currentmodel)) already_has_model = true
 				}
 				
 				if (!already_has_model)
@@ -5207,26 +5235,22 @@ humanme(id, survivor, silentmode)
 	}
 	else
 	{
-		static currentmodel[32]
-		// Get current model for comparing it with the current one
-		fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
-		
 		// Set the right model, after checking that we don't already have it
 		if (g_survivor[id])
 		{
-			if (!haveThisModel(currentmodel, models_survior, sizeof(models_survior), id))
+			if (!haveThisModel(models_survior, sizeof(models_survior), id))
 				setRandomModel(id, models_survior, charsmax(models_survior), survivor_index)
 		}
 		else
 		{
 			if (get_pcvar_num(cvar_adminmodelshuman) && (get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MODELS]))
 			{
-				if (!haveThisModel(currentmodel, models_hadmin, sizeof(models_hadmin), id))
+				if (!haveThisModel(models_hadmin, sizeof(models_hadmin), id))
 					setRandomModel(id, models_hadmin, charsmax(models_hadmin), hadmin_index)
 			}
 			else
 			{
-				if (!haveThisModel(currentmodel, models_human, sizeof(models_human), id))
+				if (!haveThisModel(models_human, sizeof(models_human), id))
 					setRandomModel(id, models_human, charsmax(models_human), models_index)
 			}
 		}
@@ -5362,35 +5386,6 @@ load_customization_from_files()
 				else if (equal(key, "ADMIN MODELS"))
 					g_access_flag[ACCESS_ADMIN_MODELS] = read_flags(value)
 			}
-			case SECTION_PLAYER_MODELS:
-			{
-				if (equal(key, "FORCE CONSISTENCY"))
-					g_force_consistency = str_to_num(value)
-				else if (equal(key, "SAME MODELS FOR ALL"))
-					g_same_models_for_all = str_to_num(value)
-				else if (g_same_models_for_all && equal(key, "ZOMBIE"))
-				{
-					// Parse models
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to models array
-						ArrayPushString(g_zclass_playermodel, key)
-						
-						// Precache model and retrieve its modelindex
-						formatex(linedata, charsmax(linedata), "models/player/%s/%s.mdl", key, key)
-						ArrayPushCell(g_zclass_modelindex, engfunc(EngFunc_PrecacheModel, linedata))
-						if (g_force_consistency == 1) force_unmodified(force_model_samebounds, {0,0,0}, {0,0,0}, linedata)
-						if (g_force_consistency == 2) force_unmodified(force_exactfile, {0,0,0}, {0,0,0}, linedata)
-						// Precache modelT.mdl files too
-						copy(linedata[strlen(linedata)-4], charsmax(linedata) - (strlen(linedata)-4), "T.mdl")
-						if (file_exists(linedata)) engfunc(EngFunc_PrecacheModel, linedata)
-					}
-				}
-			}
 			case SECTION_WEAPON_MODELS:
 			{
 				if (equal(key, "V_KNIFE HUMAN"))
@@ -5493,38 +5488,6 @@ load_customization_from_files()
 				else if (equal(key, "FOG COLOR"))
 					copy(g_fog_color, charsmax(g_fog_color), value)
 			}
-			case SECTION_SKY:
-			{
-				if (equal(key, "ENABLE"))
-					g_sky_enable = str_to_num(value)
-				else if (equal(key, "SKY NAMES"))
-				{
-					// Parse sky names
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to skies array
-						ArrayPushString(g_sky_names, key)
-						
-						// Preache custom sky files
-						formatex(linedata, charsmax(linedata), "gfx/env/%sbk.tga", key)
-						engfunc(EngFunc_PrecacheGeneric, linedata)
-						formatex(linedata, charsmax(linedata), "gfx/env/%sdn.tga", key)
-						engfunc(EngFunc_PrecacheGeneric, linedata)
-						formatex(linedata, charsmax(linedata), "gfx/env/%sft.tga", key)
-						engfunc(EngFunc_PrecacheGeneric, linedata)
-						formatex(linedata, charsmax(linedata), "gfx/env/%slf.tga", key)
-						engfunc(EngFunc_PrecacheGeneric, linedata)
-						formatex(linedata, charsmax(linedata), "gfx/env/%srt.tga", key)
-						engfunc(EngFunc_PrecacheGeneric, linedata)
-						formatex(linedata, charsmax(linedata), "gfx/env/%sup.tga", key)
-						engfunc(EngFunc_PrecacheGeneric, linedata)
-					}
-				}
-			}
 			case SECTION_LIGHTNING:
 			{
 				if (equal(key, "LIGHTS"))
@@ -5565,22 +5528,6 @@ load_customization_from_files()
 				
 				// Add value to knockback power array
 				kb_weapon_power[cs_weapon_name_to_id(key)] = str_to_float(value)
-			}
-			case SECTION_OBJECTIVE_ENTS:
-			{
-				if (equal(key, "CLASSNAMES"))
-				{
-					// Parse classnames
-					while (value[0] != 0 && strtok(value, key, charsmax(key), value, charsmax(value), ','))
-					{
-						// Trim spaces
-						trim(key)
-						trim(value)
-						
-						// Add to objective ents array
-						ArrayPushString(g_objective_ents, key)
-					}
-				}
 			}
 			case SECTION_SVC_BAD:
 			{
@@ -9636,8 +9583,11 @@ public fm_user_model_update(taskid)
 }
 
 // nu e nevoie de current model de modificat
-public haveThisModel(const currentmodel[], const model[][], model_size, id)
+public haveThisModel(const model[][], model_size, id)
 {
+	static currentmodel[32]
+	fm_cs_get_user_model(id, currentmodel, charsmax(currentmodel))
+
 	for (new i = 0; i < model_size; i++)
 	{
 		if (equal(currentmodel, model[i])) 

@@ -111,7 +111,7 @@ public plugin_init()
 		register_clcmd(Commands[i], "BlockAutobuy")    
 		
 	pcvar_open_all_menu_for_zombie=register_cvar("ms_zombie_open_all_menu", "1")
-	pcvar_open_all_menu_for_human=register_cvar("ms_human_open_all_menu", "0")
+	pcvar_open_all_menu_for_human=register_cvar("ms_human_open_all_menu", "1")
 	
 	pcvar_off_menu_when_mode_start=register_cvar("ms_off_menu_when_mode_started", "1")
 	pcvar_time_spawn_for_buy=register_cvar("ms_time_for_buy", "15.0")
