@@ -401,6 +401,7 @@ new Array:g_zclass_playermodel // player models array
 new Array:g_zclass_modelindex // model indices array
 new Array:g_zclass_clawmodel // claw model
 new Array:g_zclass_hp // health
+new Array:g_zclass_lvl // level
 new Array:g_zclass_spd // speed
 new Array:g_zclass_grav // gravity
 new Array:g_zclass_kb // knockback
@@ -409,7 +410,7 @@ new g_zclass_i // loaded zombie classes counter
 // For zombie classes file parsing
 new Array:g_zclass2_realname, Array:g_zclass2_name, Array:g_zclass2_info,
 Array:g_zclass2_modelsstart, Array:g_zclass2_modelsend, Array:g_zclass2_playermodel,
-Array:g_zclass2_modelindex, Array:g_zclass2_clawmodel, Array:g_zclass2_hp,
+Array:g_zclass2_modelindex, Array:g_zclass2_clawmodel, Array:g_zclass2_hp, Array:g_zclass2_lvl,
 Array:g_zclass2_spd, Array:g_zclass2_grav, Array:g_zclass2_kb, Array:g_zclass_new
 
 new models_human[][] = {
@@ -780,6 +781,7 @@ public plugin_precache()
 	g_zclass_modelindex = ArrayCreate(1, 1)
 	g_zclass_clawmodel = ArrayCreate(32, 1)
 	g_zclass_hp = ArrayCreate(1, 1)
+	g_zclass_lvl = ArrayCreate(1, 1)
 	g_zclass_spd = ArrayCreate(1, 1)
 	g_zclass_grav = ArrayCreate(1, 1)
 	g_zclass_kb = ArrayCreate(1, 1)
@@ -792,6 +794,7 @@ public plugin_precache()
 	g_zclass2_modelindex = ArrayCreate(1, 1)
 	g_zclass2_clawmodel = ArrayCreate(32, 1)
 	g_zclass2_hp = ArrayCreate(1, 1)
+	g_zclass2_lvl = ArrayCreate(1, 1)
 	g_zclass2_spd = ArrayCreate(1, 1)
 	g_zclass2_grav = ArrayCreate(1, 1)
 	g_zclass2_kb = ArrayCreate(1, 1)
@@ -3015,7 +3018,7 @@ public show_menu_zclass(id)
 		return;
 	}
 	
-	static menuid, menu[128], class, buffer[32], buffer2[32]
+	static menuid, menu[128], class, buffer[32], buffer2[32], level
 	
 	// Title
 	formatex(menu, charsmax(menu), "%L\r", id, "MENU_ZCLASS_TITLE")
@@ -3028,12 +3031,17 @@ public show_menu_zclass(id)
 		ArrayGetString(g_zclass_name, class, buffer, charsmax(buffer))
 		ArrayGetString(g_zclass_info, class, buffer2, charsmax(buffer2))
 		
+		level = ArrayGetCell(g_zclass_lvl, class)
+
 		// Add to menu
 		if (class == g_zombieclassnext[id])
 			formatex(menu, charsmax(menu), "\d%s %s", buffer, buffer2)
 		else
 			formatex(menu, charsmax(menu), "%s \y%s", buffer, buffer2)
 		
+		if(zp_get_user_level(id) < level)
+			formatex(menu, charsmax(menu), "\d%s %s [LvL. %d]", buffer, buffer2, level)
+
 		buffer[0] = class
 		buffer[1] = 0
 		menu_additem(menuid, menu, buffer)
@@ -3585,15 +3593,25 @@ public menu_zclass(id, menuid, item)
 	}
 	
 	// Retrieve zombie class id
-	static buffer[2], dummy, classid
+	static buffer[2], dummy, classid, level, name[32]
 	menu_item_getinfo(menuid, item, dummy, buffer, charsmax(buffer), _, _, dummy)
-	classid = buffer[0]
 	
+	classid = buffer[0]
+	level = ArrayGetCell(g_zclass_lvl, classid)
+	
+	ArrayGetString(g_zclass_name, g_zombieclassnext[id], name, charsmax(name))
+
+	if(zp_get_user_level(id) < level)
+	{
+		menu_destroy(menuid)
+
+		client_print_color(id, 0, "^4[CSO]^1 For getting ^4%s^1 class, you need ^4%d ^1level.", name, level)
+
+		return PLUGIN_HANDLED
+	}
+
 	// Store selection for the next infection
 	g_zombieclassnext[id] = classid
-	
-	static name[32]
-	ArrayGetString(g_zclass_name, g_zombieclassnext[id], name, charsmax(name))
 	
 	// Show selected zombie class info and stats
 	zp_colored_print(id, "^x04[CSO]^x01 %L: %s", id, "ZOMBIE_SELECT", name)
@@ -5606,6 +5624,8 @@ load_customization_from_files()
 				ArrayPushString(g_zclass2_clawmodel, value)
 			else if (equal(key, "HEALTH"))
 				ArrayPushCell(g_zclass2_hp, str_to_num(value))
+			else if (equal(key, "LEVEL"))
+				ArrayPushCell(g_zclass2_lvl, str_to_num(value))
 			else if (equal(key, "SPEED"))
 				ArrayPushCell(g_zclass2_spd, str_to_num(value))
 			else if (equal(key, "GRAVITY"))
@@ -5749,6 +5769,10 @@ save_customization()
 			formatex(buffer, charsmax(buffer), "^nHEALTH = %d", ArrayGetCell(g_zclass_hp, i))
 			fputs(file, buffer)
 			
+			// Add level
+			formatex(buffer, charsmax(buffer), "^nLEVEL = %d", ArrayGetCell(g_zclass_lvl, i))
+			fputs(file, buffer)
+			
 			// Add speed
 			formatex(buffer, charsmax(buffer), "^nSPEED = %d", ArrayGetCell(g_zclass_spd, i))
 			fputs(file, buffer)
@@ -5808,6 +5832,7 @@ save_customization()
 	ArrayDestroy(g_zclass2_modelindex)
 	ArrayDestroy(g_zclass2_clawmodel)
 	ArrayDestroy(g_zclass2_hp)
+	ArrayDestroy(g_zclass2_lvl)
 	ArrayDestroy(g_zclass2_spd)
 	ArrayDestroy(g_zclass2_grav)
 	ArrayDestroy(g_zclass2_kb)
@@ -8136,7 +8161,7 @@ native_register_extra_item2(const name[], cost, team)
 }
 
 // Native: zp_register_zombie_class
-public native_register_zombie_class(const name[], const info[], const model[], const clawmodel[], hp, speed, Float:gravity, Float:knockback)
+public native_register_zombie_class(const name[], const info[], const model[], const clawmodel[], hp, speed, Float:gravity, Float:knockback, lvl)
 {
 	// ZP disabled
 	if (!g_pluginenabled)
@@ -8192,6 +8217,7 @@ public native_register_zombie_class(const name[], const info[], const model[], c
 	
 	ArrayPushString(g_zclass_clawmodel, clawmodel)
 	ArrayPushCell(g_zclass_hp, hp)
+	ArrayPushCell(g_zclass_lvl, lvl)
 	ArrayPushCell(g_zclass_spd, speed)
 	ArrayPushCell(g_zclass_grav, gravity)
 	ArrayPushCell(g_zclass_kb, knockback)
@@ -8292,6 +8318,10 @@ public native_register_zombie_class(const name[], const info[], const model[], c
 		// Replace health
 		buffer[0] = ArrayGetCell(g_zclass2_hp, i)
 		ArraySetCell(g_zclass_hp, g_zclass_i, buffer[0])
+		
+		// Replace level
+		buffer[0] = ArrayGetCell(g_zclass2_lvl, i)
+		ArraySetCell(g_zclass_lvl, g_zclass_i, buffer[0])
 		
 		// Replace speed
 		buffer[0] = ArrayGetCell(g_zclass2_spd, i)
@@ -9666,9 +9696,6 @@ stock setRandomAmbience(const sound[][][], sound_size)
 {
 	new iRand = random_num(0, sound_size - 1)
 	new duration = str_to_num(sound[iRand][1])
-
-	for(new i = 0; i < sizeof(ambience_infection); i++)
-		log_amx("%s", ambience_infection[i][0])
 
 	log_amx("play ambiance: %s", sound[iRand][0])
 

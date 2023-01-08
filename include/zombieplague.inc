@@ -398,9 +398,10 @@ native zp_register_extra_item(const name[], cost, teams)
  * @param speed		Maximum speed.
  * @param gravity	Gravity multiplier.
  * @param knockback	Knockback multiplier.
+ * @param level 	Set minim level
  * @return		An internal zombie class ID, or -1 on failure.
  */
-native zp_register_zombie_class(const name[], const info[], const model[], const clawmodel[], hp, speed, Float:gravity, Float:knockback)
+native zp_register_zombie_class(const name[], const info[], const model[], const clawmodel[], hp, speed, Float:gravity, Float:knockback, level)
 
 /**
  * Returns an extra item's ID.

@@ -27,7 +27,8 @@ enum cData
 	zHP,
 	zSpeed,
 	Float:zGravity,
-	Float:zKnockback
+	Float:zKnockback,
+	zLevel
 }
 
 new classData[][cData] =
@@ -41,7 +42,8 @@ new classData[][cData] =
 		12000, 
 		280, 
 		0.7, 
-		1.3
+		1.3,
+		1
 	},
 	{
 		-1,
@@ -52,7 +54,8 @@ new classData[][cData] =
 		7000, 
 		260, 
 		0.7, 
-		1.3
+		1.3,
+		1
 	},
 	{
 		-1,
@@ -63,7 +66,8 @@ new classData[][cData] =
 		9000, 
 		230, 
 		1.0, 
-		1.0
+		1.0,
+		2
 	},
 	{
 		-1,
@@ -74,7 +78,8 @@ new classData[][cData] =
 		5000, 
 		280, 
 		0.7, 
-		1.0
+		1.0,
+		5
 	},
 	{
 		-1,
@@ -85,7 +90,8 @@ new classData[][cData] =
 		12000, 
 		280, 
 		1.0, 
-		1.0
+		1.0,
+		10
 	}
 }
 
@@ -160,7 +166,7 @@ public plugin_init()
 public plugin_precache() 
 {
 	for(new i = 0; i < sizeof classData; i++)
-		classData[i][zID] = zp_register_zombie_class(classData[i][zName], classData[i][zInfo], classData[i][zModel], classData[i][zcModel], classData[i][zHP], classData[i][zSpeed], classData[i][zGravity], classData[i][zKnockback])
+		classData[i][zID] = zp_register_zombie_class(classData[i][zName], classData[i][zInfo], classData[i][zModel], classData[i][zcModel], classData[i][zHP], classData[i][zSpeed], classData[i][zGravity], classData[i][zKnockback], classData[i][zLevel])
 
 	//invis
 	precache_sound(invisible_sound)
