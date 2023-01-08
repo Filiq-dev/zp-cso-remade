@@ -941,7 +941,7 @@ public plugin_init()
 	
 	// Language files
 	register_dictionary("cso.txt")
-	
+
 	// Events
 	register_event("HLTV", "event_round_start", "a", "1=0", "2=0")
 	register_logevent("logevent_round_start",2, "1=Round_Start")
@@ -3598,8 +3598,8 @@ public menu_zclass(id, menuid, item)
 	
 	classid = buffer[0]
 	level = ArrayGetCell(g_zclass_lvl, classid)
-	
-	ArrayGetString(g_zclass_name, g_zombieclassnext[id], name, charsmax(name))
+
+	ArrayGetString(g_zclass_name, classid, name, charsmax(name))
 
 	if(zp_get_user_level(id) < level)
 	{
@@ -3615,8 +3615,8 @@ public menu_zclass(id, menuid, item)
 	
 	// Show selected zombie class info and stats
 	zp_colored_print(id, "^x04[CSO]^x01 %L: %s", id, "ZOMBIE_SELECT", name)
-	zp_colored_print(id, "^x04[CSO]^x01 %L: %d %L: %d %L: %d %L: %d%%", id, "ZOMBIE_ATTRIB1", ArrayGetCell(g_zclass_hp, g_zombieclassnext[id]), id, "ZOMBIE_ATTRIB2", ArrayGetCell(g_zclass_spd, g_zombieclassnext[id]),
-	id, "ZOMBIE_ATTRIB3", floatround(Float:ArrayGetCell(g_zclass_grav, g_zombieclassnext[id]) * 800.0), id, "ZOMBIE_ATTRIB4", floatround(Float:ArrayGetCell(g_zclass_kb, g_zombieclassnext[id]) * 100.0))
+	zp_colored_print(id, "^x04[CSO]^x01 %L: %d %L: %d %L: %d %L: %d%%", id, "ZOMBIE_ATTRIB1", ArrayGetCell(g_zclass_hp, classid), id, "ZOMBIE_ATTRIB2", ArrayGetCell(g_zclass_spd, classid),
+	id, "ZOMBIE_ATTRIB3", floatround(Float:ArrayGetCell(g_zclass_grav, classid) * 800.0), id, "ZOMBIE_ATTRIB4", floatround(Float:ArrayGetCell(g_zclass_kb, classid) * 100.0))
 	
 	menu_destroy(menuid)
 	return PLUGIN_HANDLED;
