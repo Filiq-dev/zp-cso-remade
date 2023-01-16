@@ -23,6 +23,8 @@ native zp_money_reset(id)
 native hud_get_zinfo(id)
 native is_user_loaded(id)
 
+forward cso_data_loaded()
+
 stock getName(id)
 {
 	new name[33]

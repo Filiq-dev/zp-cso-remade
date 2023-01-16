@@ -7,8 +7,6 @@
 #define VERSION "1.0"
 #define AUTHOR "Filiq_"
 
-#define DEBUG
-
 new 
 	Handle:g_SqlTuple,
 	gQuery[256],
@@ -18,6 +16,13 @@ public plugin_precache(){
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
 	g_SqlTuple = SQL_MakeDbTuple(host, user, pass, db)
+
+	if(!g_SqlTuple)
+	{
+		log_error(1, "Nu se poate conecta la baza de date, se opreste tot serverul")
+		server_cmd("exit")
+		server_exec()
+	}
 }
 
 public plugin_natives()

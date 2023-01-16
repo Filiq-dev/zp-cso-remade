@@ -935,7 +935,7 @@ public plugin_init()
 {
 	// Plugin disabled?
 	if (!g_pluginenabled) return;
-	
+
 	// No zombie classes?
 	if (!g_zclass_i) set_fail_state("No zombie classes loaded!")
 	
@@ -1369,6 +1369,10 @@ public event_round_start()
 	// Freezetime begins
 	g_freezetime = true
 	
+}
+
+public cso_data_loaded()
+{
 	// Show welcome message and T-Virus notice
 	remove_task(TASK_WELCOMEMSG)
 	set_task(2.0, "welcome_msg", TASK_WELCOMEMSG)

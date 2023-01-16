@@ -43,6 +43,7 @@ public plugin_init()
 	register_event("Damage", "showDamage", "b", "2!0", "3=0", "4!0")	
 
 	register_clcmd("say /hud", "hudMenu")
+
 }
 
 public plugin_precache()
@@ -87,6 +88,21 @@ public plugin_natives()
 	register_native("hud_get_zinfo", "native_hud_get_zinfo", 1)
 }
 
+public cso_data_loaded()
+{
+	new num, players[32]
+		
+	get_players(players, num)
+	for(new i = 0; i < num; i++)
+	{
+		if(is_user_bot(players[i]))
+			continue
+		
+		set_task(1.0, "ShowHUD", players[i] , _, _, "b")
+		
+	}
+}
+
 public Message_TextMsg() 
 {
 	static szMessages[32];
@@ -106,11 +122,8 @@ public client_putinserver(id)
 	hudStats[id] = true
 	hudLevel[id] = true
 	hudMessages[id] = true
-	hudDamage[id] = false,
+	hudDamage[id] = false
 	hudcInfo[id] = true
-
-	if(!is_user_bot(id)) 
-		set_task(1.0, "ShowHUD", id , _, _, "b")
 }
 
 public client_disconnected(id)
