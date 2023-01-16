@@ -5,7 +5,16 @@
 #define pass ""
 #define db "server"
 
+enum 
+{
+	ginfinite,
+	glevel,
+	gmoney,
+	gxp
+}
+
 native zp_get_user_level(id)
+native zp_buy_get_user_level(id)
 native zp_get_max_levels()
 native zp_set_user_level(id, value)
 native zp_set_user_exp(id, value)
@@ -22,6 +31,7 @@ native zp_level_reset(id)
 native zp_money_reset(id)
 native hud_get_zinfo(id)
 native is_user_loaded(id)
+native cso_gameplay_active()
 
 forward cso_data_loaded()
 

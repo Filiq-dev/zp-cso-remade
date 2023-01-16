@@ -171,7 +171,13 @@ public zp_round_ended(winteam)
 public zp_user_infected_pre(id, infector)
 {
 	if(is_user_alive(infector)) {
-		set_user_money(infector, get_user_money(infector) + get_pcvar_num(pcvar_zombies_kill_reward))
+		static mny
+		mny = get_pcvar_num(pcvar_zombies_kill_reward)
+
+		if(cso_gameplay_active() == gmoney)
+			mny = mny * 3
+
+		set_user_money(infector, get_user_money(infector) + mny)
 	}
 }
 
@@ -184,8 +190,14 @@ public fwTakeDamage(id, weapon, attacker, Float:damage)
 		return	
 		
 	damage /= get_pcvar_num(pcvar_humans_dmg_reward)
+
+	static money
+	money = floatround(damage)
+
+	if(cso_gameplay_active() == gmoney)
+		money = money * 3
 	
-	set_user_money(attacker, get_user_money(attacker) + floatround(damage))
+	set_user_money(attacker, get_user_money(attacker) + money)
 }
 
 public fwKilled(id, killer)
@@ -193,7 +205,13 @@ public fwKilled(id, killer)
 	if(!is_user_alive(killer))
 		return
 	
-	set_user_money(killer, get_user_money(killer) + get_pcvar_num(zp_get_user_zombie(killer) ? pcvar_zombies_kill_reward : pcvar_humans_kill_reward))
+	static money
+	money = get_pcvar_num(zp_get_user_zombie(killer) ? pcvar_zombies_kill_reward : pcvar_humans_kill_reward)
+
+	if(cso_gameplay_active() == gmoney)
+		money = money * 3
+
+	set_user_money(killer, get_user_money(killer) + money)
 }
 
 public fwSpawn(id)
@@ -209,10 +227,17 @@ public give_team_money(money_hum, money_zb)
 		if(!is_user_connected(i) || get_user_team(i) == 4 || get_user_team(i) == 0)
 			continue
 		
+		static money
+
 		if(zp_get_user_zombie(i))
-			set_user_money(i, get_user_money(i) + money_zb)
+			money = money_zb
 		else
-			set_user_money(i, get_user_money(i) + money_hum)			
+			money = money_hum
+
+		if(cso_gameplay_active() == gmoney)
+			money = money * 3
+			
+		set_user_money(i, get_user_money(i) + money_hum)			
 	}	
 }
 
@@ -253,12 +278,12 @@ public get_user_money(id) {
 
 public set_user_money(id, value)
 {
-	new money = clamp(value, 0, g_PlayerMoneyLimit[id])
+	new nmoney = clamp(value, 0, g_PlayerMoneyLimit[id])
 
-	g_PlayerMoney[id] = money
+	g_PlayerMoney[id] = nmoney
 		
 	if(is_user_alive(id))
-		sent_money(id, money)
+		sent_money(id, nmoney)
 }
 
 public sent_money(id, num)

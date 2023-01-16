@@ -6,15 +6,7 @@
 #define VERSION "1.0"
 #define AUTHOR "Filiq_"
 
-#define SECOUNDS_TO_CHOOSE 10.0 // pana sa aleaga 
-
-enum 
-{
-	infinite,
-	level,
-	money,
-	xp
-}
+#define SECOUNDS_TO_CHOOSE 20.0 // pana sa aleaga 
 
 new 
 	loadinData = 0,
@@ -22,18 +14,23 @@ new
 	dataLoaded,
 	syncMsg,
 	votes[4],
-	bool:hasVoted[33] = false    
+	bool:hasVoted[33] = false,
+	menu,
+	gameplay
+
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
 	register_event("HLTV", "event_round_start", "a", "1=0", "2=0")
-	register_logevent("logevent_round_end", 2, "1=Round_End")
 
 	dataLoaded = CreateMultiForward("cso_data_loaded", ET_IGNORE)
 
 	syncMsg = CreateHudSyncObj()
+}
 
-	
+public plugin_natives()
+{
+	register_native("cso_gameplay_active", "native_cso_gameplay_active")
 }
 
 public client_putinserver(id)
@@ -45,6 +42,7 @@ public event_round_start()
 {
 	if(loadinData != -1) {
 		loadinData++
+		gameplay = -1
 		
 		set_task(SECOUNDS_TO_CHOOSE, "loadData")
 		make_ScreenFade(0, SECOUNDS_TO_CHOOSE, 0, 0, 0, 255);
@@ -62,56 +60,49 @@ public event_round_start()
 	}
 }
 
-public logevent_round_end()
-{
-
-}
-
 public showChoiceMenu()
 {
-	new menu = menu_create("Vote gameplay for current map | Zombie-Plague \w[\rCSO\w]", "choiceMenuHandler")
-
 	static num, players[32], str[50]
 	get_players(players, num)
-	
-	formatex(str, charsmax(str), "Infinite ammo [%d Votes]", votes[infinite])
+
+	menu = menu_create("Vote gameplay for current map | Zombie-Plague \w[\rCSO\w]", "choiceMenuHandler")
+
+	formatex(str, charsmax(str), "Infinite ammo [\r%d Votes\w]", votes[ginfinite])
 	menu_additem(menu, str)
 
-	formatex(str, charsmax(str), "No level in buy menu [%d Votes]", votes[level])
+	formatex(str, charsmax(str), "No level in buy menu [\r%d Votes\w]", votes[glevel])
 	menu_additem(menu, str)
 
-	formatex(str, charsmax(str), "x3 Money [%d Votes]", votes[money])
+	formatex(str, charsmax(str), "x3 Money [\r%d Votes\w]", votes[gmoney])
 	menu_additem(menu, str)
 
-	formatex(str, charsmax(str), "x10 XP [%d Votes]", votes[xp])
+	formatex(str, charsmax(str), "x10 XP [\r%d Votes\w]", votes[gxp])
 	menu_additem(menu, str)
 
-	for(new i = 0; i < 33; i++)
+	menu_addtext(menu, "^n^n^nPlease select what gameplay do you want to play on server.")
+	menu_addtext2(menu, "Be aware, your decision affects the entire game")
+
+	for(new i = 0; i < num; i++)
 	{
-		if(is_user_connected(i) && !is_user_bot(i)) 
+		if(is_user_connected(players[i]) && !is_user_bot(players[i])) 
 		{
-			menu_destroy(menu)
-			menu_display(i, menu)
+			menu_display(players[i], menu)
 		}
 	}
 }
 
-public choiceMenuHandler(id, menu, item)
+public choiceMenuHandler(id, menu2, item)
 {
-	if(item == MENU_EXIT)
+	if(item == MENU_EXIT || hasVoted[id])
 	{
-		showChoiceMenu()
+		menu_destroy(menu2)
 		return PLUGIN_HANDLED
 	}
-
-	if(hasVoted[id]) 
-		return PLUGIN_HANDLED
-
 	
 	votes[item] ++
 	hasVoted[id] = true
 
-	client_print_color(0, id, "[CSO] %s want to play %s", getName(id), getChoiceName(item))
+	client_print_color(0, id, "^4[CSO] %s ^1has voted ^4%s^1.", getName(id), getChoiceName(item))
 	showChoiceMenu()
 
 	return PLUGIN_CONTINUE
@@ -122,7 +113,21 @@ public loadData()
 	new result
 	ExecuteForward(dataLoaded, result)
 
+	for(new i = 0; i < sizeof(votes); i++)
+		for(new j = 0; j < sizeof(votes); j++)
+			if(votes[i] > votes[j])
+				gameplay = i
+
+	client_print_color(0, 0, "^4[CSO] ^1This map we will playing ^4%s^1.", getChoiceName(gameplay))
+	
+	menu_destroy(menu)
+
 	bugFix = true
+}
+
+public native_cso_gameplay_active()
+{
+	return gameplay
 }
 
 stock getChoiceName(item)
@@ -130,10 +135,10 @@ stock getChoiceName(item)
 	new str[30]
 	switch(item)
 	{
-		case infinite: str = "Infinite ammo"
-		case level: str = "No level at buy"
-		case money: str = "x3 Money"
-		case xp: str = "x10 XP"
+		case ginfinite: str = "with Infinite ammo"
+		case glevel: str = "No level at buy"
+		case gmoney: str = "x3 Money"
+		case gxp: str = "x10 XP"
 	}
 
 	return str

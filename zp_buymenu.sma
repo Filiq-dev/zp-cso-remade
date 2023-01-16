@@ -365,7 +365,7 @@ public fwTouch(ent, id)
 	if(!zp_get_max_levels())
 		return HAM_IGNORED
 	
-	if(pev(ent, pev_level) > zp_get_user_level(id))
+	if(pev(ent, pev_level) > zp_buy_get_user_level(id))
 		return HAM_SUPERCEDE
 
 	return HAM_IGNORED
@@ -527,7 +527,7 @@ public flags_callback(id, menu, item)
 	if(ArrayGetCell(g_ItemsCosts[index], item) > zp_get_user_money(id))
 		return ITEM_DISABLED    
 	
-	if(get_cvar_num("ms_lvl_system_active") && ArrayGetCell(g_ItemsLevels[index], item) > zp_get_user_level(id))
+	if(get_cvar_num("ms_lvl_system_active") && ArrayGetCell(g_ItemsLevels[index], item) > zp_buy_get_user_level(id))
 		return ITEM_DISABLED    
 	
 	if(get_playersnum() < ArrayGetCell(g_ItemsMinimumPlayers[index], item))
