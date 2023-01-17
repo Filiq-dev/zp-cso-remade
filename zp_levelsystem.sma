@@ -114,7 +114,6 @@ public plugin_natives()
 	register_native("zp_get_exp_current", "native_current", 1)
 	register_native("zp_get_user_exp", "native_exp_get", 1)    
 	register_native("zp_get_user_level", "native_level_get", 1)    
-	register_native("zp_buy_get_user_level", "native_buy_get_user_level")
 	register_native("zp_set_user_level", "native_level_set", 1)    
 	register_native("zp_set_user_exp", "native_exp_set", 1)    
 	register_native("zp_get_max_levels", "native_levels_max", 1)
@@ -234,13 +233,6 @@ public zp_user_infected_pre(id, infector)
 
 public native_level_get(id) {
 	return g_PlayerLevel[id]
-}
-
-public native_buy_get_user_level(id) {
-	if(cso_gameplay_active() == glevel)
-		return 0
-	else
-		return g_PlayerLevel[id]
 }
 
 public native_exp_get(id) {

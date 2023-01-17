@@ -14,7 +14,6 @@ enum
 }
 
 native zp_get_user_level(id)
-native zp_buy_get_user_level(id)
 native zp_get_max_levels()
 native zp_set_user_level(id, value)
 native zp_set_user_exp(id, value)

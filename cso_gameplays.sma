@@ -6,7 +6,7 @@
 #define VERSION "1.0"
 #define AUTHOR "Filiq_"
 
-#define SECOUNDS_TO_CHOOSE 20.0 // pana sa aleaga 
+#define SECOUNDS_TO_CHOOSE 10.0 // pana sa aleaga 
 
 new 
 	loadinData = 0,
@@ -117,6 +117,9 @@ public loadData()
 		for(new j = 0; j < sizeof(votes); j++)
 			if(votes[i] > votes[j])
 				gameplay = i
+
+	if(gameplay == -1)
+		gameplay = random_num(0, sizeof(votes))
 
 	client_print_color(0, 0, "^4[CSO] ^1This map we will playing ^4%s^1.", getChoiceName(gameplay))
 	
