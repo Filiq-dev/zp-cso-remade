@@ -31,6 +31,7 @@ native zp_money_reset(id)
 native hud_get_zinfo(id)
 native is_user_loaded(id)
 native cso_gameplay_active()
+// native cso_gameplay_name()
 
 forward cso_data_loaded()
 

@@ -16,7 +16,8 @@ new
 	votes[4],
 	bool:hasVoted[33] = false,
 	menu,
-	gameplay
+	gameplay,
+	str[50]
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
@@ -31,6 +32,7 @@ public plugin_init() {
 public plugin_natives()
 {
 	register_native("cso_gameplay_active", "native_cso_gameplay_active")
+	// register_native("cso_gameplay_name", "native_cso_gameplay_name")
 }
 
 public client_putinserver(id)
@@ -62,9 +64,24 @@ public event_round_start()
 
 public showChoiceMenu()
 {
-	static num, players[32], str[50]
+	static num, players[32]
 	get_players(players, num)
 
+	for(new i = 0; i < num; i++)
+	{
+		if(!is_user_connected(players[i]))
+			continue 
+
+		if(is_user_bot(players[i]))
+			continue
+		
+		showPlayerChoiceMenu(players[i])
+	}
+}
+
+public showPlayerChoiceMenu(id)
+{
+	str[0] = (EOS)
 	menu = menu_create("Vote gameplay for current map | Zombie-Plague \w[\rCSO\w]", "choiceMenuHandler")
 
 	formatex(str, charsmax(str), "Infinite ammo [\r%d Votes\w]", votes[ginfinite])
@@ -82,28 +99,32 @@ public showChoiceMenu()
 	menu_addtext(menu, "^n^n^nPlease select what gameplay do you want to play on server.")
 	menu_addtext2(menu, "Be aware, your decision affects the entire game")
 
-	for(new i = 0; i < num; i++)
-	{
-		if(is_user_connected(players[i]) && !is_user_bot(players[i])) 
-		{
-			menu_display(players[i], menu)
-		}
-	}
+	menu_display(id, menu)
+
+	return PLUGIN_HANDLED
 }
 
 public choiceMenuHandler(id, menu2, item)
 {
-	if(item == MENU_EXIT || hasVoted[id])
+	if(item == MENU_EXIT)
 	{
-		menu_destroy(menu2)
+		if(!hasVoted[id]) 
+			return showPlayerChoiceMenu(id)
+
+		if(gameplay != -1) 
+			menu_destroy(menu2)
+
 		return PLUGIN_HANDLED
 	}
 	
+	if(hasVoted[id])
+		return showPlayerChoiceMenu(id)
+
 	votes[item] ++
 	hasVoted[id] = true
 
 	client_print_color(0, id, "^4[CSO] %s ^1has voted ^4%s^1.", getName(id), getChoiceName(item))
-	showChoiceMenu()
+	showPlayerChoiceMenu(id)
 
 	return PLUGIN_CONTINUE
 }
@@ -133,9 +154,15 @@ public native_cso_gameplay_active()
 	return gameplay
 }
 
+// stock native_cso_gameplay_name()
+// {
+// 	return getChoiceName(gameplay)
+// }
+
 stock getChoiceName(item)
 {
-	new str[30]
+	str[0] = (EOS)
+	
 	switch(item)
 	{
 		case ginfinite: str = "with Infinite ammo"
