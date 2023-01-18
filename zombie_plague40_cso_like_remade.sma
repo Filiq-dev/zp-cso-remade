@@ -1,18 +1,3 @@
-/*================================================================================
- [Plugin Customization]
-=================================================================================*/
-
-// #define LOCATION_IN_CHAT
-
-// Limiters for stuff not worth making dynamic arrays out of (increase if needed)
-const MAX_CSDM_SPAWNS = 128
-const MAX_STATS_SAVED = 64
-
-/*================================================================================
- Customization ends here! Yes, that's it. Editing anything beyond
- here is not officially supported. Proceed at your own risk...
-=================================================================================*/
-
 #include <amxmodx>
 #include <amxmisc>
 #include <cstrike>
@@ -21,16 +6,16 @@ const MAX_STATS_SAVED = 64
 #include <xs>
 #include <zp_cso_custom>
 
-#if defined LOCATION_IN_CHAT
-#include <geoip>
-#endif
+const MAX_CSDM_SPAWNS = 128
+const MAX_STATS_SAVED = 64
 
-/*================================================================================
- [Constants, Offsets, Macros]
-=================================================================================*/
+// #define SetBit(%1,%2)      	%1 |=  ( 1 << ( %2 & 31 ) )
+// #define ClearBit(%1,%2)    	%1 &= ~( 1 << ( %2 & 31 ) )
+// #define GetBit(%1,%2)    	( %1 &   1 << ( %2 & 31 ) )
 
-// Plugin Version
-new const PLUGIN_VERSION[] = "4.3"
+#define SetBit(%1,%2)      %1 |= (1<<(%2&31))
+#define ClearBit(%1,%2)    (%1 &= ~(1 <<(%2&31)))
+#define GetBit(%1,%2)    (%1 & (1<<(%2&31)))
 
 // Customization file sections
 enum
@@ -98,26 +83,6 @@ enum (+= 100)
 #define ID_FLASH (taskid - TASK_FLASH)
 #define ID_CHARGE (taskid - TASK_CHARGE)
 
-// BP Ammo Refill task
-#define REFILL_WEAPONID args[0]
-
-// For player list menu handlers
-#define PL_ACTION g_menu_data[id][0]
-
-// For remembering menu pages
-#define MENU_PAGE_ZCLASS g_menu_data[id][5]
-#define MENU_PAGE_EXTRAS g_menu_data[id][6]
-#define MENU_PAGE_PLAYERS g_menu_data[id][7]
-
-// For extra items menu handlers
-#define EXTRAS_CUSTOM_STARTID (EXTRA_WEAPONS_STARTID + ArraySize(g_extraweapon_names))
-
-// Menu selections
-const MENU_KEY_AUTOSELECT = 7
-const MENU_KEY_BACK = 7
-const MENU_KEY_NEXT = 8
-const MENU_KEY_EXIT = 9
-
 // Hard coded extra items
 enum
 {
@@ -147,14 +112,12 @@ const ZP_TEAM_ZOMBIE = (1<<0)
 const ZP_TEAM_HUMAN = (1<<1)
 const ZP_TEAM_NEMESIS = (1<<2)
 const ZP_TEAM_SURVIVOR = (1<<3)
+
 new const ZP_TEAM_NAMES[][] = { "ZOMBIE , HUMAN", "ZOMBIE", "HUMAN", "ZOMBIE , HUMAN", "NEMESIS",
 			"ZOMBIE , NEMESIS", "HUMAN , NEMESIS", "ZOMBIE , HUMAN , NEMESIS",
 			"SURVIVOR", "ZOMBIE , SURVIVOR", "HUMAN , SURVIVOR", "ZOMBIE , HUMAN , SURVIVOR",
 			"NEMESIS , SURVIVOR", "ZOMBIE , NEMESIS , SURVIVOR", "HUMAN, NEMESIS, SURVIVOR",
 			"ZOMBIE , HUMAN , NEMESIS , SURVIVOR" }
-
-// Zombie classes
-const ZCLASS_NONE = -1
 
 // HUD messages
 const Float:HUD_EVENT_X = -1.0
@@ -169,7 +132,6 @@ new Ham:Ham_Player_ResetMaxSpeed = Ham_Item_PreFrame
 const PDATA_SAFE = 2
 const OFFSET_PAINSHOCK = 108 // ConnorMcLeod
 const OFFSET_CSTEAMS = 114
-const OFFSET_CSMONEY = 115
 const OFFSET_CSMENUCODE = 205
 const OFFSET_FLASHLIGHT_BATTERY = 244
 const OFFSET_CSDEATHS = 444
@@ -196,7 +158,6 @@ enum
 new const CS_TEAM_NAMES[][] = { "UNASSIGNED", "TERRORIST", "CT", "SPECTATOR" }
 
 // Some constants
-const HIDE_MONEY = (1<<5)
 const UNIT_SECOND = (1<<12)
 const DMG_HEGRENADE = (1<<24)
 const IMPULSE_FLASHLIGHT = 100
@@ -214,10 +175,6 @@ new const MAXBPAMMO[] = { -1, 52, -1, 90, 1, 32, 1, 100, 90, 1, 120, 100, 100, 9
 // Max Clip for weapons
 new const MAXCLIP[] = { -1, 13, -1, 10, -1, 7, -1, 30, 30, -1, 30, 20, 25, 30, 35, 25, 12, 20,
 			10, 30, 100, 8, 30, 30, 20, -1, 7, 30, 30, -1, 50 }
-
-// Amount of ammo to give when buying additional clips for weapons
-new const BUYAMMO[] = { -1, 13, -1, 30, -1, 8, -1, 12, 30, -1, 30, 50, 12, 30, 30, 30, 12, 30,
-			10, 30, 30, 8, 30, 30, 30, -1, 7, 30, 30, -1, 50 }
 
 // Ammo IDs for weapons
 new const AMMOID[] = { -1, 9, -1, 2, 12, 5, 14, 6, 4, 13, 10, 7, 6, 4, 4, 4, 6, 10,
@@ -305,7 +262,7 @@ const ZP_PLUGIN_HANDLED = 97
 
 // Player vars
 new amount[33] = 0
-new g_zombie[33] // is zombie
+new g_zombie; // is zombie
 new g_nemesis[33] // is nemesis
 new g_survivor[33] // is survivor
 new g_firstzombie[33] // is first zombie
@@ -322,9 +279,6 @@ new g_zombieclassnext[33] // zombie class for next infection
 new g_flashlight[33] // has custom flashlight turned on
 new g_flashbattery[33] = { 100, ... } // custom flashlight battery
 new g_canbuy[33] // is allowed to buy a new weapon through the menu
-new g_ammopacks[33] // ammo pack count
-new g_damagedealt_human[33] // damage dealt as human (used to calculate ammo packs reward)
-new g_damagedealt_zombie[33] // damage dealt as zombie (used to calculate ammo packs reward)
 new Float:g_lastleaptime[33] // time leap was last used
 new Float:g_lastflashtime[33] // time flashlight was last toggled
 new g_playermodel[33][32] // current model's short name [player][model]
@@ -335,7 +289,6 @@ new g_burning_duration[33] // burning task duration
 new Float:g_buytime[33] // used to calculate custom buytime
 
 // Game vars
-new g_pluginenabled // ZP enabled
 new g_newround // new round starting
 new g_endround // round ended
 new g_nemround // nemesis round
@@ -363,24 +316,17 @@ new g_infbombcounter, g_antidotecounter, g_madnesscounter // to limit buying som
 new g_arrays_created // to prevent stuff from being registered before initializing arrays
 new g_lastplayerleaving // flag for whenever a player leaves and another takes his place
 new g_switchingteam // flag for whenever a player's team change emessage is sent
-new g_buyzone_ent // custom buyzone entity
 
 // Message IDs vars
 new g_msgScoreInfo, g_msgNVGToggle, g_msgScoreAttrib, g_msgAmmoPickup, g_msgScreenFade,
 g_msgDeathMsg, g_msgSetFOV, g_msgFlashlight, g_msgFlashBat, g_msgTeamInfo, g_msgDamage,
-g_msgHideWeapon, g_msgCrosshair, g_msgSayText, g_msgScreenShake, g_msgCurWeapon
+g_msgSayText, g_msgScreenShake, g_msgCurWeapon
 
 // Some forward handlers
 new g_fwRoundStart, g_fwRoundEnd, g_fwUserInfected_pre, g_fwUserInfected_post,
 g_fwUserHumanized_pre, g_fwUserHumanized_post, g_fwUserInfect_attempt,
 g_fwUserHumanize_attempt, g_fwExtraItemSelected, g_fwUserUnfrozen,
 g_fwUserLastZombie, g_fwUserLastHuman, g_fwDummyResult
-
-// Temporary Database vars (used to restore players stats in case they get disconnected)
-new db_name[MAX_STATS_SAVED][32] // player name
-new db_ammopacks[MAX_STATS_SAVED] // ammo pack count
-new db_zombieclass[MAX_STATS_SAVED] // zombie class
-new db_slot_i // additional saved slots counter (should start on maxplayers+1)
 
 // Extra Items vars
 new Array:g_extraitem_name // caption
@@ -637,31 +583,31 @@ new const ZOMBIEMODELS[] = "zombie_source"
 
 // CVAR pointers
 new cvar_lighting, cvar_zombiefov, cvar_plague, cvar_plaguechance, cvar_zombiefirsthp,
-cvar_removemoney, cvar_thunder, cvar_zombiebonushp, cvar_nemhp, cvar_nem, cvar_surv,
+cvar_thunder, cvar_zombiebonushp, cvar_nemhp, cvar_nem, cvar_surv,
 cvar_nemchance, cvar_deathmatch, cvar_nemglow, cvar_customnvg, cvar_hitzones, cvar_humanhp,
-cvar_nemgravity, cvar_flashsize, cvar_ammodamage_human, cvar_ammodamage_zombie,
+cvar_nemgravity, cvar_flashsize,
 cvar_zombiearmor, cvar_survpainfree, cvar_nempainfree, cvar_nemspd, cvar_survchance,
 cvar_survhp, cvar_survspd, cvar_humanspd, cvar_swarmchance, cvar_flashdrain,
-cvar_zombiebleeding, cvar_removedoors, cvar_customflash, cvar_randspawn, cvar_multi,
-cvar_multichance, cvar_infammo, cvar_swarm, cvar_ammoinfect, cvar_toggle,
+cvar_zombiebleeding, cvar_customflash, cvar_multi,
+cvar_multichance, cvar_infammo, cvar_swarm,
 cvar_knockbackpower, cvar_freezeduration, cvar_triggered, cvar_flashcharge,
 cvar_firegrenades, cvar_frostgrenades, cvar_survgravity, cvar_logcommands, cvar_survglow,
 cvar_humangravity, cvar_spawnprotection, cvar_nvgsize, cvar_flareduration, cvar_zclasses,
-cvar_extraitems, cvar_showactivity, cvar_humanlasthp, cvar_nemignorefrags, cvar_warmup,
+cvar_showactivity, cvar_humanlasthp, cvar_nemignorefrags, cvar_warmup,
 cvar_flashdist, cvar_flarecolor, cvar_survignorefrags, cvar_fireduration, cvar_firedamage,
 cvar_flaregrenades, cvar_knockbackducking, cvar_knockbackdamage, cvar_knockbackzvel,
 cvar_multiratio, cvar_flaresize, cvar_spawndelay, cvar_extraantidote, cvar_extramadness,
 cvar_extraweapons, cvar_extranvision, cvar_nvggive, cvar_preventconsecutive, cvar_botquota,
 cvar_zombiepainfree, cvar_fireslowdown, cvar_survbasehp, cvar_survaura,
-cvar_nemignoreammo, cvar_survignoreammo, cvar_nemaura, cvar_extrainfbomb, cvar_knockback,
-cvar_fragsinfect, cvar_fragskill, cvar_humanarmor, cvar_zombiesilent, cvar_removedropped,
-cvar_plagueratio, cvar_blocksuicide, cvar_knockbackdist, cvar_nemdamage, cvar_leapzombies,
+cvar_nemaura, cvar_extrainfbomb, cvar_knockback,
+cvar_fragsinfect, cvar_fragskill, cvar_zombiesilent,
+cvar_plagueratio, cvar_knockbackdist, cvar_nemdamage, cvar_leapzombies,
 cvar_leapzombiesforce, cvar_leapzombiesheight, cvar_leapzombiescooldown, cvar_leapnemesis,
 cvar_leapnemesisforce, cvar_leapnemesisheight, cvar_leapnemesiscooldown, cvar_leapsurvivor,
 cvar_leapsurvivorforce, cvar_leapsurvivorheight, cvar_nemminplayers, cvar_survminplayers,
-cvar_respawnonsuicide, cvar_respawnafterlast, cvar_leapsurvivorcooldown, cvar_statssave,
+cvar_respawnonsuicide, cvar_respawnafterlast, cvar_leapsurvivorcooldown,
 cvar_swarmminplayers, cvar_multiminplayers, cvar_plagueminplayers, cvar_adminmodelshuman,
-cvar_adminmodelszombie, cvar_nembasehp, cvar_blockpushables, cvar_respawnworldspawnkill,
+cvar_adminmodelszombie, cvar_nembasehp,
 cvar_madnessduration, cvar_plaguenemnum, cvar_plaguenemhpmulti, cvar_plaguesurvhpmulti,
 cvar_survweapon, cvar_plaguesurvnum, cvar_infectionscreenfade, cvar_infectionscreenshake,
 cvar_infectionsparkle, cvar_infectiontracers, cvar_infectionparticles, cvar_infbomblimit,
@@ -669,10 +615,8 @@ cvar_allowrespawnsurv, cvar_flashshowall, cvar_allowrespawninfection, cvar_allow
 cvar_allowrespawnswarm, cvar_allowrespawnplague, cvar_survinfammo, cvar_nemknockback,
 cvar_nvgcolor[3], cvar_nemnvgcolor[3], cvar_humnvgcolor[3], cvar_flashcolor[3],
 cvar_hudicons, cvar_respawnzomb, cvar_respawnhum, cvar_respawnnem, cvar_respawnsurv, cvar_respawnamont,
-cvar_startammopacks, cvar_antidotelimit, cvar_madnesslimit,
-cvar_adminknifemodelshuman, cvar_adminknifemodelszombie, cvar_keephealthondisconnect,
-cvar_buyzonetime
-
+cvar_antidotelimit, cvar_madnesslimit,
+cvar_adminknifemodelshuman, cvar_adminknifemodelszombie, cvar_keephealthondisconnect
 // cso
 
 // Cached stuff for players
@@ -691,7 +635,7 @@ new g_zombie_classname[33][32] // zombie class name
 // Cached CVARs
 new g_cached_customflash, g_cached_zombiesilent, g_cached_leapzombies, g_cached_leapnemesis,
 g_cached_leapsurvivor, Float:g_cached_leapzombiescooldown, Float:g_cached_leapnemesiscooldown,
-Float:g_cached_leapsurvivorcooldown, Float:g_cached_buytime
+Float:g_cached_leapsurvivorcooldown
 
 /*================================================================================
  [Natives, Precache and Init]
@@ -709,8 +653,6 @@ public plugin_natives()
 	register_native("zp_get_user_zombie_class", "native_get_user_zombie_class", 1)
 	register_native("zp_get_user_next_class", "native_get_user_next_class", 1)
 	register_native("zp_set_user_zombie_class", "native_set_user_zombie_class", 1)
-	register_native("zp_get_user_ammo_packs", "native_get_user_ammo_packs", 1)
-	register_native("zp_set_user_ammo_packs", "native_set_user_ammo_packs", 1)
 	register_native("zp_get_zombie_maxhealth", "native_get_zombie_maxhealth", 1)
 	register_native("zp_get_user_batteries", "native_get_user_batteries", 1)
 	register_native("zp_set_user_batteries", "native_set_user_batteries", 1)
@@ -748,15 +690,7 @@ public plugin_natives()
 public plugin_precache()
 {
 	// Register earlier to show up in plugins list properly after plugin disable/error at loading
-	register_plugin("Zombie Plague [CSO]", PLUGIN_VERSION, "MeRcyLeZZ")
-	
-	// To switch plugin on/off
-	register_concmd("zp_toggle", "cmd_toggle", _, "<1/0> - Enable/Disable Zombie Plague (will restart the current map)", 0)
-	cvar_toggle = register_cvar("zp_on", "1")
-	
-	// Plugin disabled?
-	if (!get_pcvar_num(cvar_toggle)) return;
-	g_pluginenabled = true
+	register_plugin("Zombie Plague [CSO]", "4.3", "MeRcyLeZZ")
 	
 	// Initialize a few dynamically sized arrays (alright, maybe more than just a few...)
 	
@@ -933,9 +867,6 @@ public plugin_precache()
 
 public plugin_init()
 {
-	// Plugin disabled?
-	if (!g_pluginenabled) return;
-
 	// No zombie classes?
 	if (!g_zclass_i) set_fail_state("No zombie classes loaded!")
 	
@@ -995,8 +926,6 @@ public plugin_init()
 	register_clcmd("say /unstuck", "clcmd_sayunstuck")
 	register_clcmd("nightvision", "clcmd_nightvision")
 	register_clcmd("drop", "clcmd_drop")
-	register_clcmd("buyammo1", "clcmd_buyammo")
-	register_clcmd("buyammo2", "clcmd_buyammo")
 	register_clcmd("chooseteam", "clcmd_changeteam")
 	register_clcmd("jointeam", "clcmd_changeteam")
 	
@@ -1027,14 +956,11 @@ public plugin_init()
 	g_msgFlashBat = get_user_msgid("FlashBat")
 	g_msgAmmoPickup = get_user_msgid("AmmoPickup")
 	g_msgDamage = get_user_msgid("Damage")
-	g_msgHideWeapon = get_user_msgid("HideWeapon")
-	g_msgCrosshair = get_user_msgid("Crosshair")
 	g_msgSayText = get_user_msgid("SayText")
 	g_msgCurWeapon = get_user_msgid("CurWeapon")
 	
 	// Message hooks
 	register_message(g_msgCurWeapon, "message_cur_weapon")
-	register_message(get_user_msgid("Money"), "message_money")
 	register_message(get_user_msgid("Health"), "message_health")
 	register_message(g_msgFlashBat, "message_flashbat")
 	register_message(g_msgScreenFade, "message_screenfade")
@@ -1054,21 +980,11 @@ public plugin_init()
 	cvar_lighting = register_cvar("zp_lighting", "a")
 	cvar_thunder = register_cvar("zp_thunderclap", "90")
 	cvar_triggered = register_cvar("zp_triggered_lights", "1")
-	cvar_removedoors = register_cvar("zp_remove_doors", "0")
-	cvar_blockpushables = register_cvar("zp_blockuse_pushables", "1")
-	cvar_blocksuicide = register_cvar("zp_block_suicide", "1")
-	cvar_randspawn = register_cvar("zp_random_spawn", "1")
-	cvar_respawnworldspawnkill = register_cvar("zp_respawn_on_worldspawn_kill", "1")
-	cvar_removedropped = register_cvar("zp_remove_dropped", "0")
-	cvar_removemoney = register_cvar("zp_remove_money", "1")
-	cvar_buyzonetime = register_cvar("zp_buyzone_time", "0.0")
 	cvar_adminmodelshuman = register_cvar("zp_admin_models_human", "1")
 	cvar_adminknifemodelshuman = register_cvar("zp_admin_knife_models_human", "0")
 	cvar_adminmodelszombie = register_cvar("zp_admin_models_zombie", "1")
 	cvar_adminknifemodelszombie = register_cvar("zp_admin_knife_models_zombie", "0")
 	cvar_zclasses = register_cvar("zp_zombie_classes", "1")
-	cvar_statssave = register_cvar("zp_stats_save", "1")
-	cvar_startammopacks = register_cvar("zp_starting_ammo_packs", "5")
 	cvar_preventconsecutive = register_cvar("zp_prevent_consecutive_modes", "1")
 	cvar_keephealthondisconnect = register_cvar("zp_keep_health_on_disconnect", "1")
 	
@@ -1091,7 +1007,6 @@ public plugin_init()
 	cvar_respawnamont = register_cvar("zp_respawn_amont", "1")
 	
 	// CVARS - Extra Items
-	cvar_extraitems = register_cvar("zp_extra_items", "1")
 	cvar_extraweapons = register_cvar("zp_extra_weapons", "1")
 	cvar_extranvision = register_cvar("zp_extra_nvision", "1")
 	cvar_extraantidote = register_cvar("zp_extra_antidote", "1")
@@ -1153,9 +1068,7 @@ public plugin_init()
 	cvar_humanlasthp = register_cvar("zp_human_last_extrahp", "0")
 	cvar_humanspd = register_cvar("zp_human_speed", "240")
 	cvar_humangravity = register_cvar("zp_human_gravity", "1.0")
-	cvar_humanarmor = register_cvar("zp_human_armor_protect", "1")
 	cvar_infammo = register_cvar("zp_human_unlimited_ammo", "0")
-	cvar_ammodamage_human = register_cvar("zp_human_damage_reward", "500")
 	cvar_fragskill = register_cvar("zp_human_frags_for_kill", "1")
 	
 	// CVARS - Custom Grenades
@@ -1179,8 +1092,6 @@ public plugin_init()
 	cvar_zombiesilent = register_cvar("zp_zombie_silent", "1")
 	cvar_zombiepainfree = register_cvar("zp_zombie_painfree", "2")
 	cvar_zombiebleeding = register_cvar("zp_zombie_bleeding", "1")
-	cvar_ammoinfect = register_cvar("zp_zombie_infect_reward", "1")
-	cvar_ammodamage_zombie = register_cvar("zp_zombie_damage_reward", "0")
 	cvar_fragsinfect = register_cvar("zp_zombie_frags_for_infect", "1")
 	
 	// CVARS - Special Effects
@@ -1204,7 +1115,6 @@ public plugin_init()
 	cvar_nemaura = register_cvar("zp_nem_aura", "1")	
 	cvar_nempainfree = register_cvar("zp_nem_painfree", "0")
 	cvar_nemignorefrags = register_cvar("zp_nem_ignore_frags", "1")
-	cvar_nemignoreammo = register_cvar("zp_nem_ignore_rewards", "1")
 	
 	// CVARS - Survivor
 	cvar_surv = register_cvar("zp_surv_enabled", "1")
@@ -1218,7 +1128,6 @@ public plugin_init()
 	cvar_survaura = register_cvar("zp_surv_aura", "1")
 	cvar_survpainfree = register_cvar("zp_surv_painfree", "1")
 	cvar_survignorefrags = register_cvar("zp_surv_ignore_frags", "1")
-	cvar_survignoreammo = register_cvar("zp_surv_ignore_rewards", "1")
 	cvar_survweapon = register_cvar("zp_surv_weapon", "weapon_m249")
 	cvar_survinfammo = register_cvar("zp_surv_unlimited_ammo", "2")
 	
@@ -1247,8 +1156,8 @@ public plugin_init()
 	cvar_logcommands = register_cvar("zp_logcommands", "1")
 	cvar_showactivity = get_cvar_pointer("amx_show_activity")
 	cvar_botquota = get_cvar_pointer("bot_quota")
-	register_cvar("zp_version", PLUGIN_VERSION, FCVAR_SERVER|FCVAR_SPONLY)
-	set_cvar_string("zp_version", PLUGIN_VERSION)
+	register_cvar("zp_version", "4.3", FCVAR_SERVER|FCVAR_SPONLY)
+	set_cvar_string("zp_version", "4.3")
 	
 	// Custom Forwards
 	g_fwRoundStart = CreateMultiForward("zp_round_started", ET_IGNORE, FP_CELL, FP_CELL)
@@ -1277,9 +1186,6 @@ public plugin_init()
 	
 	// Get Max Players
 	g_maxplayers = get_maxplayers()
-	
-	// Reserved saving slots starts on maxplayers+1
-	db_slot_i = g_maxplayers+1
 	
 	// Check if it's a CZ server
 	new mymod[6]
@@ -1317,9 +1223,6 @@ public radioblock(id)
 
 public plugin_cfg()
 {
-	// Plugin disabled?
-	if (!g_pluginenabled) return;
-	
 	// Get configs dir
 	new cfgdir[32]
 	get_configsdir(cfgdir, charsmax(cfgdir))
@@ -1398,25 +1301,20 @@ public logevent_round_end()
 	if (current_time - lastendtime < 0.5) return;
 	lastendtime = current_time
 	
-	// Temporarily save player stats?
-	if (get_pcvar_num(cvar_statssave))
+	static id, team
+	for (id = 1; id <= g_maxplayers; id++)
 	{
-		static id, team
-		for (id = 1; id <= g_maxplayers; id++)
-		{
-			// Not connected
-			if (!g_isconnected[id])
-				continue;
-			
-			team = fm_cs_get_user_team(id)
-			
-			// Not playing
-			if (team == FM_CS_TEAM_SPECTATOR || team == FM_CS_TEAM_UNASSIGNED)
-				continue;
+		// Not connected
+		if (!g_isconnected[id])
+			continue;
+		
+		team = fm_cs_get_user_team(id)
+		
+		// Not playing
+		if (team == FM_CS_TEAM_SPECTATOR || team == FM_CS_TEAM_UNASSIGNED)
+			continue;
 
-			amount[id] = 0
-			save_stats(id)
-		}
+		amount[id] = 0
 	}
 	
 	// Round ended
@@ -1495,7 +1393,7 @@ public event_intermission()
 public event_ammo_x(id)
 {
 	// Humans only
-	if (g_zombie[id])
+	if (GetBit(g_zombie, id))
 		return;
 	
 	// Get ammo type
@@ -1530,12 +1428,6 @@ public event_ammo_x(id)
 			args[0] = weapon
 			set_task(0.1, "refill_bpammo", id, args, sizeof args)
 		}
-	}
-	// Bots automatically buy ammo when needed
-	else if (g_isbot[id] && amount <= BUYAMMO[weapon])
-	{
-		// Task needed for the same reason as above
-		set_task(0.1, "clcmd_buyammo", id)
 	}
 }
 
@@ -1615,15 +1507,10 @@ public fw_PlayerSpawn_Post(id)
 	remove_task(id+TASK_NVISION)
 	
 	// Spawn at a random location?
-	if (get_pcvar_num(cvar_randspawn)) do_random_spawn(id)
-	
-	// Hide money?
-	if (get_pcvar_num(cvar_removemoney))
-		set_task(0.4, "task_hide_money", id+TASK_SPAWN)
+	do_random_spawn(id)
 	
 	// Respawn player if he dies because of a worldspawn kill?
-	if (get_pcvar_num(cvar_respawnworldspawnkill))
-		set_task(2.0, "respawn_player_check_task", id+TASK_SPAWN)
+	set_task(2.0, "respawn_player_check_task", id+TASK_SPAWN)
 	
 	// Spawn as zombie?
 	if (g_respawn_as_zombie[id] && !g_newround)
@@ -1691,12 +1578,8 @@ public fw_PlayerSpawn_Post(id)
 		// Turn off NVG for bots
 		cs_set_user_nvg(id, 0)
 		
-		// Automatically buy extra items/weapons after first zombie is chosen
-		if (get_pcvar_num(cvar_extraitems))
-		{
-			if (g_newround) set_task(10.0 + get_pcvar_float(cvar_warmup), "bot_buy_extras", id+TASK_SPAWN)
-			else set_task(10.0, "bot_buy_extras", id+TASK_SPAWN)
-		}
+		if (g_newround) set_task(10.0 + get_pcvar_float(cvar_warmup), "bot_buy_extras", id+TASK_SPAWN)
+		else set_task(10.0, "bot_buy_extras", id+TASK_SPAWN)
 	}
 	
 	// Enable spawn protection for humans spawning mid-round
@@ -1769,7 +1652,7 @@ public fw_PlayerKilled(victim, attacker, shouldgib)
 	}
 	
 	// Stop bleeding/burning/aura when killed
-	if (g_zombie[victim])
+	if (GetBit(g_zombie, victim))
 	{
 		remove_task(victim+TASK_BLOOD)
 		remove_task(victim+TASK_AURA)
@@ -1791,16 +1674,12 @@ public fw_PlayerKilled(victim, attacker, shouldgib)
 	if ((g_nemesis[attacker] && get_pcvar_num(cvar_nemignorefrags)) || (g_survivor[attacker] && get_pcvar_num(cvar_survignorefrags)))
 		RemoveFrags(attacker, victim)
 	
-	// Zombie/nemesis killed human, reward ammo packs
-	if (g_zombie[attacker] && (!g_nemesis[attacker] || !get_pcvar_num(cvar_nemignoreammo)))
-		g_ammopacks[attacker] += get_pcvar_num(cvar_ammoinfect)
-	
 	// Human killed zombie, add up the extra frags for kill
-	if (!g_zombie[attacker] && get_pcvar_num(cvar_fragskill) > 1)
+	if (!GetBit(g_zombie, attacker) && get_pcvar_num(cvar_fragskill) > 1)
 		UpdateFrags(attacker, victim, get_pcvar_num(cvar_fragskill) - 1, 0, 0)
 	
 	// Zombie killed human, add up the extra frags for kill
-	if (g_zombie[attacker] && get_pcvar_num(cvar_fragsinfect) > 1)
+	if (GetBit(g_zombie, attacker) && get_pcvar_num(cvar_fragsinfect) > 1)
 		UpdateFrags(attacker, victim, get_pcvar_num(cvar_fragsinfect) - 1, 0, 0)
 }
 
@@ -1822,7 +1701,7 @@ public fw_PlayerKilled_Post(victim, attacker, shouldgib)
 			return;
 		
 		// Respawn if human/zombie/nemesis/survivor?
-		if ((g_zombie[victim] && !g_nemesis[victim] && !get_pcvar_num(cvar_respawnzomb)) || (!g_zombie[victim] && !g_survivor[victim] && !get_pcvar_num(cvar_respawnhum)) || (g_nemesis[victim] && !get_pcvar_num(cvar_respawnnem)) || (g_survivor[victim] && !get_pcvar_num(cvar_respawnsurv)))
+		if ((GetBit(g_zombie, victim) && !g_nemesis[victim] && !get_pcvar_num(cvar_respawnzomb)) || (!GetBit(g_zombie, victim) && !g_survivor[victim] && !get_pcvar_num(cvar_respawnhum)) || (g_nemesis[victim] && !get_pcvar_num(cvar_respawnnem)) || (g_survivor[victim] && !get_pcvar_num(cvar_respawnsurv)))
 			return;
 		
 		// Set the respawn task
@@ -1846,11 +1725,13 @@ public fw_TakeDamage(victim, inflictor, attacker, Float:damage, damage_type)
 		return HAM_SUPERCEDE;
 	
 	// Prevent friendly fire
-	if (g_zombie[attacker] == g_zombie[victim])
+	if (GetBit(g_zombie, attacker) && GetBit(g_zombie, victim))
 		return HAM_SUPERCEDE;
+
+	client_print_color(attacker, 0, "attacker: %d victim: %d", GetBit(g_zombie, attacker), GetBit(g_zombie, victim))
 	
 	// Attacker is human...
-	if (!g_zombie[attacker])
+	if (!GetBit(g_zombie, attacker))
 	{
 		// Armor multiplier for the final damage on normal zombies
 		if (!g_nemesis[victim])
@@ -1858,21 +1739,6 @@ public fw_TakeDamage(victim, inflictor, attacker, Float:damage, damage_type)
 			damage *= get_pcvar_float(cvar_zombiearmor)
 			SetHamParamFloat(4, damage)
 		}
-		
-		// Reward ammo packs to humans for damaging zombies?
-		if ((get_pcvar_num(cvar_ammodamage_human) > 0) && (!g_survivor[attacker] || !get_pcvar_num(cvar_survignoreammo)))
-		{
-			// Store damage dealt
-			g_damagedealt_human[attacker] += floatround(damage)
-			
-			// Reward ammo packs for every [ammo damage] dealt
-			while (g_damagedealt_human[attacker] > get_pcvar_num(cvar_ammodamage_human))
-			{
-				g_ammopacks[attacker]++
-				g_damagedealt_human[attacker] -= get_pcvar_num(cvar_ammodamage_human)
-			}
-		}
-		
 		return HAM_IGNORED;
 	}
 	
@@ -1896,41 +1762,25 @@ public fw_TakeDamage(victim, inflictor, attacker, Float:damage, damage_type)
 		return HAM_IGNORED;
 	}
 	
-	// Reward ammo packs to zombies for damaging humans?
-	if (get_pcvar_num(cvar_ammodamage_zombie) > 0)
-	{
-		// Store damage dealt
-		g_damagedealt_zombie[attacker] += floatround(damage)
-		
-		// Reward ammo packs for every [ammo damage] dealt
-		while (g_damagedealt_zombie[attacker] > get_pcvar_num(cvar_ammodamage_zombie))
-		{
-			g_ammopacks[attacker]++
-			g_damagedealt_zombie[attacker] -= get_pcvar_num(cvar_ammodamage_zombie)
-		}
-	}
-	
 	// Last human or not an infection round
 	if (g_survround || g_nemround || g_swarmround || g_plagueround || fnGetHumans() == 1)
 		return HAM_IGNORED; // human is killed
 	
 	// Does human armor need to be reduced before infecting?
-	if (get_pcvar_num(cvar_humanarmor))
+	
+	// Get victim armor
+	static Float:armor
+	pev(victim, pev_armorvalue, armor)
+	
+	// If he has some, block the infection and reduce armor instead
+	if (armor > 0.0)
 	{
-		// Get victim armor
-		static Float:armor
-		pev(victim, pev_armorvalue, armor)
-		
-		// If he has some, block the infection and reduce armor instead
-		if (armor > 0.0)
-		{
-			emit_sound(victim, CHAN_BODY, sound_armorhit, 1.0, ATTN_NORM, 0, PITCH_NORM)
-			if (armor - damage > 0.0)
-				set_pev(victim, pev_armorvalue, armor - damage)
-			else
-				cs_set_user_armor(victim, 0, CS_ARMOR_NONE)
-			return HAM_SUPERCEDE;
-		}
+		emit_sound(victim, CHAN_BODY, sound_armorhit, 1.0, ATTN_NORM, 0, PITCH_NORM)
+		if (armor - damage > 0.0)
+			set_pev(victim, pev_armorvalue, armor - damage)
+		else
+			cs_set_user_armor(victim, 0, CS_ARMOR_NONE)
+		return HAM_SUPERCEDE;
 	}
 	
 	// Infection allowed
@@ -1944,7 +1794,7 @@ public fw_TakeDamage_Post(victim)
 	// --- Check if victim should be Pain Shock Free ---
 	
 	// Check if proper CVARs are enabled
-	if (g_zombie[victim])
+	if (GetBit(g_zombie, victim))
 	{
 		if (g_nemesis[victim])
 		{
@@ -1993,11 +1843,11 @@ public fw_TraceAttack(victim, attacker, Float:damage, Float:direction[3], traceh
 		return HAM_SUPERCEDE;
 	
 	// Prevent friendly fire
-	if (g_zombie[attacker] == g_zombie[victim])
+	if (GetBit(g_zombie, attacker) == GetBit(g_zombie, victim))
 		return HAM_SUPERCEDE;
 	
 	// Victim isn't a zombie or not bullet damage, nothing else to do here
-	if (!g_zombie[victim] || !(damage_type & DMG_BULLET))
+	if (!GetBit(g_zombie, victim) || !(damage_type & DMG_BULLET))
 		return HAM_IGNORED;
 	
 	// If zombie hitzones are enabled, check whether we hit an allowed one
@@ -2078,7 +1928,7 @@ public fw_ResetMaxSpeed_Post(id)
 public fw_UseStationary(entity, caller, activator, use_type)
 {
 	// Prevent zombies from using stationary guns
-	if (use_type == USE_USING && is_user_valid_connected(caller) && g_zombie[caller])
+	if (use_type == USE_USING && is_user_valid_connected(caller) && GetBit(g_zombie, caller))
 		return HAM_SUPERCEDE;
 	
 	return HAM_IGNORED;
@@ -2095,11 +1945,7 @@ public fw_UseStationary_Post(entity, caller, activator, use_type)
 // Ham Use Pushable Forward
 public fw_UsePushable()
 {
-	// Prevent speed bug with pushables?
-	if (get_pcvar_num(cvar_blockpushables))
-		return HAM_SUPERCEDE;
-	
-	return HAM_IGNORED;
+	return HAM_SUPERCEDE;
 }
 
 // Ham Weapon Touch Forward
@@ -2110,7 +1956,7 @@ public fw_TouchWeapon(weapon, id)
 		return HAM_IGNORED;
 	
 	// Dont pickup weapons if zombie or survivor (+PODBot MM fix)
-	if (g_zombie[id] || (g_survivor[id] && !g_isbot[id]))
+	if (GetBit(g_zombie, id) || (g_survivor[id] && !g_isbot[id]))
 		return HAM_SUPERCEDE;
 	
 	return HAM_IGNORED;
@@ -2158,7 +2004,7 @@ public fw_Item_Deploy_Post(weapon_ent)
 	replace_weapon_models(owner, weaponid)
 	
 	// Zombie not holding an allowed weapon for some reason
-	if (g_zombie[owner] && !((1<<weaponid) & ZOMBIE_ALLOWED_WEAPONS_BITSUM))
+	if (GetBit(g_zombie, owner) && !((1<<weaponid) & ZOMBIE_ALLOWED_WEAPONS_BITSUM))
 	{
 		// Switch to knife
 		g_currentweapon[owner] = CSW_KNIFE
@@ -2177,8 +2023,6 @@ public wpn_gi_reset_weapon(id)
 // Client joins the game
 public client_putinserver(id)
 {
-	// Plugin disabled?
-	if (!g_pluginenabled) return;
 	
 	// Player joined
 	g_isconnected[id] = true
@@ -2188,9 +2032,6 @@ public client_putinserver(id)
 	
 	// Initialize player vars
 	reset_vars(id, 1)
-	
-	// Load player stats?
-	if (get_pcvar_num(cvar_statssave)) load_stats(id)
 	
 	// Set some tasks for humans only
 	if (!is_user_bot(id))
@@ -2243,9 +2084,6 @@ public fw_ClientDisconnect(id)
 	// Check that we still have both humans and zombies to keep the round going
 	if (g_isalive[id]) check_round(id)
 	
-	// Temporarily save player stats?
-	if (get_pcvar_num(cvar_statssave)) save_stats(id)
-	
 	// Remove previous tasks
 	remove_task(id+TASK_TEAM)
 	remove_task(id+TASK_MODEL)
@@ -2282,10 +2120,7 @@ public fw_ClientDisconnect_Post()
 public fw_ClientKill()
 {
 	// Prevent players from killing themselves?
-	if (get_pcvar_num(cvar_blocksuicide))
-		return FMRES_SUPERCEDE;
-	
-	return FMRES_IGNORED;
+	return FMRES_SUPERCEDE;
 }
 
 // Emit Sound Forward
@@ -2296,7 +2131,7 @@ public fw_EmitSound(id, channel, const sample[], Float:volume, Float:attn, flags
 		return FMRES_SUPERCEDE;
 	
 	// Replace these next sounds for zombies only
-	if (!is_user_valid_connected(id) || !g_zombie[id])
+	if (!is_user_valid_connected(id) || !GetBit(g_zombie, id))
 		return FMRES_IGNORED;
 	
 	static sound[64]
@@ -2412,22 +2247,6 @@ public fw_SetModel(entity, const model[])
 	if (strlen(model) < 8)
 		return;
 	
-	// Remove weapons?
-	if (get_pcvar_float(cvar_removedropped) > 0.0)
-	{
-		// Get entity's classname
-		static classname[10]
-		pev(entity, pev_classname, classname, charsmax(classname))
-		
-		// Check if it's a weapon box
-		if (equal(classname, "weaponbox"))
-		{
-			// They get automatically removed when thinking
-			set_pev(entity, pev_nextthink, get_gametime() + get_pcvar_float(cvar_removedropped))
-			return;
-		}
-	}
-	
 	// Narrow down our matches a bit
 	if (model[7] != 'w' || model[8] != '_')
 		return;
@@ -2441,7 +2260,7 @@ public fw_SetModel(entity, const model[])
 		return;
 	
 	// Get whether grenade's owner is a zombie
-	if (g_zombie[pev(entity, pev_owner)])
+	if (GetBit(g_zombie, pev(entity, pev_owner)))
 	{
 		if (model[9] == 'h' && model[10] == 'e' && get_pcvar_num(cvar_extrainfbomb)) // Infection Bomb
 		{
@@ -2683,7 +2502,7 @@ public fw_CmdStart(id, handle)
 	// This logic looks kinda weird, but it should work in theory...
 	// p = g_zombie[id], q = g_survivor[id], r = g_cached_customflash
 	// �(p v q v (�p ^ r)) <==> �p ^ �q ^ (p v �r)
-	if (!g_zombie[id] && !g_survivor[id] && (g_zombie[id] || !g_cached_customflash))
+	if (!GetBit(g_zombie, id) && !g_survivor[id] && (GetBit(g_zombie, id) || !g_cached_customflash))
 		return;
 	
 	// Check if it's a flashlight impulse
@@ -2694,7 +2513,7 @@ public fw_CmdStart(id, handle)
 	set_uc(handle, UC_Impulse, 0)
 	
 	// Should human's custom flashlight be turned on?
-	if (!g_zombie[id] && !g_survivor[id] && g_flashbattery[id] > 2 && get_gametime() - g_lastflashtime[id] > 1.2)
+	if (!GetBit(g_zombie, id) && !g_survivor[id] && g_flashbattery[id] > 2 && get_gametime() - g_lastflashtime[id] > 1.2)
 	{
 		// Prevent calling flashlight too quickly (bugfix)
 		g_lastflashtime[id] = get_gametime()
@@ -2730,15 +2549,8 @@ public fw_PlayerPreThink(id)
 	if (!g_isalive[id])
 		return;
 	
-	// Enable custom buyzone for player during buytime, unless zombie or survivor or time expired
-	if (g_cached_buytime > 0.0 && !g_zombie[id] && !g_survivor[id] && (get_gametime() < g_buytime[id] + g_cached_buytime))
-	{
-		if (pev_valid(g_buyzone_ent))
-			dllfunc(DLLFunc_Touch, g_buyzone_ent, id)
-	}
-	
 	// Silent footsteps for zombies?
-	if (g_cached_zombiesilent && g_zombie[id] && !g_nemesis[id])
+	if (g_cached_zombiesilent && GetBit(g_zombie, id) && !g_nemesis[id])
 		set_pev(id, pev_flTimeStepSound, STEPTIME_SILENT)
 	
 	// Player frozen?
@@ -2756,7 +2568,7 @@ public fw_PlayerPreThink(id)
 	
 	// Check if proper CVARs are enabled and retrieve leap settings
 	static Float:cooldown, Float:current_time
-	if (g_zombie[id])
+	if (GetBit(g_zombie, id))
 	{
 		if (g_nemesis[id])
 		{
@@ -2861,69 +2673,6 @@ public clcmd_drop(id)
 	return PLUGIN_CONTINUE;
 }
 
-// Buy BP Ammo
-public clcmd_buyammo(id)
-{
-	// Not alive or infinite ammo setting enabled
-	if (!g_isalive[id] || get_pcvar_num(cvar_infammo))
-		return PLUGIN_HANDLED;
-	
-	// Not human
-	if (g_zombie[id])
-	{
-		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_HUMAN_ONLY")
-		return PLUGIN_HANDLED;
-	}
-	
-	// Custom buytime enabled and human player standing in buyzone, allow buying weapon's ammo normally instead
-	if (g_cached_buytime > 0.0 && !g_survivor[id] && (get_gametime() < g_buytime[id] + g_cached_buytime) && cs_get_user_buyzone(id))
-		return PLUGIN_CONTINUE;
-	
-	// Not enough ammo packs
-	if ((zp_get_user_money(id) - 100) < 1)
-	{
-		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "NOT_ENOUGH_AMMO")
-		return PLUGIN_HANDLED;
-	}
-	
-	// Get user weapons
-	static weapons[32], num, i, currentammo, weaponid, refilled
-	num = 0 // reset passed weapons count (bugfix)
-	refilled = false
-	get_user_weapons(id, weapons, num)
-	
-	// Loop through them and give the right ammo type
-	for (i = 0; i < num; i++)
-	{
-		// Prevents re-indexing the array
-		weaponid = weapons[i]
-		
-		// Primary and secondary only
-		if (MAXBPAMMO[weaponid] > 2)
-		{
-			// Get current ammo of the weapon
-			currentammo = cs_get_user_bpammo(id, weaponid)
-			
-			// Give additional ammo
-			ExecuteHamB(Ham_GiveAmmo, id, BUYAMMO[weaponid], AMMOTYPE[weaponid], MAXBPAMMO[weaponid])
-			
-			// Check whether we actually refilled the weapon's ammo
-			if (cs_get_user_bpammo(id, weaponid) - currentammo > 0) refilled = true
-		}
-	}
-	
-	// Weapons already have full ammo
-	if (!refilled) return PLUGIN_HANDLED;
-	
-	// Deduce ammo packs, play clip purchase sound, and notify player
-	zp_set_user_money(id, zp_get_user_money(id) - 100)
-
-	emit_sound(id, CHAN_ITEM, sound_buyammo, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	zp_colored_print(id, "^x04[CSO]^x01 %L", id, "AMMO_BOUGHT")
-	
-	return PLUGIN_HANDLED;
-}
-
 // Block Team Change
 public clcmd_changeteam(id)
 {
@@ -2976,7 +2725,7 @@ show_menu_game(id)
 		len += formatex(menu[len], charsmax(menu) - len, "\d1. %L^n", id,"MENU_ZCLASS")
 
 	// 2. Join spec
-	if (!g_isalive[id] || !get_pcvar_num(cvar_blocksuicide) || (userflags & g_access_flag[ACCESS_ADMIN_MENU]))
+	if (!g_isalive[id] || (userflags & g_access_flag[ACCESS_ADMIN_MENU]))
 		len += formatex(menu[len], charsmax(menu) - len, "\r2.\w %L^n", id, "MENU_SPECTATOR")
 	else
 		len += formatex(menu[len], charsmax(menu) - len, "\d2. %L^n", id, "MENU_SPECTATOR")
@@ -3060,13 +2809,13 @@ public show_menu_zclass(id)
 	menu_setprop(menuid, MPROP_EXITNAME, menu)
 	
 	// If remembered page is greater than number of pages, clamp down the value
-	MENU_PAGE_ZCLASS = min(MENU_PAGE_ZCLASS, menu_pages(menuid)-1)
+	g_menu_data[id][5] = min(g_menu_data[id][5], menu_pages(menuid)-1)
 	
 	// Fix for AMXX custom menus
 	if (pev_valid(id) == PDATA_SAFE)
 		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
 	
-	menu_display(id, menuid, MENU_PAGE_ZCLASS)
+	menu_display(id, menuid, g_menu_data[id][5])
 }
 
 // Admin Menu
@@ -3146,7 +2895,7 @@ show_menu_player_list(id)
 	userflags = get_user_flags(id)
 	
 	// Title
-	switch (PL_ACTION)
+	switch (g_menu_data[id][0])
 	{
 		case ACTION_ZOMBIEFY_HUMANIZE: formatex(menu, charsmax(menu), "%L\r", id, "MENU_ADMIN1")
 		case ACTION_MAKE_NEMESIS: formatex(menu, charsmax(menu), "%L\r", id, "MENU_ADMIN2")
@@ -3163,11 +2912,11 @@ show_menu_player_list(id)
 			continue;
 		
 		// Format text depending on the action to take
-		switch (PL_ACTION)
+		switch (g_menu_data[id][0])
 		{
 			case ACTION_ZOMBIEFY_HUMANIZE: // Zombiefy/Humanize command
 			{
-				if (g_zombie[player])
+				if (GetBit(g_zombie, player))
 				{
 					if (allowed_human(player) && (userflags & g_access_flag[ACCESS_MAKE_HUMAN]))
 						formatex(menu, charsmax(menu), "%s \r[%L]", g_playername[player], id, g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE")
@@ -3186,25 +2935,25 @@ show_menu_player_list(id)
 			{
 				if (allowed_nemesis(player) && (g_newround ? (userflags & g_access_flag[ACCESS_MODE_NEMESIS]) : (userflags & g_access_flag[ACCESS_MAKE_NEMESIS])))
 				{
-					if (g_zombie[player])
+					if (GetBit(g_zombie, player))
 						formatex(menu, charsmax(menu), "%s \r[%L]", g_playername[player], id, g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE")
 					else
 						formatex(menu, charsmax(menu), "%s \y[%L]", g_playername[player], id, g_survivor[player] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
 				}
 				else
-					formatex(menu, charsmax(menu), "\d%s [%L]", g_playername[player], id, g_zombie[player] ? g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE" : g_survivor[player] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
+					formatex(menu, charsmax(menu), "\d%s [%L]", g_playername[player], id, GetBit(g_zombie, player) ? g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE" : g_survivor[player] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
 			}
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
 				if (allowed_survivor(player) && (g_newround ? (userflags & g_access_flag[ACCESS_MODE_SURVIVOR]) : (userflags & g_access_flag[ACCESS_MAKE_SURVIVOR])))
 				{
-					if (g_zombie[player])
+					if (GetBit(g_zombie, player))
 						formatex(menu, charsmax(menu), "%s \r[%L]", g_playername[player], id, g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE")
 					else
 						formatex(menu, charsmax(menu), "%s \y[%L]", g_playername[player], id, g_survivor[player] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
 				}
 				else
-					formatex(menu, charsmax(menu), "\d%s [%L]", g_playername[player], id, g_zombie[player] ? g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE" : g_survivor[player] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
+					formatex(menu, charsmax(menu), "\d%s [%L]", g_playername[player], id, GetBit(g_zombie, player) ? g_nemesis[player] ? "CLASS_NEMESIS" : "CLASS_ZOMBIE" : g_survivor[player] ? "CLASS_SURVIVOR" : "CLASS_HUMAN")
 			}
 			case ACTION_RESPAWN_PLAYER: // Respawn command
 			{
@@ -3230,13 +2979,13 @@ show_menu_player_list(id)
 	menu_setprop(menuid, MPROP_EXITNAME, menu)
 	
 	// If remembered page is greater than number of pages, clamp down the value
-	MENU_PAGE_PLAYERS = min(MENU_PAGE_PLAYERS, menu_pages(menuid)-1)
+	g_menu_data[id][7] = min(g_menu_data[id][7], menu_pages(menuid)-1)
 	
 	// Fix for AMXX custom menus
 	if (pev_valid(id) == PDATA_SAFE)
 		set_pdata_int(id, OFFSET_CSMENUCODE, 0, OFFSET_LINUX)
 	
-	menu_display(id, menuid, MENU_PAGE_PLAYERS)
+	menu_display(id, menuid, g_menu_data[id][7])
 }
 
 /*================================================================================
@@ -3295,7 +3044,7 @@ public menu_game(id, key)
 			if (g_isalive[id])
 			{
 				// Prevent abuse by non-admins if block suicide setting is enabled
-				if (get_pcvar_num(cvar_blocksuicide) && !(get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MENU]))
+				if (!(get_user_flags(id) & g_access_flag[ACCESS_ADMIN_MENU]))
 				{
 					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 					return PLUGIN_HANDLED;
@@ -3307,9 +3056,6 @@ public menu_game(id, key)
 				// Kill him before he switches team
 				dllfunc(DLLFunc_ClientKill, id)
 			}
-			
-			// Temporarily save player stats?
-			if (get_pcvar_num(cvar_statssave)) save_stats(id)
 			
 			// Remove previous tasks
 			remove_task(id+TASK_TEAM)
@@ -3333,10 +3079,7 @@ public menu_game(id, key)
 				if (is_player_stuck(id))
 				{
 					// Move to an initial spawn
-					if (get_pcvar_num(cvar_randspawn))
-						do_random_spawn(id) // random spawn (including CSDM)
-					else
-						do_random_spawn(id, 1) // regular spawn
+					do_random_spawn(id) // random spawn (including CSDM)
 				}
 				else
 					zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_STUCK")
@@ -3376,7 +3119,7 @@ public menu_extras(id, menuid, item)
 	
 	// Remember player's menu page
 	static menudummy
-	player_menu_info(id, menudummy, menudummy, MENU_PAGE_EXTRAS)
+	player_menu_info(id, menudummy, menudummy, g_menu_data[id][6])
 	
 	// Menu was closed
 	if (item == MENU_EXIT)
@@ -3405,14 +3148,14 @@ public menu_extras(id, menuid, item)
 }
 
 // Buy Extra Item
-buy_extra_item(id, itemid, ignorecost = 0)
+buy_extra_item(id, itemid)
 {
 	// Retrieve item's team
 	static team
 	team = ArrayGetCell(g_extraitem_team, itemid)
 	
 	// Check for team/class specific items
-	if ((g_zombie[id] && !g_nemesis[id] && !(team & ZP_TEAM_ZOMBIE)) || (!g_zombie[id] && !g_survivor[id] && !(team & ZP_TEAM_HUMAN)) || (g_nemesis[id] && !(team & ZP_TEAM_NEMESIS)) || (g_survivor[id] && !(team & ZP_TEAM_SURVIVOR)))
+	if ((GetBit(g_zombie, id) && !g_nemesis[id] && !(team & ZP_TEAM_ZOMBIE)) || (!GetBit(g_zombie, id) && !g_survivor[id] && !(team & ZP_TEAM_HUMAN)) || (g_nemesis[id] && !(team & ZP_TEAM_NEMESIS)) || (g_survivor[id] && !(team & ZP_TEAM_SURVIVOR)))
 	{
 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		return;
@@ -3423,7 +3166,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 	|| (itemid == EXTRA_ANTIDOTE && (!get_pcvar_num(cvar_extraantidote) || g_antidotecounter >= get_pcvar_num(cvar_antidotelimit)))
 	|| (itemid == EXTRA_MADNESS && (!get_pcvar_num(cvar_extramadness) || g_madnesscounter >= get_pcvar_num(cvar_madnesslimit)))
 	|| (itemid == EXTRA_INFBOMB && (!get_pcvar_num(cvar_extrainfbomb) || g_infbombcounter >= get_pcvar_num(cvar_infbomblimit)))
-	|| (itemid >= EXTRA_WEAPONS_STARTID && itemid <= EXTRAS_CUSTOM_STARTID-1 && !get_pcvar_num(cvar_extraweapons)))
+	|| (itemid >= EXTRA_WEAPONS_STARTID && itemid <= (EXTRA_WEAPONS_STARTID + ArraySize(g_extraweapon_names))-1 && !get_pcvar_num(cvar_extraweapons)))
 	{
 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		return;
@@ -3438,18 +3181,18 @@ buy_extra_item(id, itemid, ignorecost = 0)
 	}
 	
 	// Ignore item's cost?
-	if (!ignorecost)
-	{
-		// Check that we have enough ammo packs
-		if (g_ammopacks[id] < ArrayGetCell(g_extraitem_cost, itemid))
-		{
-			zp_colored_print(id, "^x04[CSO]^x01 %L", id, "NOT_ENOUGH_AMMO")
-			return;
-		}
+	// if (!ignorecost)
+	// {
+	// 	// Check that we have enough ammo packs
+	// 	if (g_ammopacks[id] < ArrayGetCell(g_extraitem_cost, itemid))
+	// 	{
+	// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "NOT_ENOUGH_AMMO")
+	// 		return;
+	// 	}
 		
-		// Deduce item cost
-		g_ammopacks[id] -= ArrayGetCell(g_extraitem_cost, itemid)
-	}
+	// 	// Deduce item cost
+	// 	g_ammopacks[id] -= ArrayGetCell(g_extraitem_cost, itemid)
+	// }
 	
 	// Check which kind of item we're buying
 	switch (itemid)
@@ -3522,7 +3265,7 @@ buy_extra_item(id, itemid, ignorecost = 0)
 		}
 		default:
 		{
-			if (itemid >= EXTRA_WEAPONS_STARTID && itemid <= EXTRAS_CUSTOM_STARTID-1) // Weapons
+			if (itemid >= EXTRA_WEAPONS_STARTID && itemid <= (EXTRA_WEAPONS_STARTID + ArraySize(g_extraweapon_names))-1) // Weapons
 			{
 				// Get weapon's id and name
 				static weaponid, wname[32]
@@ -3567,9 +3310,6 @@ buy_extra_item(id, itemid, ignorecost = 0)
 				// Item selected forward
 				ExecuteForward(g_fwExtraItemSelected, g_fwDummyResult, id, itemid);
 				
-				// Item purchase blocked, restore buyer's ammo packs
-				if (g_fwDummyResult >= ZP_PLUGIN_HANDLED && !ignorecost)
-					g_ammopacks[id] += ArrayGetCell(g_extraitem_cost, itemid)
 			}
 		}
 	}
@@ -3587,7 +3327,7 @@ public menu_zclass(id, menuid, item)
 	
 	// Remember player's menu page
 	static menudummy
-	player_menu_info(id, menudummy, menudummy, MENU_PAGE_ZCLASS)
+	player_menu_info(id, menudummy, menudummy, g_menu_data[id][5])
 	
 	// Menu was closed
 	if (item == MENU_EXIT)
@@ -3642,7 +3382,7 @@ public menu_admin(id, key)
 			if (userflags & (g_access_flag[ACCESS_MODE_INFECTION] | g_access_flag[ACCESS_MAKE_ZOMBIE] | g_access_flag[ACCESS_MAKE_HUMAN]))
 			{
 				// Show player list for admin to pick a target
-				PL_ACTION = ACTION_ZOMBIEFY_HUMANIZE
+				g_menu_data[id][0] = ACTION_ZOMBIEFY_HUMANIZE
 				show_menu_player_list(id)
 			}
 			else
@@ -3656,7 +3396,7 @@ public menu_admin(id, key)
 			if (userflags & (g_access_flag[ACCESS_MODE_NEMESIS] | g_access_flag[ACCESS_MAKE_NEMESIS]))
 			{
 				// Show player list for admin to pick a target
-				PL_ACTION = ACTION_MAKE_NEMESIS
+				g_menu_data[id][0] = ACTION_MAKE_NEMESIS
 				show_menu_player_list(id)
 			}
 			else
@@ -3670,7 +3410,7 @@ public menu_admin(id, key)
 			if (userflags & (g_access_flag[ACCESS_MODE_SURVIVOR] | g_access_flag[ACCESS_MAKE_SURVIVOR]))
 			{
 				// Show player list for admin to pick a target
-				PL_ACTION = ACTION_MAKE_SURVIVOR
+				g_menu_data[id][0] = ACTION_MAKE_SURVIVOR
 				show_menu_player_list(id)
 			}
 			else
@@ -3684,7 +3424,7 @@ public menu_admin(id, key)
 			if (userflags & g_access_flag[ACCESS_RESPAWN_PLAYERS])
 			{
 				// Show player list for admin to pick a target
-				PL_ACTION = ACTION_RESPAWN_PLAYER
+				g_menu_data[id][0] = ACTION_RESPAWN_PLAYER
 				show_menu_player_list(id)
 			}
 			else
@@ -3752,7 +3492,7 @@ public menu_player_list(id, menuid, item)
 	
 	// Remember player's menu page
 	static menudummy
-	player_menu_info(id, menudummy, menudummy, MENU_PAGE_PLAYERS)
+	player_menu_info(id, menudummy, menudummy, g_menu_data[id][7])
 	
 	// Menu was closed
 	if (item == MENU_EXIT)
@@ -3777,11 +3517,11 @@ public menu_player_list(id, menuid, item)
 	if (g_isconnected[playerid])
 	{
 		// Perform the right action if allowed
-		switch (PL_ACTION)
+		switch (g_menu_data[id][0])
 		{
 			case ACTION_ZOMBIEFY_HUMANIZE: // Zombiefy/Humanize command
 			{
-				if (g_zombie[playerid])
+				if (GetBit(g_zombie, playerid))
 				{
 					if (userflags & g_access_flag[ACCESS_MAKE_HUMAN])
 					{
@@ -3855,35 +3595,6 @@ public menu_player_list(id, menuid, item)
 /*================================================================================
  [Admin Commands]
 =================================================================================*/
-
-// zp_toggle [1/0]
-public cmd_toggle(id, level, cid)
-{
-	// Check for access flag - Enable/Disable Mod
-	if (!cmd_access(id, g_access_flag[ACCESS_ENABLE_MOD], cid, 2))
-		return PLUGIN_HANDLED;
-	
-	// Retrieve arguments
-	new arg[2]
-	read_argv(1, arg, charsmax(arg))
-	
-	// Mod already enabled/disabled
-	if (str_to_num(arg) == g_pluginenabled)
-		return PLUGIN_HANDLED;
-	
-	// Set toggle cvar
-	set_pcvar_num(cvar_toggle, str_to_num(arg))
-	client_print(id, print_console, "Zombie Plague %L.", id, str_to_num(arg) ? "MOTD_ENABLED" : "MOTD_DISABLED")
-	
-	// Retrieve map name
-	new mapname[32]
-	get_mapname(mapname, charsmax(mapname))
-	
-	// Restart current map
-	server_cmd("changelevel %s", mapname)
-	
-	return PLUGIN_HANDLED;
-}
 
 // zp_zombie [target]
 public cmd_zombie(id, level, cid)
@@ -4115,7 +3826,7 @@ public cmd_plague(id, level, cid)
 public message_cur_weapon(msg_id, msg_dest, msg_entity)
 {
 	// Not alive or zombie
-	if (!g_isalive[msg_entity] || g_zombie[msg_entity])
+	if (!g_isalive[msg_entity] || GetBit(g_zombie, msg_entity))
 		return;
 	
 	// Not an active weapon
@@ -4141,17 +3852,6 @@ public message_cur_weapon(msg_id, msg_dest, msg_entity)
 		// HUD should show full clip all the time
 		set_msg_arg_int(3, get_msg_argtype(3), MAXCLIP[weapon])
 	}
-}
-
-// Take off player's money
-public message_money(msg_id, msg_dest, msg_entity)
-{
-	// Remove money setting enabled?
-	if (!get_pcvar_num(cvar_removemoney))
-		return PLUGIN_CONTINUE;
-	
-	fm_cs_set_user_money(msg_entity, 0)
-	return PLUGIN_HANDLED;
 }
 
 // Fix for the HL engine bug when HP is multiples of 256
@@ -4188,7 +3888,7 @@ public message_screenfade(msg_id, msg_dest, msg_entity)
 		return PLUGIN_CONTINUE;
 	
 	// Nemesis shouldn't be FBed
-	if (g_zombie[msg_entity] && !g_nemesis[msg_entity])
+	if (GetBit(g_zombie, msg_entity) && !g_nemesis[msg_entity])
 	{
 		// Set flash color to nighvision's
 		set_msg_arg_int(4, get_msg_argtype(4), get_pcvar_num(cvar_nvgcolor[0]))
@@ -4215,7 +3915,7 @@ public message_clcorpse()
 // Prevent zombies from seeing any weapon pickup icon
 public message_weappickup(msg_id, msg_dest, msg_entity)
 {
-	if (g_zombie[msg_entity])
+	if (GetBit(g_zombie, msg_entity))
 		return PLUGIN_HANDLED;
 	
 	return PLUGIN_CONTINUE;
@@ -4224,7 +3924,7 @@ public message_weappickup(msg_id, msg_dest, msg_entity)
 // Prevent zombies from seeing any ammo pickup icon
 public message_ammopickup(msg_id, msg_dest, msg_entity)
 {
-	if (g_zombie[msg_entity])
+	if (GetBit(g_zombie, msg_entity))
 		return PLUGIN_HANDLED;
 	
 	return PLUGIN_CONTINUE;
@@ -4424,7 +4124,7 @@ make_a_zombie(mode, id)
 				continue;
 			
 			// Survivor or already a zombie
-			if (g_survivor[id] || g_zombie[id])
+			if (g_survivor[id] || GetBit(g_zombie, id))
 				continue;
 			
 			// Turn into a zombie
@@ -4514,7 +4214,7 @@ make_a_zombie(mode, id)
 			if (++id > g_maxplayers) id = 1
 			
 			// Dead or already a zombie
-			if (!g_isalive[id] || g_zombie[id])
+			if (!g_isalive[id] || GetBit(g_zombie, id))
 				continue;
 			
 			// Random chance
@@ -4530,7 +4230,7 @@ make_a_zombie(mode, id)
 		for (id = 1; id <= g_maxplayers; id++)
 		{
 			// Only those of them who aren't zombies
-			if (!g_isalive[id] || g_zombie[id])
+			if (!g_isalive[id] || GetBit(g_zombie, id))
 				continue;
 			
 			// Switch to CT
@@ -4618,7 +4318,7 @@ make_a_zombie(mode, id)
 			if (++id > g_maxplayers) id = 1
 			
 			// Dead or already a zombie or survivor
-			if (!g_isalive[id] || g_zombie[id] || g_survivor[id])
+			if (!g_isalive[id] || GetBit(g_zombie, id) || g_survivor[id])
 				continue;
 			
 			// Random chance
@@ -4634,7 +4334,7 @@ make_a_zombie(mode, id)
 		for (id = 1; id <= g_maxplayers; id++)
 		{
 			// Only those of them who arent zombies or survivor
-			if (!g_isalive[id] || g_zombie[id] || g_survivor[id])
+			if (!g_isalive[id] || GetBit(g_zombie, id) || g_survivor[id])
 				continue;
 			
 			// Switch to CT
@@ -4697,7 +4397,7 @@ make_a_zombie(mode, id)
 				continue;
 			
 			// First zombie/nemesis
-			if (g_zombie[id])
+			if (GetBit(g_zombie, id))
 				continue;
 			
 			// Switch to CT
@@ -4760,16 +4460,19 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 	ExecuteForward(g_fwUserInfected_pre, g_fwDummyResult, id, infector, nemesis)
 	
 	// Show zombie class menu if they haven't chosen any (e.g. just connected)
-	if (g_zombieclassnext[id] == ZCLASS_NONE && get_pcvar_num(cvar_zclasses))
+	if (g_zombieclassnext[id] == -1 && get_pcvar_num(cvar_zclasses))
 		set_task(0.2, "show_menu_zclass", id)
 	
 	// Set selected zombie class
 	g_zombieclass[id] = g_zombieclassnext[id]
 	// If no class selected yet, use the first (default) one
-	if (g_zombieclass[id] == ZCLASS_NONE) g_zombieclass[id] = 0
+	if (g_zombieclass[id] == -1) g_zombieclass[id] = 0
 	
 	// Way to go...
-	g_zombie[id] = true
+	
+	SetBit(g_zombie, id)
+	// g_zombie |= ( 1 << ( id & 31 ) )
+
 	g_nemesis[id] = false
 	g_survivor[id] = false
 	g_firstzombie[id] = false
@@ -4793,7 +4496,6 @@ zombieme(id, infector, nemesis, silentmode, rewards)
 		
 		// Reward frags, deaths, health, and ammo packs
 		UpdateFrags(infector, id, get_pcvar_num(cvar_fragsinfect), 1, 1)
-		g_ammopacks[infector] += get_pcvar_num(cvar_ammoinfect)
 		fm_set_user_health(infector, pev(infector, pev_health) + get_pcvar_num(cvar_zombiebonushp))
 	}
 	
@@ -5113,7 +4815,7 @@ humanme(id, survivor, silentmode)
 	remove_task(id+TASK_NVISION)
 	
 	// Reset some vars
-	g_zombie[id] = false
+	ClearBit(g_zombie, id)
 	g_nemesis[id] = false
 	g_survivor[id] = false
 	g_firstzombie[id] = false
@@ -5321,7 +5023,6 @@ public cache_cvars()
 	g_cached_leapnemesiscooldown = get_pcvar_float(cvar_leapnemesiscooldown)
 	g_cached_leapsurvivor = get_pcvar_num(cvar_leapsurvivor)
 	g_cached_leapsurvivorcooldown = get_pcvar_float(cvar_leapsurvivorcooldown)
-	g_cached_buytime = get_pcvar_float(cvar_buyzonetime)
 }
 
 load_customization_from_files()
@@ -5801,7 +5502,7 @@ save_customization()
 	size = ArraySize(g_extraitem_name)
 	
 	// Add any new extra items data at the end if needed
-	for (i = EXTRAS_CUSTOM_STARTID; i < size; i++)
+	for (i = (EXTRA_WEAPONS_STARTID + ArraySize(g_extraweapon_names)); i < size; i++)
 	{
 		if (ArrayGetCell(g_extraitem_new, i))
 		{
@@ -5884,13 +5585,13 @@ public bot_buy_extras(taskid)
 	if (!g_isalive[ID_SPAWN] || g_survivor[ID_SPAWN] || g_nemesis[ID_SPAWN])
 		return;
 	
-	if (!g_zombie[ID_SPAWN]) // human bots
+	if (!GetBit(g_zombie, ID_SPAWN)) // human bots
 	{
 		// Attempt to buy Night Vision
 		buy_extra_item(ID_SPAWN, EXTRA_NVISION)
 		
 		// Attempt to buy a weapon
-		buy_extra_item(ID_SPAWN, random_num(EXTRA_WEAPONS_STARTID, EXTRAS_CUSTOM_STARTID-1))
+		buy_extra_item(ID_SPAWN, random_num(EXTRA_WEAPONS_STARTID, (EXTRA_WEAPONS_STARTID + ArraySize(g_extraweapon_names))-1))
 	}
 	else // zombie bots
 	{
@@ -5903,11 +5604,11 @@ public bot_buy_extras(taskid)
 public refill_bpammo(const args[], id)
 {
 	// Player died or turned into a zombie
-	if (!g_isalive[id] || g_zombie[id])
+	if (!g_isalive[id] || GetBit(g_zombie, id))
 		return;
 	
 	set_msg_block(g_msgAmmoPickup, BLOCK_ONCE)
-	ExecuteHamB(Ham_GiveAmmo, id, MAXBPAMMO[REFILL_WEAPONID], AMMOTYPE[REFILL_WEAPONID], MAXBPAMMO[REFILL_WEAPONID])
+	ExecuteHamB(Ham_GiveAmmo, id, MAXBPAMMO[args[0]], AMMOTYPE[args[0]], MAXBPAMMO[args[0]])
 }
 
 // Balance Teams Task
@@ -6037,7 +5738,7 @@ public respawn_player_check_task(taskid)
 		return;
 	
 	// If player was being spawned as a zombie, set the flag again
-	if (g_zombie[ID_SPAWN]) g_respawn_as_zombie[ID_SPAWN] = true
+	if (GetBit(g_zombie, ID_SPAWN)) g_respawn_as_zombie[ID_SPAWN] = true
 	else g_respawn_as_zombie[ID_SPAWN] = false
 	
 	respawn_player_manually(ID_SPAWN)
@@ -6072,7 +5773,7 @@ check_round(leaving_player)
 		return;
 	
 	// Last zombie disconnecting
-	if (g_zombie[leaving_player] && fnGetZombies() == 1)
+	if (GetBit(g_zombie, leaving_player) && fnGetZombies() == 1)
 	{
 		// Only one CT left, don't bother
 		if (fnGetHumans() == 1 && fnGetCTs() == 1)
@@ -6102,7 +5803,7 @@ check_round(leaving_player)
 	}
 	
 	// Last human disconnecting
-	else if (!g_zombie[leaving_player] && fnGetHumans() == 1)
+	else if (!GetBit(g_zombie, leaving_player) && fnGetHumans() == 1)
 	{
 		// Only one T left, don't bother
 		if (fnGetZombies() == 1 && fnGetTs() == 1)
@@ -6297,25 +5998,6 @@ public remove_spawn_protection(taskid)
 	g_nodamage[ID_SPAWN] = false
 	set_pev(ID_SPAWN, pev_effects, pev(ID_SPAWN, pev_effects) & ~EF_NODRAW)
 }
-
-// Hide Player's Money Task
-public task_hide_money(taskid)
-{
-	// Not alive
-	if (!g_isalive[ID_SPAWN])
-		return;
-	
-	// Hide money
-	message_begin(MSG_ONE, g_msgHideWeapon, _, ID_SPAWN)
-	write_byte(HIDE_MONEY) // what to hide bitsum
-	message_end()
-	
-	// Hide the HL crosshair that's drawn
-	message_begin(MSG_ONE, g_msgCrosshair, _, ID_SPAWN)
-	write_byte(0) // toggle
-	message_end()
-}
-
 // Turn Off Flashlight and Restore Batteries
 turn_off_flashlight(id)
 {
@@ -6390,7 +6072,7 @@ infection_explode(ent)
 	while ((victim = engfunc(EngFunc_FindEntityInSphere, victim, originF, NADE_EXPLOSION_RADIUS)) != 0)
 	{
 		// Only effect alive non-spawnprotected humans
-		if (!is_user_valid_alive(victim) || g_zombie[victim] || g_nodamage[victim])
+		if (!is_user_valid_alive(victim) || GetBit(g_zombie, victim) || g_nodamage[victim])
 			continue;
 		
 		// Last human is killed
@@ -6434,7 +6116,7 @@ fire_explode(ent)
 	while ((victim = engfunc(EngFunc_FindEntityInSphere, victim, originF, NADE_EXPLOSION_RADIUS)) != 0)
 	{
 		// Only effect alive zombies
-		if (!is_user_valid_alive(victim) || !g_zombie[victim] || g_nodamage[victim])
+		if (!is_user_valid_alive(victim) || !GetBit(g_zombie, victim) || g_nodamage[victim])
 			continue;
 		
 		// Heat icon?
@@ -6486,7 +6168,7 @@ frost_explode(ent)
 	while ((victim = engfunc(EngFunc_FindEntityInSphere, victim, originF, NADE_EXPLOSION_RADIUS)) != 0)
 	{
 		// Only effect alive unfrozen zombies
-		if (!is_user_valid_alive(victim) || !g_zombie[victim] || g_frozen[victim] || g_nodamage[victim])
+		if (!is_user_valid_alive(victim) || !GetBit(g_zombie, victim) || g_frozen[victim] || g_nodamage[victim])
 			continue;
 		
 		// Nemesis shouldn't be frozen
@@ -6662,22 +6344,6 @@ public remove_stuff()
 {
 	static ent
 	
-	// Remove rotating doors
-	if (get_pcvar_num(cvar_removedoors) > 0)
-	{
-		ent = -1;
-		while ((ent = engfunc(EngFunc_FindEntityByString, ent, "classname", "func_door_rotating")) != 0)
-			engfunc(EngFunc_SetOrigin, ent, Float:{8192.0 ,8192.0 ,8192.0})
-	}
-	
-	// Remove all doors
-	if (get_pcvar_num(cvar_removedoors) > 1)
-	{
-		ent = -1;
-		while ((ent = engfunc(EngFunc_FindEntityByString, ent, "classname", "func_door")) != 0)
-			engfunc(EngFunc_SetOrigin, ent, Float:{8192.0 ,8192.0 ,8192.0})
-	}
-	
 	// Triggered lights
 	if (!get_pcvar_num(cvar_triggered))
 	{
@@ -6697,7 +6363,7 @@ replace_weapon_models(id, weaponid)
 	{
 		case CSW_KNIFE: // Custom knife models
 		{
-			if (g_zombie[id])
+			if (GetBit(g_zombie, id))
 			{
 				if (g_nemesis[id]) // Nemesis
 				{
@@ -6739,7 +6405,7 @@ replace_weapon_models(id, weaponid)
 		}
 		case CSW_HEGRENADE: // Infection bomb or fire grenade
 		{
-			if (g_zombie[id])
+			if (GetBit(g_zombie, id))
 				set_pev(id, pev_viewmodel2, model_grenade_infect)
 			else
 				set_pev(id, pev_viewmodel2, model_grenade_fire)
@@ -6767,7 +6433,8 @@ replace_weapon_models(id, weaponid)
 // Reset Player Vars
 reset_vars(id, resetall)
 {
-	g_zombie[id] = false
+	ClearBit(g_zombie, id)
+	
 	g_nemesis[id] = false
 	g_survivor[id] = false
 	g_firstzombie[id] = false
@@ -6785,15 +6452,12 @@ reset_vars(id, resetall)
 	
 	if (resetall)
 	{
-		g_ammopacks[id] = get_pcvar_num(cvar_startammopacks)
-		g_zombieclass[id] = ZCLASS_NONE
-		g_zombieclassnext[id] = ZCLASS_NONE
-		g_damagedealt_human[id] = 0
-		g_damagedealt_zombie[id] = 0
-		PL_ACTION = 0
-		MENU_PAGE_ZCLASS = 0
-		MENU_PAGE_EXTRAS = 0
-		MENU_PAGE_PLAYERS = 0
+		g_zombieclass[id] = -1
+		g_zombieclassnext[id] = -1
+		g_menu_data[id][0] = 0
+		g_menu_data[id][5] = 0
+		g_menu_data[id][6] = 0
+		g_menu_data[id][7] = 0
 	}
 }
 
@@ -6855,67 +6519,36 @@ public madness_over(taskid)
 }
 
 // Place user at a random spawn
-do_random_spawn(id, regularspawns = 0)
+do_random_spawn(id)
 {
 	static hull, sp_index, i
 	
 	// Get whether the player is crouching
 	hull = (pev(id, pev_flags) & FL_DUCKING) ? HULL_HEAD : HULL_HUMAN
+
+	// No spawns?
+	if (!g_spawnCount2)
+		return;
 	
-	// Use regular spawns?
-	if (!regularspawns)
+	// Choose random spawn to start looping at
+	sp_index = random_num(0, g_spawnCount2 - 1)
+	
+	// Try to find a clear spawn
+	for (i = sp_index + 1; /*no condition*/; i++)
 	{
-		// No spawns?
-		if (!g_spawnCount)
-			return;
+		// Start over when we reach the end
+		if (i >= g_spawnCount2) i = 0
 		
-		// Choose random spawn to start looping at
-		sp_index = random_num(0, g_spawnCount - 1)
-		
-		// Try to find a clear spawn
-		for (i = sp_index + 1; /*no condition*/; i++)
+		// Free spawn space?
+		if (is_hull_vacant(g_spawns2[i], hull))
 		{
-			// Start over when we reach the end
-			if (i >= g_spawnCount) i = 0
-			
-			// Free spawn space?
-			if (is_hull_vacant(g_spawns[i], hull))
-			{
-				// Engfunc_SetOrigin is used so ent's mins and maxs get updated instantly
-				engfunc(EngFunc_SetOrigin, id, g_spawns[i])
-				break;
-			}
-			
-			// Loop completed, no free space found
-			if (i == sp_index) break;
+			// Engfunc_SetOrigin is used so ent's mins and maxs get updated instantly
+			engfunc(EngFunc_SetOrigin, id, g_spawns2[i])
+			break;
 		}
-	}
-	else
-	{
-		// No spawns?
-		if (!g_spawnCount2)
-			return;
 		
-		// Choose random spawn to start looping at
-		sp_index = random_num(0, g_spawnCount2 - 1)
-		
-		// Try to find a clear spawn
-		for (i = sp_index + 1; /*no condition*/; i++)
-		{
-			// Start over when we reach the end
-			if (i >= g_spawnCount2) i = 0
-			
-			// Free spawn space?
-			if (is_hull_vacant(g_spawns2[i], hull))
-			{
-				// Engfunc_SetOrigin is used so ent's mins and maxs get updated instantly
-				engfunc(EngFunc_SetOrigin, id, g_spawns2[i])
-				break;
-			}
-			
-			// Loop completed, no free space found
-			if (i == sp_index) break;
-		}
+		// Loop completed, no free space found
+		if (i == sp_index) break;
 	}
 }
 
@@ -6927,7 +6560,7 @@ fnGetZombies()
 	
 	for (id = 1; id <= g_maxplayers; id++)
 	{
-		if (g_isalive[id] && g_zombie[id])
+		if (g_isalive[id] && GetBit(g_zombie, id))
 			iZombies++
 	}
 	
@@ -6942,7 +6575,7 @@ fnGetHumans()
 	
 	for (id = 1; id <= g_maxplayers; id++)
 	{
-		if (g_isalive[id] && !g_zombie[id])
+		if (g_isalive[id] && !GetBit(g_zombie, id))
 			iHumans++
 	}
 	
@@ -7111,7 +6744,7 @@ fnCheckLastZombie()
 	for (id = 1; id <= g_maxplayers; id++)
 	{
 		// Last zombie
-		if (g_isalive[id] && g_zombie[id] && !g_nemesis[id] && fnGetZombies() == 1)
+		if (g_isalive[id] && GetBit(g_zombie, id) && !g_nemesis[id] && fnGetZombies() == 1)
 		{
 			if (!g_lastzombie[id])
 			{
@@ -7124,7 +6757,7 @@ fnCheckLastZombie()
 			g_lastzombie[id] = false
 		
 		// Last human
-		if (g_isalive[id] && !g_zombie[id] && !g_survivor[id] && fnGetHumans() == 1)
+		if (g_isalive[id] && !GetBit(g_zombie, id) && !g_survivor[id] && fnGetHumans() == 1)
 		{
 			if (!g_lasthuman[id])
 			{
@@ -7141,51 +6774,10 @@ fnCheckLastZombie()
 	}
 }
 
-// Save player's stats to database
-save_stats(id)
-{
-	// Check whether there is another record already in that slot
-	if (db_name[id][0] && !equal(g_playername[id], db_name[id]))
-	{
-		// If DB size is exceeded, write over old records
-		if (db_slot_i >= sizeof db_name)
-			db_slot_i = g_maxplayers+1
-		
-		// Move previous record onto an additional save slot
-		copy(db_name[db_slot_i], charsmax(db_name[]), db_name[id])
-		db_ammopacks[db_slot_i] = db_ammopacks[id]
-		db_zombieclass[db_slot_i] = db_zombieclass[id]
-		db_slot_i++
-	}
-	
-	// Now save the current player stats
-	copy(db_name[id], charsmax(db_name[]), g_playername[id]) // name
-	db_ammopacks[id] = g_ammopacks[id]  // ammo packs
-	db_zombieclass[id] = g_zombieclassnext[id] // zombie class
-}
-
-// Load player's stats from database (if a record is found)
-load_stats(id)
-{
-	// Look for a matching record
-	static i
-	for (i = 0; i < sizeof db_name; i++)
-	{
-		if (equal(g_playername[id], db_name[i]))
-		{
-			// Bingo!
-			g_ammopacks[id] = db_ammopacks[i]
-			g_zombieclass[id] = db_zombieclass[i]
-			g_zombieclassnext[id] = db_zombieclass[i]
-			return;
-		}
-	}
-}
-
 // Checks if a player is allowed to be zombie
 allowed_zombie(id)
 {
-	if ((g_zombie[id] && !g_nemesis[id]) || g_endround || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && !g_zombie[id] && fnGetHumans() == 1))
+	if ((GetBit(g_zombie, id) && !g_nemesis[id]) || g_endround || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && !GetBit(g_zombie, id) && fnGetHumans() == 1))
 		return false;
 	
 	return true;
@@ -7194,7 +6786,7 @@ allowed_zombie(id)
 // Checks if a player is allowed to be human
 allowed_human(id)
 {
-	if ((!g_zombie[id] && !g_survivor[id]) || g_endround || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && g_zombie[id] && fnGetZombies() == 1))
+	if ((!GetBit(g_zombie, id) && !g_survivor[id]) || g_endround || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && GetBit(g_zombie, id) && fnGetZombies() == 1))
 		return false;
 	
 	return true;
@@ -7203,7 +6795,7 @@ allowed_human(id)
 // Checks if a player is allowed to be survivor
 allowed_survivor(id)
 {
-	if (g_endround || g_survivor[id] || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && g_zombie[id] && fnGetZombies() == 1))
+	if (g_endround || g_survivor[id] || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && GetBit(g_zombie, id) && fnGetZombies() == 1))
 		return false;
 	
 	return true;
@@ -7212,7 +6804,7 @@ allowed_survivor(id)
 // Checks if a player is allowed to be nemesis
 allowed_nemesis(id)
 {
-	if (g_endround || g_nemesis[id] || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && !g_zombie[id] && fnGetHumans() == 1))
+	if (g_endround || g_nemesis[id] || !g_isalive[id] || task_exists(TASK_WELCOMEMSG) || (!g_newround && !GetBit(g_zombie, id) && fnGetHumans() == 1))
 		return false;
 	
 	return true;
@@ -7501,7 +7093,7 @@ set_player_maxspeed(id)
 	// Otherwise, set maxspeed directly
 	else
 	{
-		if (g_zombie[id])
+		if (GetBit(g_zombie, id))
 		{
 			if (g_nemesis[id])
 				set_pev(id, pev_maxspeed, get_pcvar_float(cvar_nemspd))
@@ -7545,7 +7137,7 @@ public native_get_user_zombie(id)
 		return -1;
 	}
 	
-	return g_zombie[id];
+	return GetBit(g_zombie, id);
 }
 
 // Native: zp_get_user_nemesis
@@ -7650,45 +7242,16 @@ public native_set_user_zombie_class(id, classid)
 	return true;
 }
 
-// Native: zp_get_user_ammo_packs
-public native_get_user_ammo_packs(id)
-{
-	if (!is_user_valid(id))
-	{
-		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
-		return -1;
-	}
-	
-	return g_ammopacks[id];
-}
-
-// Native: zp_set_user_ammo_packs
-public native_set_user_ammo_packs(id, amount)
-{
-	if (!is_user_valid(id))
-	{
-		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
-		return false;
-	}
-	
-	g_ammopacks[id] = amount;
-	return true;
-}
-
 // Native: zp_get_zombie_maxhealth
 public native_get_zombie_maxhealth(id)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return -1;
-	
 	if (!is_user_valid(id))
 	{
 		log_error(AMX_ERR_NATIVE, "[CSO] Invalid Player (%d)", id)
 		return -1;
 	}
 	
-	if (!g_zombie[id] || g_nemesis[id])
+	if (!GetBit(g_zombie, id) || g_nemesis[id])
 	{
 		log_error(AMX_ERR_NATIVE, "[CSO] Player not a normal zombie (%d)", id)
 		return -1;
@@ -7715,9 +7278,6 @@ public native_get_user_batteries(id)
 // Native: zp_set_user_batteries
 public native_set_user_batteries(id, value)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_connected(id))
 	{
@@ -7751,9 +7311,6 @@ public native_get_user_nightvision(id)
 // Native: zp_set_user_nightvision
 public native_set_user_nightvision(id, set)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_connected(id))
 	{
@@ -7797,9 +7354,6 @@ public native_set_user_nightvision(id, set)
 // Native: zp_infect_user
 public native_infect_user(id, infector, silent, rewards)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_alive(id))
 	{
@@ -7829,9 +7383,6 @@ public native_infect_user(id, infector, silent, rewards)
 // Native: zp_disinfect_user
 public native_disinfect_user(id, silent)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_alive(id))
 	{
@@ -7851,9 +7402,6 @@ public native_disinfect_user(id, silent)
 // Native: zp_make_user_nemesis
 public native_make_user_nemesis(id)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_alive(id))
 	{
@@ -7883,9 +7431,6 @@ public native_make_user_nemesis(id)
 // Native: zp_make_user_survivor
 public native_make_user_survivor(id)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_alive(id))
 	{
@@ -7916,9 +7461,6 @@ public native_make_user_survivor(id)
 // Native: zp_respawn_user
 public native_respawn_user(id, team)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_connected(id))
 	{
@@ -7939,11 +7481,8 @@ public native_respawn_user(id, team)
 }
 
 // Native: zp_force_buy_extra_item
-public native_force_buy_extra_item(id, itemid, ignorecost)
+public native_force_buy_extra_item(id, itemid)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_alive(id))
 	{
@@ -7957,16 +7496,13 @@ public native_force_buy_extra_item(id, itemid, ignorecost)
 		return false;
 	}
 	
-	buy_extra_item(id, itemid, ignorecost)
+	buy_extra_item(id, itemid)
 	return true;
 }
 
 // Native: zp_override_user_model
 public native_override_user_model(id, const newmodel[], modelindex)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	if (!is_user_valid_connected(id))
 	{
@@ -8073,10 +7609,6 @@ public native_get_survivor_count()
 // Native: zp_register_extra_item
 public native_register_extra_item(const name[], cost, team)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return -1;
-	
 	// Strings passed byref
 	param_convert(1)
 	
@@ -8167,10 +7699,6 @@ native_register_extra_item2(const name[], cost, team)
 // Native: zp_register_zombie_class
 public native_register_zombie_class(const name[], const info[], const model[], const clawmodel[], hp, speed, Float:gravity, Float:knockback, lvl)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return -1;
-	
 	// Strings passed byref
 	param_convert(1)
 	param_convert(2)
@@ -8371,10 +7899,6 @@ public native_register_zombie_class(const name[], const info[], const model[], c
 // Native: zp_get_extra_item_id
 public native_get_extra_item_id(const name[])
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return -1;
-	
 	// Strings passed byref
 	param_convert(1)
 	
@@ -8395,10 +7919,6 @@ public native_get_extra_item_id(const name[])
 // Native: zp_get_zombie_class_id
 public native_get_zombie_class_id(const name[])
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return -1;
-	
 	// Strings passed byref
 	param_convert(1)
 	
@@ -8419,9 +7939,6 @@ public native_get_zombie_class_id(const name[])
 // Native: zp_get_zombie_class_info
 public native_get_zombie_class_info(classid, info[], len)
 {
-	// ZP disabled
-	if (!g_pluginenabled)
-		return false;
 	
 	// Invalid class
 	if (classid < 0 || classid >= g_zclass_i)
@@ -8458,14 +7975,14 @@ public set_user_nvision(taskid)
 	write_byte(get_pcvar_num(cvar_nvgsize)) // radius
 	
 	// Nemesis / Madness / Spectator in nemesis round
-	if (g_nemesis[ID_NVISION] || (g_zombie[ID_NVISION] && g_nodamage[ID_NVISION]) || (!g_isalive[ID_NVISION] && g_nemround))
+	if (g_nemesis[ID_NVISION] || (GetBit(g_zombie, ID_NVISION) && g_nodamage[ID_NVISION]) || (!g_isalive[ID_NVISION] && g_nemround))
 	{
 		write_byte(get_pcvar_num(cvar_nemnvgcolor[0])) // r
 		write_byte(get_pcvar_num(cvar_nemnvgcolor[1])) // g
 		write_byte(get_pcvar_num(cvar_nemnvgcolor[2])) // b
 	}
 	// Human / Spectator in normal round
-	else if (!g_zombie[ID_NVISION] || !g_isalive[ID_NVISION])
+	else if (!GetBit(g_zombie, ID_NVISION) || !g_isalive[ID_NVISION])
 	{
 		write_byte(get_pcvar_num(cvar_humnvgcolor[0])) // r
 		write_byte(get_pcvar_num(cvar_humnvgcolor[1])) // g
@@ -9452,16 +8969,6 @@ stock fm_cs_set_user_team(id, team)
 	set_pdata_int(id, OFFSET_CSTEAMS, team, OFFSET_LINUX)
 }
 
-// Set User Money
-stock fm_cs_set_user_money(id, value)
-{
-	// Prevent server crash if entity's private data not initalized
-	if (pev_valid(id) != PDATA_SAFE)
-		return;
-	
-	set_pdata_int(id, OFFSET_CSMONEY, value, OFFSET_LINUX)
-}
-
 // Set User Flashlight Batteries
 stock fm_cs_set_user_batteries(id, value)
 {
@@ -9700,8 +9207,6 @@ stock setRandomAmbience(const sound[][][], sound_size)
 {
 	new iRand = random_num(0, sound_size - 1)
 	new duration = str_to_num(sound[iRand][1])
-
-	log_amx("play ambiance: %s", sound[iRand][0])
 
 	PlaySound(sound[iRand][0])
 
