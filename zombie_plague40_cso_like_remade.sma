@@ -4,6 +4,7 @@
 #include <fakemeta>
 #include <hamsandwich>
 #include <xs>
+#include <sqlx>
 #include <zp_cso_custom>
 
 const MAX_CSDM_SPAWNS = 128
@@ -300,7 +301,6 @@ new g_MsgSync // message sync objects
 new g_trailSpr, g_exploSpr, g_flameSpr, g_smokeSpr, g_glassSpr // grenade sprites
 new g_freezetime // whether CS's freeze time is on
 new g_maxplayers // max players counter
-new g_czero // whether we are running on a CZ server
 new g_hamczbots // whether ham forwards are registered for CZ bots
 new g_fwSpawn, g_fwPrecacheSound // spawn and precache sound forward handles
 new g_infbombcounter, g_antidotecounter, g_madnesscounter // to limit buying some items
@@ -629,6 +629,10 @@ new g_cached_customflash, g_cached_zombiesilent, g_cached_leapzombies, g_cached_
 g_cached_leapsurvivor, Float:g_cached_leapzombiescooldown, Float:g_cached_leapnemesiscooldown,
 Float:g_cached_leapsurvivorcooldown
 
+new Handle:g_sqltuple
+
+#include <settings-cso>
+
 /*================================================================================
  [Natives, Precache and Init]
 =================================================================================*/
@@ -681,6 +685,9 @@ public plugin_natives()
 
 public plugin_precache()
 {
+	if(!sql_precache())
+		return
+	
 	// Register earlier to show up in plugins list properly after plugin disable/error at loading
 	register_plugin("Zombie Plague [CSO]", "4.3", "MeRcyLeZZ")
 	
@@ -920,6 +927,8 @@ public plugin_init()
 	register_clcmd("drop", "clcmd_drop")
 	register_clcmd("chooseteam", "clcmd_changeteam")
 	register_clcmd("jointeam", "clcmd_changeteam")
+	register_clcmd("say bonus", "clcmd_bonus")
+	register_clcmd("say /bonus", "clcmd_bonus")
 	
 	// Menus
 	register_menu("Game Menu", KEYSMENU, "menu_game")
@@ -1178,40 +1187,25 @@ public plugin_init()
 	
 	// Get Max Players
 	g_maxplayers = get_maxplayers()
+
+	new radioblock[][] = {    
+		"radio1",   "radio2",  "radio3", "coverme",   "takepoint",   
+		"holdpos", "regroup",   "followme",    "takingfire",   "go",  "fallback",   
+		"sticktog",    "getinpos", "stormfront",    "report",   "roger",   "enemyspot",   
+		"needbackup",  "sectorclear",    "inposition",   "reportingin", 
+		"getout",    "negative", "enemydown"
+	}
+
+	for(new i = 0; i < sizeof radioblock; i++)
+        register_clcmd(radioblock[i], "radioblock")
+
+	// customs systems
+
+	#if defined TAG_SYSTEM
+		tags_init()
+	#endif
 	
-	// Check if it's a CZ server
-	new mymod[6]
-	get_modname(mymod, charsmax(mymod))
-	if (equal(mymod, "czero")) g_czero = 1
-
-	register_clcmd( "radio1","radioblock")
-	register_clcmd( "radio2","radioblock")
-	register_clcmd( "radio3","radioblock")
-	register_clcmd( "coverme","radioblock")
-	register_clcmd( "takepoint","radioblock")
-	register_clcmd( "holdpos","radioblock")
-	register_clcmd( "regroup","radioblock")
-	register_clcmd( "followme","radioblock")
-	register_clcmd( "takingfire","radioblock")
-	register_clcmd( "go","radioblock")
-	register_clcmd( "fallback","radioblock")
-	register_clcmd( "sticktog","radioblock")
-	register_clcmd( "getinpos","radioblock")
-	register_clcmd( "stormfront","radioblock")
-	register_clcmd( "report","radioblock")
-	register_clcmd( "roger","radioblock")
-	register_clcmd( "enemyspot","radioblock")
-	register_clcmd( "needbackup","radioblock")
-	register_clcmd( "sectorclear","radioblock")
-	register_clcmd( "inposition","radioblock")
-	register_clcmd( "reportingin","radioblock")
-	register_clcmd( "getout","radioblock")
-	register_clcmd( "negative","radioblock")
-	register_clcmd( "enemydown","radioblock")
 }
-
-public radioblock(id)
-	return PLUGIN_HANDLED
 
 public plugin_cfg()
 {
@@ -2543,6 +2537,28 @@ public clcmd_nightvision(id)
 	}
 	
 	return PLUGIN_HANDLED;
+}
+
+// Say "/bonus"
+public clcmd_bonus(id)
+{
+	if(zp_get_user_level(id) > 1)
+	{
+		client_print_color(id, 0, "^x04[CSO]^x01 %L", id, "CLCMD_NO_BONUS")
+		return PLUGIN_HANDLED
+	}
+
+	zp_set_user_level(id, NEWBIE_LEVEL_BONUS)
+	// set player tag
+
+	if( callfunc_begin("giveTag","AdminPrefixesMYSQL.amxx") == 1 ) 
+    {
+        callfunc_push_int(id)
+        callfunc_push_str("Newbie")
+        callfunc_end()
+    }
+
+	return PLUGIN_CONTINUE
 }
 
 /*================================================================================
@@ -6486,6 +6502,7 @@ public set_player_maxspeed(id)
 	}
 }
 
+
 /*================================================================================
  [Custom Natives]
 =================================================================================*/
@@ -7569,7 +7586,7 @@ public make_blood(taskid)
 	engfunc(EngFunc_WriteCoord, originF[0]) // x
 	engfunc(EngFunc_WriteCoord, originF[1]) // y
 	engfunc(EngFunc_WriteCoord, originF[2]) // z
-	write_byte(ArrayGetCell(zombie_decals, random_num(0, ArraySize(zombie_decals) - 1)) + (g_czero * 12)) // random decal number (offsets +12 for CZ)
+	write_byte(ArrayGetCell(zombie_decals, random_num(0, ArraySize(zombie_decals) - 1))) // random decal number (offsets +12 for CZ)
 	message_end()
 }
 
@@ -8749,5 +8766,7 @@ stock setRandomAmbience(const sound[][][], sound_size)
 
 	return duration
 }
+#include <db-cso>
 
 #include <cso-40>
+#include <tags>

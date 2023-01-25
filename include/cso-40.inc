@@ -414,3 +414,6 @@ public remove_stuff()
 		}
 	}
 }
+
+public radioblock(id)
+	return PLUGIN_HANDLED

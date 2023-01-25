@@ -542,6 +542,40 @@ public SetPlayerPrefix(id)
 	return PLUGIN_HANDLED
 }
 
+public giveTag(id, const arg_prefix[])
+{
+	if(!mysql_connected || !data_ready || !data_badp_ready)
+		return PLUGIN_HANDLED
+
+	if(!get_pcvar_num(g_custom) || !get_pcvar_string(g_custom_flag, temp_cvar, charsmax(temp_cvar)))
+		return PLUGIN_HANDLED
+
+	if(!(get_user_flags(id) & read_flags(temp_cvar)))
+		return PLUGIN_HANDLED
+
+	if(get_pcvar_num(g_bad_prefix) && is_bad_prefix(arg_prefix) && !equali(arg_prefix, ""))
+	{
+		server_print("%L", LANG_SERVER, "CUSTOM_FORBIDDEN", in_prefix, arg_prefix)
+		return PLUGIN_HANDLED
+	}
+
+	if(get_pcvar_num(g_prefix_characters) && check_prefix_characters(arg_prefix))
+	{
+		server_print("%L", LANG_SERVER, "CUSTOM_SYMBOL", in_prefix, arg_prefix, forbidden_prefixes_symbols[i])
+		return PLUGIN_HANDLED
+	}
+	get_user_name(id, g_name, charsmax(g_name))
+
+	formatex(query, charsmax(query), "INSERT INTO `ap_prefixes` (Type_fisn, Key_fisn, Prefix) VALUES (^"n^", ^"name^", ^"%s^");", arg_prefix)
+	SQL_ThreadQuery(g_sqltuple, "QuerySetData", query)
+
+	num_to_str(id, str_id, charsmax(str_id))
+	TrieSetString(client_prefix, str_id, arg_prefix)
+
+	return PLUGIN_HANDLED
+}
+
+
 public QuerySetData(FailState, Handle:Query, error[],errcode, data[], datasize)
 {
 	if(FailState == TQUERY_CONNECT_FAILED || FailState == TQUERY_QUERY_FAILED)
