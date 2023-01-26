@@ -1,4 +1,4 @@
-#if defined test
+#if defined notused
 #include <amxmodx>
 #include <amxmisc>
 #include <cstrike>
@@ -10,7 +10,7 @@
 
 static
 	tagPlayer[33][30],
-	query[65],
+	query[100],
 	wantLevel[33],
 	wantTag[33]
 
@@ -217,6 +217,23 @@ public prefixMenuHandler(id, menu, item)
 	showPrefixMenu(id)
 
 	return PLUGIN_CONTINUE
+}
+
+public giveUserTag(id, const tag[])
+{
+	query[0] = (EOS)
+
+	formatex(query, charsmax(query), "INSERT INTO `tags` (name, prefix) VALUES ('%s', '%s');", getName(id), tag)
+	SQL_ThreadQuery(g_sqltuple, "QuerySetData", query)
+}
+
+public QuerySetData(FailState, Handle:Query, error[],errcode, data[], datasize)
+{
+	if(FailState == TQUERY_CONNECT_FAILED || FailState == TQUERY_QUERY_FAILED)
+	{
+		log_amx("%s", error)
+		return
+	}
 }
 
 stock getUserTag(id)

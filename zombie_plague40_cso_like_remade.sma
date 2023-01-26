@@ -2549,14 +2549,12 @@ public clcmd_bonus(id)
 	}
 
 	zp_set_user_level(id, NEWBIE_LEVEL_BONUS)
-	// set player tag
+	
+	#if defined TAG_SYSTEM
+		giveUserTag(id, "[NEWBIE]")
+	#endif
 
-	if( callfunc_begin("giveTag","AdminPrefixesMYSQL.amxx") == 1 ) 
-    {
-        callfunc_push_int(id)
-        callfunc_push_str("Newbie")
-        callfunc_end()
-    }
+	client_print_color(id, 0, "^x04[CSO]^x01 %L", id, "CLCMD_BONUS_GET")
 
 	return PLUGIN_CONTINUE
 }
