@@ -74,14 +74,6 @@ public HookSay(id)
 	return PLUGIN_CONTINUE
 }
 
-send_message(const message[], const id, const i)
-{
-	message_begin(MSG_ONE, g_msgSayText, {0, 0, 0}, i)
-	write_byte(id)
-	write_string(message)
-	message_end()
-}
-
 public HookSayTeam(id)
 {
 	static g_typed[192], g_message[192]
@@ -146,21 +138,24 @@ public showMenuQuery(FailState, Handle:Query, error[], errorcode, data[], datasi
 	else
 	{
 		new 
-			menu = menu_create("test title", "menuHandler"),
+			menu = menu_create("Tags Menu | Zombie-Plague \w[\rCSO\w]", "setTagHandler"),
 			id = data[0]
 
 		static
 			tagName[30],
-			string[50]
-
-		server_print("test")
+			string[50],
+			string2[55]
 
 		while(SQL_MoreResults(Query)) 
 		{
-			server_print("test")
 			SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "prefix"), tagName, charsmax(tagName))
 			
-			formatex(string, charsmax(string), "%s%s", tagName, tagPlayer[id][2] == tagName[2] ? " Selectat" : "")
+			if(equali(tagPlayer[id], tagName))
+				formatex(string2, charsmax(string2), "\r%s", tagName)
+			else
+				formatex(string2, charsmax(string2), "\w%s", tagName)
+
+			formatex(string, charsmax(string), "%s", string2)
 			menu_additem(menu, string, tagName)
 
 			SQL_NextRow(Query)
@@ -170,7 +165,7 @@ public showMenuQuery(FailState, Handle:Query, error[], errorcode, data[], datasi
 	}	
 }
 
-public menuHandler(id, menu, item)
+public setTagHandler(id, menu, item)
 {
 	if(item == MENU_EXIT)
 	{
@@ -183,11 +178,6 @@ public menuHandler(id, menu, item)
 	menu_item_getinfo(menu, item, _access, szData,charsmax(szData), szName,charsmax(szName), item_callback)
 
 	copy(tagPlayer[id], 31, szData)
-
-	client_print_color(id, 0, "%s, %s", szData, tagPlayer[id])
-
-	menu_destroy(menu)
-
 	showTags(id)
 
 	return PLUGIN_HANDLED
@@ -246,4 +236,12 @@ stock getUserTag(id)
 	}
 
 	return tag
+}
+
+send_message(const message[], const id, const i)
+{
+	message_begin(MSG_ONE, g_msgSayText, {0, 0, 0}, i)
+	write_byte(id)
+	write_string(message)
+	message_end()
 }
