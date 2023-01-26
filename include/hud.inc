@@ -1,16 +1,16 @@
+#if defined notused
+#include <amxmodx>
+#include <amxmisc>
+#include <cstrike>
+#include <fakemeta>
+#include <hamsandwich>
+#include <xs>
+#include <zp_cso_custom>
+#endif
+
 // Andrei for score hud
 // stats hud from zp4.0
 // level hud from zpbuymenu
-
-#include <amxmodx>
-#include <amxmisc>
-#include <fakemeta>
-#include <zombieplague>
-#include <zp_cso_custom>
-
-#define PLUGIN "[CSO] Advanced HUD"
-#define VERSION "1.0"
-#define AUTHOR "Filiq_"
 
 #define HUD_SPECT_X 0.6
 #define HUD_SPECT_Y 0.8
@@ -20,33 +20,17 @@
 #define HUD_LEVEL_X -1.0
 #define HUD_LEVEL_Y 0.9
 
-enum _: eTeamData
-{
-	WIN_NO_ONE = 0,
-	WIN_ZOMBIES,
-	WIN_HUMANS	
-
-}
-
-new 
-	g_iWin[eTeamData], bool:roundStarted = false,
+static 
 	bool:hudScore[33], bool:hudStats[33], bool:hudLevel[33],
 	bool:hudMessages[33], bool:hudDamage[33], bool:hudcInfo[33],
 	Array:g_Messages, syncMsg, messageExist, timer = 0
 
-public plugin_init()
+public hud_natives()
 {
-	register_plugin(PLUGIN, VERSION, AUTHOR)
-
-	register_message(get_user_msgid("TextMsg"), "Message_TextMsg")
-
-	register_event("Damage", "showDamage", "b", "2!0", "3=0", "4!0")	
-
-	register_clcmd("say /hud", "hudMenu")
-
+	register_native("hud_get_zinfo", "native_hud_get_zinfo", 1)
 }
 
-public plugin_precache()
+public hud_precache()
 {
 	g_Messages = ArrayCreate(512)
 	syncMsg = CreateHudSyncObj()
@@ -82,13 +66,14 @@ public plugin_precache()
 	messageExist = ArraySize(g_Messages)
 }
 
-public plugin_natives()
+public hud_init()
 {
-	register_native("show_hud_menu", "hudMenu", 1)
-	register_native("hud_get_zinfo", "native_hud_get_zinfo", 1)
+	register_event("Damage", "showDamage", "b", "2!0", "3=0", "4!0")	
+
+	register_clcmd("say /hud", "hudMenu")
 }
 
-public cso_data_loaded()
+public show_hud_after_load()
 {
 	new num, players[32]
 		
@@ -103,20 +88,7 @@ public cso_data_loaded()
 	}
 }
 
-public Message_TextMsg() 
-{
-	static szMessages[32];
-	get_msg_arg_string(2, szMessages, charsmax(szMessages))
-	
-	if(equal(szMessages, "#Game_will_restart_in"))
-	{
-		g_iWin[ WIN_HUMANS ] = 0
-		g_iWin[ WIN_ZOMBIES ] = 0
-		g_iWin[ WIN_NO_ONE ] = 0
-	} 
-}
-
-public client_putinserver(id)
+public hud_putinserver(id)
 {
 	hudScore[id] = true
 	hudStats[id] = true
@@ -126,25 +98,9 @@ public client_putinserver(id)
 	hudcInfo[id] = true
 }
 
-public client_disconnected(id)
+public hud_disconnected(id)
 {
 	remove_task(id)
-}
-
-public zp_round_started() {
-	roundStarted = true
-}
-
-public zp_round_ended(iWinTeam)
-{
-	switch(iWinTeam)
-	{
-		case WIN_HUMANS: g_iWin[WIN_HUMANS]++;
-		case WIN_ZOMBIES: g_iWin[WIN_ZOMBIES]++;
-		default: g_iWin[WIN_NO_ONE]++;
-	}
-
-	roundStarted = false
 }
 
 public hudMenu(id)
@@ -219,7 +175,7 @@ public ShowHUD(id)
 	}
 
 
-	if(roundStarted == true) {
+	if(g_modestarted) {
 		showScore(id)
 	}
 
@@ -258,13 +214,13 @@ public showScore(id)
 		return
 	
 	set_dhudmessage(.red = 0, .green = 255, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
-	show_dhudmessage(0, "Humans %d                        ", zp_get_human_count() );
+	show_dhudmessage(0, "Humans %d                        ", fnGetHumans());
 	
 	set_dhudmessage(.red = 100, .green = 100, .blue = 100, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
-	show_dhudmessage(0, "[ %d ]^n%d Wins %d", ( g_iWin[ WIN_HUMANS ] +  g_iWin[ WIN_ZOMBIES ] + g_iWin[ WIN_NO_ONE ] ), g_iWin[ WIN_HUMANS ],  g_iWin[ WIN_ZOMBIES ] );
+	show_dhudmessage(0, "[ %d ]^n%d Wins %d", ( g_scorehumans +  g_scorezombies + g_scorenoone ), g_scorehumans,  g_scorezombies );
 	
 	set_dhudmessage(.red = 255, .green = 0, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
-	show_dhudmessage(0, "                         %d Zombies", zp_get_zombie_count());
+	show_dhudmessage(0, "                         %d Zombies", fnGetZombies());
 }
 
 public showMessages(id)
@@ -307,17 +263,17 @@ public getClass(id)
 {
 	static class[32]
 	
-	if (zp_get_user_zombie(id)) // zombies
+	if (GetBit(g_zombie, id)) // zombies
 	{
-		if (zp_get_user_nemesis(id))
+		if (GetBit(g_nemesis, id))
 			formatex(class, charsmax(class), "Boss")
 		else {
-			zp_get_class_name(id, class , charsmax(class))
+            return g_zombie_classname[id]
 		}
 	}
 	else // humans
 	{
-		if (zp_get_user_survivor(id))
+		if (GetBit(g_survivor, id))
 			formatex(class, charsmax(class), "Survivor")
 		else
 			formatex(class, charsmax(class), "Human")

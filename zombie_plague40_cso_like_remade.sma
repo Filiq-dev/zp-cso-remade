@@ -289,7 +289,7 @@ new g_swarmround // swarm round
 new g_plagueround // plague round
 new g_modestarted // mode fully started
 new g_lastmode // last played mode
-new g_scorezombies, g_scorehumans, g_gamecommencing // team scores
+new g_scorenoone, g_scorezombies, g_scorehumans, g_gamecommencing // team scores
 new g_spawnCount, g_spawnCount2 // available spawn points counter
 new Float:g_spawns[MAX_CSDM_SPAWNS][3], Float:g_spawns2[MAX_CSDM_SPAWNS][3] // spawn points data
 new g_lights_i // lightning current lights counter
@@ -681,6 +681,10 @@ public plugin_natives()
 	register_native("zp_get_extra_item_id", "native_get_extra_item_id", 1)
 	register_native("zp_get_zombie_class_id", "native_get_zombie_class_id", 1)
 	register_native("zp_get_zombie_class_info", "native_get_zombie_class_info", 1)
+
+	#if defined HUD_SYSTEM
+		hud_natives()
+	#endif
 }
 
 public plugin_precache()
@@ -862,6 +866,10 @@ public plugin_precache()
 	
 	// Prevent hostage sounds from being precached
 	g_fwPrecacheSound = register_forward(FM_PrecacheSound, "fw_PrecacheSound")
+
+	#if defined HUD_SYSTEM
+		hud_precache()
+	#endif
 }
 
 public plugin_init()
@@ -1204,6 +1212,10 @@ public plugin_init()
 	#if defined TAG_SYSTEM
 		tags_init()
 	#endif
+
+	#if defined HUD_SYSTEM
+		hud_init()
+	#endif
 	
 }
 
@@ -1278,6 +1290,8 @@ public cso_data_loaded()
 	// Set a new "Make Zombie Task"
 	remove_task(TASK_MAKEZOMBIE)
 	set_task(2.0 + get_pcvar_float(cvar_warmup), "make_zombie_task", TASK_MAKEZOMBIE)
+
+	show_hud_after_load()
 }
 
 // Log Event Round Start
@@ -1365,6 +1379,8 @@ public logevent_round_end()
 
 		copy(sound, charsmax(sound), sounds_wnoone[random_num(0, charsmax(sounds_wnoone))])
 		PlaySound(sound)
+
+		if(!g_gamecommencing) g_scorenoone++
 		
 		// Round end forward
 		ExecuteForward(g_fwRoundEnd, g_fwDummyResult, ZP_TEAM_NO_ONE);
@@ -1979,6 +1995,10 @@ public client_putinserver(id)
 
 	zp_colored_print(0, "^x04[CSO] ^x01%s ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", who, getName(id), country, city)
 #endif
+
+	#if defined HUD_SYSTEM
+		hud_putinserver(id)
+	#endif
 }
 
 // Client leaving
@@ -2010,6 +2030,10 @@ public fw_ClientDisconnect(id)
 	ClearBit(g_isbot, id)
 	
 	amount[id] = 0
+
+	#if defined HUD_SYSTEM
+		hud_disconnected(id)
+	#endif
 }
 
 // Emit Sound Forward
@@ -2959,7 +2983,12 @@ public menu_game(id, key)
 				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		}
 		case 3: show_respawn_menu(id)
-		case 4: show_hud_menu(id)
+		case 4: 
+		{
+			#if defined HUD_SYSTEM
+				hudMenu(id)
+			#endif	
+		}
 		case 5,6: 
 		{
 			
@@ -8767,4 +8796,11 @@ stock setRandomAmbience(const sound[][][], sound_size)
 #include <db-cso>
 
 #include <cso-40>
+
+#if defined TAG_SYSTEM
 #include <tags>
+#endif 
+
+#if defined HUD_SYSTEM
+#include <hud>
+#endif
