@@ -4084,6 +4084,9 @@ public make_a_zombie(mode, id)
 		if (mode == MODE_NONE)
 			id = fnGetRandomAlive(random_num(1, iPlayersnum))
 		
+		if(!GetBit(g_isconnected, id))
+			id = fnGetRandomAlive(random_num(1, iPlayersnum))
+		
 		// Remember id for calling our forward later
 		forward_id = id
 		
@@ -8633,6 +8636,9 @@ stock fnGetRandomAlive(n)
 		if(!GetBit(g_isalive, id))
 			continue 
 		
+		if(!GetBit(g_isconnected, id))
+			continue
+
 		iAlive++
 
 		if (iAlive == n)
