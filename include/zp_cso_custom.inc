@@ -1,9 +1,9 @@
 #pragma compress 1
 
-#define host "localhost"
-#define user "root"
-#define pass ""
-#define db "server"
+#define host "188.212.103.196"
+#define user "u2512_09eJ36AGE9"
+#define pass "Up9eb6U@wnbxj.By!pR3Uo1U"
+#define db "s2512_easyzm"
 
 enum 
 {

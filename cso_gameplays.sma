@@ -10,7 +10,6 @@
 
 new 
 	loadinData = 0,
-	bool:bugFix = false,
 	dataLoaded,
 	syncMsg,
 	votes[4],
@@ -55,7 +54,7 @@ public event_round_start()
 			loadinData = -1
 	}
 
-	if(bugFix)
+	if(gameplay != -1)
 	{
 		new result
 		ExecuteForward(dataLoaded, result)
@@ -145,8 +144,6 @@ public loadData()
 	client_print_color(0, 0, "^4[CSO] ^1This map we will playing ^4%s^1.", getChoiceName(gameplay))
 	
 	menu_destroy(menu)
-
-	bugFix = true
 }
 
 public native_cso_gameplay_active()

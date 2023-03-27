@@ -685,6 +685,8 @@ public plugin_natives()
 	#if defined HUD_SYSTEM
 		hud_natives()
 	#endif
+
+	dbcso_natives()
 }
 
 public plugin_precache()
@@ -1942,6 +1944,7 @@ public fw_Item_Deploy_Post(weapon_ent)
 // Client joins the game
 public client_putinserver(id)
 {
+	dbcso_putinserver(id)
 	
 	// Player joined
 	SetBit(g_isconnected, id)
@@ -2004,6 +2007,8 @@ public client_putinserver(id)
 // Client leaving
 public fw_ClientDisconnect(id)
 {
+	dbcso_disconnected(id)
+
 	// Check that we still have both humans and zombies to keep the round going
 	if (GetBit(g_isalive, id)) check_round(id)
 	
