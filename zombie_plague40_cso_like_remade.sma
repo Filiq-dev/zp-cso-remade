@@ -4541,8 +4541,9 @@ public humanme(id, survivor, silentmode)
 	ClearBit(g_nodamage, id)
 
 	set_pev(id, pev_effects, pev(id, pev_effects) &~ EF_BRIGHTLIGHT)
-	set_pev(id, pev_effects, pev(id, pev_effects) &~ EF_NODRAW)
-	
+	if(pev_valid(id))
+		set_pev(id, pev_effects, pev(id, pev_effects) &~ EF_NODRAW)
+
 	// Reset burning duration counter (bugfix)
 	g_burning_duration[id] = 0
 	
