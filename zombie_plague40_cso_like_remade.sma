@@ -4087,7 +4087,7 @@ public make_a_zombie(mode, id)
 		if(!GetBit(g_isconnected, id))
 			id = fnGetRandomAlive(random_num(1, iPlayersnum))
 		
-		// Remember id for calling our forward later
+		// Remembers id for calling our forward later
 		forward_id = id
 		
 		if ((mode == MODE_NONE && (!get_pcvar_num(cvar_preventconsecutive) || g_lastmode != MODE_NEMESIS) && random_num(1, get_pcvar_num(cvar_nemchance)) == get_pcvar_num(cvar_nem) && iPlayersnum >= get_pcvar_num(cvar_nemminplayers)) || mode == MODE_NEMESIS)
@@ -4096,8 +4096,7 @@ public make_a_zombie(mode, id)
 			g_nemround = true
 			g_lastmode = MODE_NEMESIS
 			
-			// Turn player into nemesis
-			zombieme(id, 0, 1, 0, 0)
+			// Turn player into nemesis			zombieme(id, 0, 1, 0, 0)
 		}
 		else
 		{
