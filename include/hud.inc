@@ -217,7 +217,7 @@ public showScore(id)
 	show_dhudmessage(0, "Humans %d                        ", fnGetHumans());
 	
 	set_dhudmessage(.red = 100, .green = 100, .blue = 100, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
-	show_dhudmessage(0, "[ %d ]^n%d Wins %d", ( g_scorehumans +  g_scorezombies + g_scorenoone ), g_scorehumans,  g_scorezombies );
+	show_dhudmessage(0, "^n%d Wins %d", g_scorehumans,  g_scorezombies );
 	
 	set_dhudmessage(.red = 255, .green = 0, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
 	show_dhudmessage(0, "                         %d Zombies", fnGetZombies());

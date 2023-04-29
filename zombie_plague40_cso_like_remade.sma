@@ -1959,7 +1959,7 @@ public client_putinserver(id)
 	if (!is_user_bot(id))
 	{
 		// Disable minmodels for clients to see zombies properly
-		set_task(5.0, "disable_minmodels", id)
+		// set_task(5.0, "disable_minmodels", id)
 	}
 	else
 	{
@@ -4084,9 +4084,11 @@ public make_a_zombie(mode, id)
 		if (mode == MODE_NONE)
 			id = fnGetRandomAlive(random_num(1, iPlayersnum))
 		
-		if(!GetBit(g_isconnected, id))
-			id = fnGetRandomAlive(random_num(1, iPlayersnum))
-		
+		if(!GetBit(g_isconnected, id)) 
+		{
+			set_task(2.0, "make_zombie_task", TASK_MAKEZOMBIE)
+			return;
+		}
 		// Remembers id for calling our forward later
 		forward_id = id
 		
@@ -4540,7 +4542,8 @@ public humanme(id, survivor, silentmode)
 	ClearBit(g_firstzombie, id)
 	ClearBit(g_nodamage, id)
 
-	set_pev(id, pev_effects, pev(id, pev_effects) &~ EF_BRIGHTLIGHT)
+	if(pev_valid(id))
+		set_pev(id, pev_effects, pev(id, pev_effects) &~ EF_BRIGHTLIGHT)
 	if(pev_valid(id))
 		set_pev(id, pev_effects, pev(id, pev_effects) &~ EF_NODRAW)
 
