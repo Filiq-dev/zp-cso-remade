@@ -115,6 +115,9 @@ public choiceMenuHandler(id, menu2, item)
 
 		return PLUGIN_HANDLED
 	}
+
+	if(gameplay != -1)
+		return PLUGIN_HANDLED
 	
 	if(hasVoted[id])
 		return showPlayerChoiceMenu(id)
@@ -142,6 +145,9 @@ public loadData()
 		gameplay = random_num(0, sizeof(votes))
 
 	client_print_color(0, 0, "^4[CSO] ^1This map we will playing ^4%s^1.", getChoiceName(gameplay))
+
+	if(ginfinite)
+		set_cvar_num("zp_human_unlimited_ammo", 2)
 	
 	menu_destroy(menu)
 }
@@ -150,11 +156,6 @@ public native_cso_gameplay_active()
 {
 	return gameplay
 }
-
-// stock native_cso_gameplay_name()
-// {
-// 	return getChoiceName(gameplay)
-// }
 
 stock getChoiceName(item)
 {
@@ -181,7 +182,7 @@ public make_ScreenFade(id, Float:fDuration, red, green, blue, alpha)
 	}
 
 	set_hudmessage(random_num(0, 255), random_num(0, 255), random_num(0, 255), -1.0, 0.50, random_num(0, 2), random_float(0.7, 0.9), 12.0, random_float(0.37, 0.4), random_float(0.37, 0.4), 4)
-	ShowSyncHudMsg(id, syncMsg, "             Your data is loading!^nPlease select what gameplay do you want to play this map")
+	ShowSyncHudMsg(id, syncMsg, "          Your data is loading!^nPlease select what gameplay do you want to play this map")
 	
 	message_begin(id ? MSG_ONE : MSG_ALL, get_user_msgid("ScreenFade"), {0, 0, 0}, id)
 	write_short(floatround(4096.0 * fDuration, floatround_round))
