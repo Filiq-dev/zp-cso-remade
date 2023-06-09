@@ -124,7 +124,7 @@ public showTags(id)
 	new data[1];
 	data[0] = id
 
-	formatex(query, charsmax(query), "SELECT * FROM `tags` WHERE name = '%s';", getName(id))
+	formatex(query, charsmax(query), "SELECT * FROM `tags` WHERE name = '%s';", sql_getName(id))
 	SQL_ThreadQuery(g_sqltuple, "showMenuQuery", query, data, 1)
 }
 
@@ -223,7 +223,7 @@ public giveUserTag(id, const tag[])
 {
 	query[0] = (EOS)
 
-	formatex(query, charsmax(query), "INSERT INTO `tags` (name, prefix) VALUES ('%s', '%s');", getName(id), tag)
+	formatex(query, charsmax(query), "INSERT INTO `tags` (name, prefix) VALUES ('%s', '%s');", sql_getName(id), tag)
 	SQL_ThreadQuery(g_sqltuple, "QuerySetData", query)
 }
 

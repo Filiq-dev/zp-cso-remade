@@ -199,8 +199,6 @@ public showLevel(id, spec)
 {
 	set_dhudmessage(0, 255, 0, HUD_LEVEL_X, HUD_LEVEL_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[LVL: %d | EXP: %d/%d]", zp_get_user_level(spec == id ? id : spec), zp_get_user_exp(spec == id ? id : spec), zp_get_exp_current(spec == id ? id : spec))
-
-	client_print_color(id, 0, "hudLevel este %d", hudLevel[id])
 }
 
 public showScore(id)
