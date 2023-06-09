@@ -3818,8 +3818,7 @@ public make_zombie_task()
 public make_a_zombie(mode, id)
 {
 	// Get alive players count
-	new iPlayersnum = 0
-	iPlayersnum = fnGetAlive()
+	new iPlayersnum = fnGetAlive()
 	
 	// Not enough players, come back later!
 	if (iPlayersnum < 1)
@@ -8651,23 +8650,14 @@ stock fnGetAlive()
 // Get Random Alive -returns index of alive player number n -
 stock fnGetRandomAlive(n)
 {
-	new iAlive = 0, num, players[32], id
+	new iAlive = 0, id
 
-	get_players(players, num)
-
-	for(new i = 1; i < num; i++)
+	for(new i = 1; i <= g_maxplayers; i++)
 	{
-		id = players[i]
-
 		if(!GetBit(g_isalive, id))
 			continue 
-		
-		if(!GetBit(g_isconnected, id))
-			continue
 
 		iAlive++
-
-		log_amx("num: %d iAlive: %d name: %s", id, iAlive, getName(id))
 
 		if (iAlive == n)
 			return id
@@ -8681,7 +8671,7 @@ stock fnGetPlaying()
 {
 	new iPlaying = 0, id, team
 
-	for (id = 1; id <= get_maxplayers(); id++)
+	for (id = 1; id <= g_maxplayers; id++)
 	{
 		if(!GetBit(g_isconnected, id))
 			continue 
@@ -8702,11 +8692,9 @@ stock fnGetPlaying()
 // Get CTs -returns number of CTs connected-
 stock fnGetCTs()
 {
-	new iCTs = 0, players[32], count = 0
+	new count = 0
 
-	get_players(players, iCTs, "e", "CT")
-
-	for (new i = 1; i <= get_maxplayers(); i++)
+	for (new i = 1; i <= g_maxplayers; i++)
 	{
 		if(!GetBit(g_isconnected, i))
 			continue 
@@ -8715,19 +8703,15 @@ stock fnGetCTs()
 			count++
 	}
 
-	log_amx("debug: fnGetCTs(called) return value: %d maybe the correct return is: %d", iCTs, count)
-	
 	return count
 }
 
 // Get Ts -returns number of Ts connected-
 stock fnGetTs()
 {
-	new iTs = 0, players[32], count = 0
+	new count = 0
 
-	get_players(players, iTs, "e", "TERRORIST")
-
-	for (new i = 1; i <= get_maxplayers(); i++)
+	for (new i = 1; i <= g_maxplayers; i++)
 	{
 		if(!GetBit(g_isconnected, i))
 			continue 
@@ -8736,19 +8720,15 @@ stock fnGetTs()
 			count++
 	}
 
-	log_amx("debug: fnGetTs(called) return value: %d maybe the correct return is: %d", iTs, count)
-	
 	return count
 }
 
 // Get Alive CTs -returns number of CTs alive-
 stock fnGetAliveCTs()
 {
-	new iCTs = 0, players[32], count = 0
+	new count = 0
 
-	get_players(players, iCTs, "ae", "CT")
-
-	for (new i = 1; i <= get_maxplayers(); i++)
+	for (new i = 1; i <= g_maxplayers; i++)
 	{
 		if(!GetBit(g_isconnected, i))
 			continue 
@@ -8760,19 +8740,15 @@ stock fnGetAliveCTs()
 			count++
 	}
 
-	log_amx("debug: fnGetAliveCTs(called) return value: %d maybe the correct return is: %d", iCTs, count)
-	
 	return count
 }
 
 // Get Alive Ts -returns number of Ts alive-
 stock fnGetAliveTs()
 {
-	new iTs = 0, players[32], count = 0
+	new count = 0
 
-	get_players(players, iTs, "ae", "TERRORIST")
-
-	for (new i = 1; i <= get_maxplayers(); i++)
+	for (new i = 1; i <= g_maxplayers; i++)
 	{
 		if(!GetBit(g_isconnected, i))
 			continue 
@@ -8783,8 +8759,6 @@ stock fnGetAliveTs()
 		if(fm_cs_get_user_team(i) == FM_CS_TEAM_T)
 			count++
 	}
-
-	log_amx("debug: fnGetAliveTs(called) return value: %d maybe the correct return is: %d", iTs, count)
 	
 	return count
 }

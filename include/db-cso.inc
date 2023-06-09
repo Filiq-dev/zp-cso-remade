@@ -64,16 +64,16 @@ public loadDataSQL(id) {
 
 public loadFromSQL(id)
 {
-	if(!is_user_connected(id))
-		return
+	if(is_user_connected(id))
+	{
+		isUserLoaded[id] = false
 
-	isUserLoaded[id] = false
+		new data[1]
+		data[0] = id
 
-	new data[1]
-	data[0] = id
-
-	formatex(gQuery, 65, "SELECT * FROM players WHERE name = '%s'", sql_getName(id))	
-	SQL_ThreadQuery(g_sqltuple, "checkAccount", gQuery, data, 2)
+		formatex(gQuery, 65, "SELECT * FROM players WHERE name = '%s'", sql_getName(id))	
+		SQL_ThreadQuery(g_sqltuple, "checkAccount", gQuery, data, 2)
+	}
 }
 
 public dbcso_disconnected(id)
