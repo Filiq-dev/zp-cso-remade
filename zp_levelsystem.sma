@@ -211,7 +211,6 @@ public ExpUp(id, xp)
 	if(!g_LevelsNum || g_PlayerLevel[id] >= g_LevelsNum)
 		return
 
-	
 	g_PlayerExp[id] += xp * (cso_gameplay_active() == gxp ? 10 : 1) 
 }
 

@@ -40,6 +40,19 @@ public client_putinserver(id)
 
 public event_round_start()
 {
+	// we need to wait like 10 secound more to make this, for all players to connect
+
+	if(gameplay != -1)
+	{
+		new result
+		ExecuteForward(dataLoaded, result)
+	}
+	else 
+		set_task(10.0, "wait")
+}
+
+public wait()
+{
 	if(loadinData != -1) {
 		loadinData++
 		gameplay = -1
@@ -51,12 +64,6 @@ public event_round_start()
 
 		if(loadinData == 1)
 			loadinData = -1
-	}
-
-	if(gameplay != -1)
-	{
-		new result
-		ExecuteForward(dataLoaded, result)
 	}
 }
 

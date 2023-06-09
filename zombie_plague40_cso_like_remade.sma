@@ -687,6 +687,10 @@ public plugin_natives()
 	#endif
 
 	dbcso_natives()
+	
+	#if defined GAMEPLAYS_SYSTEM
+		gameplays_natives()
+	#endif
 }
 
 public plugin_precache()
@@ -1219,6 +1223,10 @@ public plugin_init()
 		hud_init()
 	#endif
 	
+	#if defined GAMEPLAYS_SYSTEM
+		gameplays_init()
+	#endif
+	
 }
 
 public plugin_cfg()
@@ -1281,6 +1289,9 @@ public event_round_start()
 	// Freezetime begins
 	g_freezetime = true
 	
+	#if defined GAMEPLAYS_SYSTEM
+		gameplays_rounds_start()
+	#endif
 }
 
 public cso_data_loaded()
@@ -1943,6 +1954,10 @@ public fw_Item_Deploy_Post(weapon_ent)
 public client_putinserver(id)
 {
 	dbcso_putinserver(id)
+
+	#if defined GAMEPLAYS_SYSTEM
+		gameplays_putinserver(id)
+	#endif
 	
 	// Player joined
 	SetBit(g_isconnected, id)
@@ -8877,4 +8892,8 @@ stock setRandomAmbience(const sound[][][], sound_size)
 
 #if defined HUD_SYSTEM
 #include <hud>
+#endif
+
+#if defined GAMEPLAYS_SYSTEM
+#include <gameplays>
 #endif

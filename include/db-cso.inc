@@ -37,6 +37,36 @@ public dbcso_putinserver(id)
 		return
 	}
 
+	if(gameplay_active() != -1)
+		loadFromSQL(id)
+
+	if(gameplay_active() == -1 && !isDataLoading(id))
+		loadFromSQL(id)
+}
+
+public beginLoadDataSQL(id)
+{
+	if(is_user_connected(id)) 
+	{
+		switch(id) 
+		{
+			case 1..7: set_task(1.0, "loadDataSQL", id+252525)
+			case 8..15: set_task(3.0, "loadDataSQL", id+252525)
+			case 16..23: set_task(6.0, "loadDataSQL", id+252525)
+			case 24..32: set_task(9.0, "loadDataSQL", id+252525)
+		}
+	}
+}
+
+public loadDataSQL(id) {
+	loadFromSQL(id - 252525)
+}	
+
+public loadFromSQL(id)
+{
+	if(!is_user_connected(id))
+		return
+
 	isUserLoaded[id] = false
 
 	new data[1]
@@ -140,4 +170,9 @@ stock sql_getName(id)
 	mysql_escape_string(name, charsmax(name))
 
 	return name
+}
+
+public isUserLoadedDB(id)
+{
+	return isUserLoaded[id]
 }
