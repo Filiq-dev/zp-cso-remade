@@ -9,7 +9,7 @@ static
 	votes[4],
 	bool:hasVoted[33] = false,
 	menu,
-	gameplay,
+	gameplay = -1,
 	str[50],
 	bool:isDataLoadingForPlayer[33] = false
 
