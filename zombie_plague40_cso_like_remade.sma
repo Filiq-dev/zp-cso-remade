@@ -1690,8 +1690,6 @@ public fw_TakeDamage(victim, inflictor, attacker, Float:damage, damage_type)
 	// Prevent friendly fire
 	if (GetBit(g_zombie, attacker) && GetBit(g_zombie, victim))
 		return HAM_SUPERCEDE;
-
-	client_print_color(attacker, 0, "attacker: %d victim: %d", GetBit(g_zombie, attacker), GetBit(g_zombie, victim))
 	
 	// Attacker is human...
 	if (!GetBit(g_zombie, attacker))
@@ -8675,8 +8673,10 @@ stock fnGetPlaying()
 
 		team = fm_cs_get_user_team(id)
 
-		if (team != FM_CS_TEAM_SPECTATOR || team != FM_CS_TEAM_UNASSIGNED)
-			iPlaying++
+		if (team == FM_CS_TEAM_SPECTATOR || team == FM_CS_TEAM_UNASSIGNED)
+			continue
+			
+		iPlaying++
 
 		log_amx("num: %d playing: %d name: %s", id, iPlaying, getName(id))
 	}

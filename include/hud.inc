@@ -164,22 +164,21 @@ public ShowHUD(id)
 		
 		if(is_user_alive(idspec)) 
 		{
-			showStats(id, idspec)
-			showLevel(id, idspec)
+			if(hudStats[id] == true) showStats(id, idspec)
+			if(hudLevel[id] == true) showLevel(id, idspec)
 		}
 	} 
 	else 
 	{
-		showStats(id, id)
-		showLevel(id, id)
+		if(hudStats[id] == true) showStats(id, id)
+		if(hudLevel[id] == true) showLevel(id, id)
 	}
 
 
-	if(g_modestarted) {
+	if(g_modestarted && hudScore[id] == true)
 		showScore(id)
-	}
 
-	if(messageExist)
+	if(messageExist && hudMessages[id] == true)
 	{
 		timer += 1
 		if(timer == 60) 
@@ -192,27 +191,20 @@ public ShowHUD(id)
 
 public showStats(id, spec)
 {
-	if(!hudStats[id])
-		return
-
 	set_dhudmessage(245, 255, 250, spec == id ? HUD_STATS_X : HUD_SPECT_X, spec == id ? HUD_STATS_Y : HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[HP: %d] [Class: %s]", pev(spec == id ? id : spec, pev_health), getClass(spec == id ? id : spec))
 }
 
 public showLevel(id, spec)
 {
-	if(!hudLevel[id])
-		return
-
 	set_dhudmessage(0, 255, 0, HUD_LEVEL_X, HUD_LEVEL_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[LVL: %d | EXP: %d/%d]", zp_get_user_level(spec == id ? id : spec), zp_get_user_exp(spec == id ? id : spec), zp_get_exp_current(spec == id ? id : spec))
+
+	client_print_color(id, 0, "hudLevel este %d", hudLevel[id])
 }
 
 public showScore(id)
 {
-	if(!hudScore[id]) 
-		return
-	
 	set_dhudmessage(.red = 0, .green = 255, .blue = 0, .x = -1.0, .y = 0.02, .effects = 0, .fxtime = 6.0, .holdtime = 2.0, .fadeintime = 1.0, .fadeouttime = 1.0); 
 	show_dhudmessage(0, "Humans %d                        ", fnGetHumans());
 	
@@ -225,9 +217,6 @@ public showScore(id)
 
 public showMessages(id)
 {
-	if(!hudMessages[id])
-		return 
-
 	static msg[512]
 
 	set_hudmessage(random_num(0, 255), random_num(0, 255), random_num(0, 255), -1.0, 0.0777, random_num(0, 2), random_float(0.7, 0.9), 12.0, random_float(0.37, 0.4), random_float(0.37, 0.4), 4)
