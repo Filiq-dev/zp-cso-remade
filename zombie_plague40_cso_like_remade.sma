@@ -1392,7 +1392,7 @@ public logevent_round_end()
 	g_gamecommencing = false
 	
 	// Balance the teams
-	balance_teams()
+	newround_balance_teams()
 }
 
 // Event Map Ended
@@ -5256,22 +5256,23 @@ public save_customization()
 }
 
 // Balance Teams Task
-public balance_teams()
+public newround_balance_teams()
 {
 	// Get amount of users playing
-	new iPlayersnum
-	iPlayersnum = fnGetPlaying()
+	new 
+		iPlayersnum = fnGetPlaying()
 	
-	log_amx("iPlayersnum este %d", iPlayersnum)
-
 	// No players, don't bother
 	if (iPlayersnum < 1) return;
 	
 	// Split players evenly
-	new iTerrors, iMaxTerrors, id, team[33]
-	iMaxTerrors = iPlayersnum/2
-	iTerrors = 0
-	
+	new 
+		iTerrors = 0, 
+		iMaxTerrors = iPlayersnum/2, 
+		id, team[33]
+
+	log_amx("iPlayersnum este %d si iMaxTerrors este %d", iPlayersnum, iMaxTerrors)
+
 	// First, set everyone to CT
 	for (id = 1; id <= g_maxplayers; id++)
 	{
@@ -5311,9 +5312,9 @@ public balance_teams()
 			fm_cs_set_user_team(id, FM_CS_TEAM_T)
 			team[id] = FM_CS_TEAM_T
 			iTerrors++
-		}
 
-		log_amx("am pus %d la echipa tero, au ramas la ct %d", iTerrors, fnGetCTs())
+			log_amx("l am pus pe %s la echipa tero", getName(id))
+		}
 	}
 }
 
@@ -8674,7 +8675,7 @@ stock fnGetPlaying()
 
 		team = fm_cs_get_user_team(id)
 
-		if (team == FM_CS_TEAM_CT || team != FM_CS_TEAM_T)
+		if (team != FM_CS_TEAM_SPECTATOR || team != FM_CS_TEAM_UNASSIGNED)
 			iPlaying++
 
 		log_amx("num: %d playing: %d name: %s", id, iPlaying, getName(id))
