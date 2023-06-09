@@ -138,7 +138,7 @@ public fwKilled(id, killer)
 	
 	if(g_PlayerLevel[killer] >= g_LevelsNum)
 		return    
-	
+
 	if(zp_get_user_nemesis(id))
 		ExpUp(killer, get_pcvar_num(pcvar_xp_given_nem))
 		
@@ -210,8 +210,9 @@ public ExpUp(id, xp)
 {
 	if(!g_LevelsNum || g_PlayerLevel[id] >= g_LevelsNum)
 		return
+
 	
-	g_PlayerExp[id] += xp
+	g_PlayerExp[id] += xp * (cso_gameplay_active() == gxp ? 10 : 1) 
 }
 
 public zp_user_infected_pre(id, infector)

@@ -31,7 +31,6 @@ public plugin_init() {
 public plugin_natives()
 {
 	register_native("cso_gameplay_active", "native_cso_gameplay_active")
-	// register_native("cso_gameplay_name", "native_cso_gameplay_name")
 }
 
 public client_putinserver(id)
@@ -146,7 +145,7 @@ public loadData()
 
 	client_print_color(0, 0, "^4[CSO] ^1This map we will playing ^4%s^1.", getChoiceName(gameplay))
 
-	if(ginfinite)
+	if(gameplay == ginfinite)
 		set_cvar_num("zp_human_unlimited_ammo", 2)
 	
 	menu_destroy(menu)
