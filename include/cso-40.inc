@@ -74,10 +74,22 @@ public message_textmsg()
 	// Block round end related messages
 	else if (equal(textmsg, "#Hostages_Not_Rescued") || equal(textmsg, "#Round_Draw") || equal(textmsg, "#Terrorists_Win") || equal(textmsg, "#CTs_Win"))
 	{
-		return PLUGIN_HANDLED;
+		return PLUGIN_HANDLED
+	}
+
+	get_msg_arg_string(5, textmsg, charsmax(textmsg))
+	if(equal(textmsg, "#Fire_in_the_hole")) 
+	{
+		return PLUGIN_HANDLED
+	}
+
+	get_msg_arg_string(3, textmsg, charsmax(textmsg))
+	if(equal(textmsg, "#Game_radio")) 
+	{
+		return PLUGIN_HANDLED
 	}
 	
-	return PLUGIN_CONTINUE;
+	return PLUGIN_CONTINUE
 }
 
 // Block CS round win audio messages, since we're playing our own instead
@@ -86,9 +98,9 @@ public message_sendaudio()
 	static audio[17]
 	get_msg_arg_string(2, audio, charsmax(audio))
 	
-	if(equal(audio[7], "terwin") || equal(audio[7], "ctwin") || equal(audio[7], "rounddraw"))
+	if(equal(audio[7], "terwin") || equal(audio[7], "ctwin") || equal(audio[7], "rounddraw") || equal(audio[1], "!MRAD_FIREINHOLE"))
 		return PLUGIN_HANDLED;
-	
+
 	return PLUGIN_CONTINUE;
 }
 
