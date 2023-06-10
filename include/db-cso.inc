@@ -46,7 +46,7 @@ public dbcso_putinserver(id)
 
 public beginLoadDataSQL(id)
 {
-	if(is_user_connected(id)) 
+	if(is_user_connected(id) && !is_user_bot(id)) 
 	{
 		switch(id) 
 		{

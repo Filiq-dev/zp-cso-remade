@@ -164,14 +164,14 @@ public ShowHUD(id)
 		
 		if(is_user_alive(idspec)) 
 		{
-			if(hudStats[id] == true) showStats(id, idspec)
-			if(hudLevel[id] == true) showLevel(id, idspec)
+			showStats(id, idspec)
+			showLevel(id, idspec)
 		}
 	} 
 	else 
 	{
-		if(hudStats[id] == true) showStats(id, id)
-		if(hudLevel[id] == true) showLevel(id, id)
+		showStats(id, id)
+		showLevel(id, id)
 	}
 
 
@@ -191,12 +191,18 @@ public ShowHUD(id)
 
 public showStats(id, spec)
 {
+	if(!hudStats[id]) 
+		return 
+
 	set_dhudmessage(245, 255, 250, spec == id ? HUD_STATS_X : HUD_SPECT_X, spec == id ? HUD_STATS_Y : HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[HP: %d] [Class: %s]", pev(spec == id ? id : spec, pev_health), getClass(spec == id ? id : spec))
 }
 
 public showLevel(id, spec)
 {
+	if(!hudLevel[id])
+		return
+		
 	set_dhudmessage(0, 255, 0, HUD_LEVEL_X, HUD_LEVEL_Y, 0, 6.00, 1.10, 0.00, 0.00);
 	show_dhudmessage(id, "[LVL: %d | EXP: %d/%d]", zp_get_user_level(spec == id ? id : spec), zp_get_user_exp(spec == id ? id : spec), zp_get_exp_current(spec == id ? id : spec))
 }

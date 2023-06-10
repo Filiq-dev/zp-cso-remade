@@ -77,13 +77,11 @@ public message_textmsg()
 		return PLUGIN_HANDLED
 	}
 
-	get_msg_arg_string(5, textmsg, charsmax(textmsg))
 	if(equal(textmsg, "#Fire_in_the_hole")) 
 	{
 		return PLUGIN_HANDLED
 	}
 
-	get_msg_arg_string(3, textmsg, charsmax(textmsg))
 	if(equal(textmsg, "#Game_radio")) 
 	{
 		return PLUGIN_HANDLED

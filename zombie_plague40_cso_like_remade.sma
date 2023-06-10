@@ -1953,11 +1953,11 @@ public fw_Item_Deploy_Post(weapon_ent)
 // Client joins the game
 public client_putinserver(id)
 {
-	dbcso_putinserver(id)
-
 	#if defined GAMEPLAYS_SYSTEM
 		gameplays_putinserver(id)
 	#endif
+
+	dbcso_putinserver(id)
 	
 	// Player joined
 	SetBit(g_isconnected, id)
@@ -8759,7 +8759,7 @@ stock fnGetAliveTs()
 		if(fm_cs_get_user_team(i) == FM_CS_TEAM_T)
 			count++
 	}
-	
+
 	return count
 }
 
