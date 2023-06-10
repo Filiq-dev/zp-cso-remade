@@ -2706,12 +2706,13 @@ public show_menu_zclass(id)
 
 		// Add to menu
 		if (class == g_zombieclassnext[id])
-			formatex(menu, charsmax(menu), "\d%s %s", buffer, buffer2)
-		else
-			formatex(menu, charsmax(menu), "%s \y%s", buffer, buffer2)
-		
+			formatex(menu, charsmax(menu), "\d%s %s \r[LvL. %d]", buffer, buffer2, level)
+
 		if(zp_get_user_level(id) < level)
-			formatex(menu, charsmax(menu), "\d%s %s [LvL. %d]", buffer, buffer2, level)
+			formatex(menu, charsmax(menu), "\d%s %s \r[LvL. %d]", buffer, buffer2, level)
+
+		else
+			formatex(menu, charsmax(menu), "%s \y%s \r[LvL. %d]", buffer, buffer2, level)
 
 		buffer[0] = class
 		buffer[1] = 0

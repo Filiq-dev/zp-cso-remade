@@ -67,6 +67,8 @@ public cmdSay(id) {
 
 	zp_set_user_money(id, zp_get_user_money(id) - money)
 	zp_set_user_money(sendMoney[id], zp_get_user_money(sendMoney[id]) + money)
+	save_data_remote(id)
+	save_data_remote(sendMoney[id])
 
 	client_print_color(0, 0, "[^4CSO^3] ^4%s ^3send ^4%d^3$ to ^4%s^3. Use [^4/transfer^3] if you want to transfer ^4money ^3to a friend.", getName(id), money, getName(sendMoney[id]))
 
