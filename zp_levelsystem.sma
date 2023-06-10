@@ -203,7 +203,6 @@ public LevelUp(id)
 		g_PlayerExp[id] -= g_PlayerExpCurrent[id]
 		g_PlayerExpCurrent[id] = ArrayGetCell(g_Levels, g_PlayerLevel[id])
 	}
-	
 }
 
 public ExpUp(id, xp)
@@ -212,6 +211,8 @@ public ExpUp(id, xp)
 		return
 
 	g_PlayerExp[id] += xp * (cso_gameplay_active() == gxp ? 10 : 1) 
+
+	save_data_remote(id)
 }
 
 public zp_user_infected_pre(id, infector)

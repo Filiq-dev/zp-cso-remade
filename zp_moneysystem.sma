@@ -212,6 +212,8 @@ public fwKilled(id, killer)
 		money = money * 3
 
 	set_user_money(killer, get_user_money(killer) + money)
+
+	save_data_remote(killer)
 }
 
 public fwSpawn(id)

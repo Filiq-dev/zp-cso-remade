@@ -12,6 +12,7 @@ static
 public dbcso_natives()
 {
 	register_native("is_user_loaded", "native_is_user_loaded", 1)
+	register_native("save_data_remote", "native_save_data_remote", 1)
 }
 
 public sql_precache()
@@ -37,11 +38,11 @@ public dbcso_putinserver(id)
 		return
 	}
 
-	if(gameplay_active() != -1)
-		loadFromSQL(id)
+	// if(gameplay_active() != -1)
+	// 	loadFromSQL(id)
 
-	if(gameplay_active() == -1 && !isDataLoading(id))
-		loadFromSQL(id)
+	// if(gameplay_active() == -1 && !isDataLoading(id))
+	// 	loadFromSQL(id)
 }
 
 public beginLoadDataSQL(id)
@@ -84,11 +85,18 @@ public dbcso_disconnected(id)
 	if(zp_get_user_level(id) == 0)
 		return
 
+	saveData(id)
+}
+
+public saveData(id)
+{
 	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), sql_getName(id))
 	SQL_ThreadQuery(g_sqltuple, "burnQuery", gQuery)
 
 	zp_level_reset(id)
 	zp_money_reset(id)
+
+	return true
 }
 
 public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize){
@@ -148,6 +156,11 @@ public burnQuery(FailState, Handle:Query, Error[], Errcode, Data[], DataSize){
 public native_is_user_loaded(id)
 {
 	return isUserLoaded[id]
+}
+
+public native_save_data_remote(id)
+{
+	return saveData(id)
 }
 
 public mysql_escape_string(dest[], len)

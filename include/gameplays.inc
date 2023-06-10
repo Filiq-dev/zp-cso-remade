@@ -42,7 +42,7 @@ public gameplays_rounds_start()
 
 public wait()
 {
-	if(loadinData != -1) {
+	if(loadinData == -1) {
 		loadinData++
 		gameplay = -1
 		
