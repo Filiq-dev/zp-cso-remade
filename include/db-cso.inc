@@ -86,15 +86,14 @@ public dbcso_disconnected(id)
 		return
 
 	saveData(id)
+	zp_level_reset(id)
+	zp_money_reset(id)
 }
 
 public saveData(id)
 {
 	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), sql_getName(id))
 	SQL_ThreadQuery(g_sqltuple, "burnQuery", gQuery)
-
-	zp_level_reset(id)
-	zp_money_reset(id)
 
 	return true
 }

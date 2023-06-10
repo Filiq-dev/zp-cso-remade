@@ -1961,11 +1961,6 @@ public client_putinserver(id)
 	
 	// Player joined
 	SetBit(g_isconnected, id)
-
-	if(GetBit(g_isconnected, id))
-	{
-		log_amx("%s", getName(id))
-	}
 	
 	// Cache player's name
 	get_user_name(id, g_playername[id], charsmax(g_playername[]))
@@ -3827,6 +3822,7 @@ public make_a_zombie(mode, id)
 		set_task(2.0, "make_zombie_task", TASK_MAKEZOMBIE)
 		return;
 	}
+
 	
 	// Round started!
 	g_newround = false
@@ -3836,6 +3832,7 @@ public make_a_zombie(mode, id)
 	
 	if ((mode == MODE_NONE && (!get_pcvar_num(cvar_preventconsecutive) || g_lastmode != MODE_SURVIVOR) && random_num(1, get_pcvar_num(cvar_survchance)) == get_pcvar_num(cvar_surv) && iPlayersnum >= get_pcvar_num(cvar_survminplayers)) || mode == MODE_SURVIVOR)
 	{
+		log_amx("am ajuns la Survivor debug")
 		// Survivor Mode
 		g_survround = true
 		g_lastmode = MODE_SURVIVOR
@@ -3881,6 +3878,7 @@ public make_a_zombie(mode, id)
 	}
 	else if ((mode == MODE_NONE && (!get_pcvar_num(cvar_preventconsecutive) || g_lastmode != MODE_SWARM) && random_num(1, get_pcvar_num(cvar_swarmchance)) == get_pcvar_num(cvar_swarm) && iPlayersnum >= get_pcvar_num(cvar_swarmminplayers)) || mode == MODE_SWARM)
 	{		
+		log_amx("am ajuns la Swarm debug")
 		// Swarm Mode
 		g_swarmround = true
 		g_lastmode = MODE_SWARM
@@ -3934,6 +3932,7 @@ public make_a_zombie(mode, id)
 	}
 	else if ((mode == MODE_NONE && (!get_pcvar_num(cvar_preventconsecutive) || g_lastmode != MODE_MULTI) && random_num(1, get_pcvar_num(cvar_multichance)) == get_pcvar_num(cvar_multi) && floatround(iPlayersnum*get_pcvar_float(cvar_multiratio), floatround_ceil) >= 2 && floatround(iPlayersnum*get_pcvar_float(cvar_multiratio), floatround_ceil) < iPlayersnum && iPlayersnum >= get_pcvar_num(cvar_multiminplayers)) || mode == MODE_MULTI)
 	{
+		log_amx("am ajuns la Multi Infection debug")
 		// Multi Infection Mode
 		g_lastmode = MODE_MULTI
 		
@@ -3993,6 +3992,7 @@ public make_a_zombie(mode, id)
 	else if ((mode == MODE_NONE && (!get_pcvar_num(cvar_preventconsecutive) || g_lastmode != MODE_PLAGUE) && random_num(1, get_pcvar_num(cvar_plaguechance)) == get_pcvar_num(cvar_plague) && floatround((iPlayersnum-(get_pcvar_num(cvar_plaguenemnum)+get_pcvar_num(cvar_plaguesurvnum)))*get_pcvar_float(cvar_plagueratio), floatround_ceil) >= 1
 	&& iPlayersnum-(get_pcvar_num(cvar_plaguesurvnum)+get_pcvar_num(cvar_plaguenemnum)+floatround((iPlayersnum-(get_pcvar_num(cvar_plaguenemnum)+get_pcvar_num(cvar_plaguesurvnum)))*get_pcvar_float(cvar_plagueratio), floatround_ceil)) >= 1 && iPlayersnum >= get_pcvar_num(cvar_plagueminplayers)) || mode == MODE_PLAGUE)
 	{
+		log_amx("am ajuns la Plague Mode debug")
 		// Plague Mode
 		g_plagueround = true
 		g_lastmode = MODE_PLAGUE
@@ -4096,6 +4096,7 @@ public make_a_zombie(mode, id)
 	}
 	else
 	{
+		log_amx("am ajuns la Single Infection Mode debug")
 		// Single Infection Mode or Nemesis Mode
 		
 		// Choose player randomly?
@@ -4104,6 +4105,7 @@ public make_a_zombie(mode, id)
 		
 		if(!GetBit(g_isconnected, id)) 
 		{
+			log_amx("%s nu e conectat apelam iar make zombie task", getName(id))
 			set_task(2.0, "make_zombie_task", TASK_MAKEZOMBIE)
 			return;
 		}
@@ -5338,6 +5340,8 @@ public welcome_msg()
 	zp_colored_print(0, "^x01**** ^x04ZOMBIE-PLAGUE | CSO Mod remade by Filiq_^x01 ****")
 	zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO1")
 	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
+
+	client_print_color(0, 0, "^4[CSO] ^1This map we gonna playing ^4'%s'^1.", getChoiceName(gameplay_active()))
 	
 	// Show T-virus HUD notice
 	set_dhudmessage(0, 125, 200, -1.00, 0.17, 0, 0.00, 3.00, 2.00, 1.00);
@@ -8647,13 +8651,13 @@ stock fnGetAlive()
 	
 	return iAlive
 }
-
+// id = fnGetRandomAlive(random_num(1, iPlayersnum))
 // Get Random Alive -returns index of alive player number n -
 stock fnGetRandomAlive(n)
 {
-	new iAlive = 0, id
+	new iAlive = 0
 
-	for(new i = 1; i <= g_maxplayers; i++)
+	for(new id = 1; id <= g_maxplayers; id++)
 	{
 		if(!GetBit(g_isalive, id))
 			continue 

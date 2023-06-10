@@ -42,7 +42,7 @@ public gameplays_rounds_start()
 
 public wait()
 {
-	if(loadinData == -1) {
+	if(loadinData != -1) {
 		loadinData++
 		gameplay = -1
 		
@@ -150,8 +150,6 @@ public loadData()
 
 	if(gameplay == -1)
 		gameplay = random_num(0, sizeof(votes))
-
-	client_print_color(0, 0, "^4[CSO] ^1This map we will playing ^4%s^1.", getChoiceName(gameplay))
 
 	if(gameplay == ginfinite)
 		set_cvar_num("zp_human_unlimited_ammo", 2)
