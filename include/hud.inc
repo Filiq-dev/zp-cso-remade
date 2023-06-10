@@ -21,7 +21,7 @@
 #define HUD_LEVEL_Y 0.9
 
 static 
-	bool:hudScore[33], bool:hudStats[33], bool:hudLevel[33],
+	bool:hudScore[33], bool:hudStats[33],
 	bool:hudMessages[33], bool:hudDamage[33], bool:hudcInfo[33],
 	Array:g_Messages, syncMsg, messageExist, timer = 0
 
@@ -92,7 +92,6 @@ public hud_putinserver(id)
 {
 	hudScore[id] = true
 	hudStats[id] = true
-	hudLevel[id] = true
 	hudMessages[id] = true
 	hudDamage[id] = false
 	hudcInfo[id] = true
@@ -112,9 +111,6 @@ public hudMenu(id)
 	menu_additem(menu, string)
 
 	formatex(string, 30, "Stats [%s\w]", hudStats[id] ? "\rhide" : "\yshow")
-	menu_additem(menu, string)
-
-	formatex(string, 30, "Level [%s\w]", hudLevel[id] ? "\rhide" : "\yshow")
 	menu_additem(menu, string)
 
 	formatex(string, 30, "Messages [%s\w]", hudMessages[id] ? "\rhide" : "\yshow")
@@ -143,10 +139,9 @@ public hudMenuHandler(id, menu, item)
 	{
 		case 0: hudScore[id] = !hudScore[id]
 		case 1: hudStats[id] = !hudStats[id]
-		case 2: hudLevel[id] = !hudLevel[id]
-		case 3: hudMessages[id] = !hudMessages[id]
-		case 4: hudDamage[id] = !hudDamage[id]
-		case 5: hudcInfo[id] = !hudcInfo[id]
+		case 2: hudMessages[id] = !hudMessages[id]
+		case 3: hudDamage[id] = !hudDamage[id]
+		case 4: hudcInfo[id] = !hudcInfo[id]
 	}
 
 	hudMenu(id)
@@ -165,13 +160,11 @@ public ShowHUD(id)
 		if(is_user_alive(idspec)) 
 		{
 			showStats(id, idspec)
-			showLevel(id, idspec)
 		}
 	} 
 	else 
 	{
 		showStats(id, id)
-		showLevel(id, id)
 	}
 
 
@@ -194,17 +187,8 @@ public showStats(id, spec)
 	if(!hudStats[id]) 
 		return 
 
-	set_dhudmessage(245, 255, 250, spec == id ? HUD_STATS_X : HUD_SPECT_X, spec == id ? HUD_STATS_Y : HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00);
-	show_dhudmessage(id, "[HP: %d] [Class: %s]", pev(spec == id ? id : spec, pev_health), getClass(spec == id ? id : spec))
-}
-
-public showLevel(id, spec)
-{
-	if(!hudLevel[id])
-		return
-		
-	set_dhudmessage(0, 255, 0, HUD_LEVEL_X, HUD_LEVEL_Y, 0, 6.00, 1.10, 0.00, 0.00);
-	show_dhudmessage(id, "[LVL: %d | EXP: %d/%d]", zp_get_user_level(spec == id ? id : spec), zp_get_user_exp(spec == id ? id : spec), zp_get_exp_current(spec == id ? id : spec))
+	set_dhudmessage(245, 255, 250, spec == id ? HUD_LEVEL_X : HUD_SPECT_X, spec == id ? HUD_LEVEL_Y : HUD_SPECT_Y, 0, 6.00, 1.10, 0.00, 0.00);
+	show_dhudmessage(id, "[HP: %d | Class: %s | LVL: %d | EXP: %d/%d]", pev(spec == id ? id : spec, pev_health), getClass(spec == id ? id : spec), zp_get_user_level(spec == id ? id : spec), zp_get_user_exp(spec == id ? id : spec), zp_get_exp_current(spec == id ? id : spec))
 }
 
 public showScore(id)
