@@ -7,7 +7,8 @@
 
 static 
 	bool:isUserLoaded[MAX_PLAYERS + 1],
-	gQuery[256]
+	gQuery[256],
+	userID[MAX_PLAYERS + 1]
 
 public dbcso_natives()
 {
@@ -30,6 +31,17 @@ public sql_precache()
 	return true
 }
 
+public dbcso_end()
+{
+	for(new id = 1; id <= g_maxplayers; id++)
+	{
+		if(!GetBit(g_isconnected, id))
+			continue
+
+		saveData(id)
+	}
+}
+
 public dbcso_putinserver(id)
 {
 	if(is_user_bot(id))
@@ -37,6 +49,11 @@ public dbcso_putinserver(id)
 		isUserLoaded[id] = true
 		return
 	}
+
+	userID[id] = 0
+	
+	zp_level_reset(id)
+	zp_money_reset(id)
 
 	// if(gameplay_active() != -1)
 	// 	loadFromSQL(id)
@@ -86,13 +103,11 @@ public dbcso_disconnected(id)
 		return
 
 	saveData(id)
-	zp_level_reset(id)
-	zp_money_reset(id)
 }
 
 public saveData(id)
 {
-	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE name = '%s'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), sql_getName(id))
+	formatex(gQuery, 256,"UPDATE `players` SET lastip = '%s', money = '%d', xp = '%d', level = '%d' WHERE id = '%d'", getIP(id), zp_get_user_money(id), zp_get_user_exp(id), zp_get_user_level(id), getUserID(id))
 	SQL_ThreadQuery(g_sqltuple, "burnQuery", gQuery)
 
 	return true
@@ -107,12 +122,20 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 	new id = Data[0]
 
 	if(SQL_NumResults(Query)) {
+		userID[id] = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "id"))
+
 		new money = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "money"))
 		zp_set_user_money(id, money)
+		
 		new level = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "level"))
 		zp_set_user_level(id, level)
+		
 		new xp = SQL_ReadResult(Query, SQL_FieldNameToNum(Query, "xp"))
 		zp_set_user_exp(id, xp)
+
+		#if defined STATS_SYSTEM
+			loadStats(id, Query)
+		#endif
 
 		log_amx("loading data for %s", sql_getName(id))
 
@@ -187,4 +210,15 @@ stock sql_getName(id)
 public isUserLoadedDB(id)
 {
 	return isUserLoaded[id]
+}
+
+stock getUserID(id)
+{
+	if(!isUserLoaded[id])
+	{
+		log_amx("getUserID(%d): Am incercat preluarea unui id din baza de date si jucatorul nu indeplineste conditiile. (db-cso.inc)", id)
+		return -1
+	}
+
+	return userID[id]
 }

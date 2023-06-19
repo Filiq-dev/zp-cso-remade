@@ -1229,6 +1229,11 @@ public plugin_init()
 	
 }
 
+public plugin_end()
+{
+	dbcso_end()
+}
+
 public plugin_cfg()
 {
 	// Get configs dir
@@ -1655,6 +1660,10 @@ public fw_PlayerKilled(victim, attacker, shouldgib)
 	// Zombie killed human, add up the extra frags for kill
 	if (GetBit(g_zombie, attacker) && get_pcvar_num(cvar_fragsinfect) > 1)
 		UpdateFrags(attacker, victim, get_pcvar_num(cvar_fragsinfect) - 1, 0, 0)
+
+	#if defined STATS_SYSTEM
+	updateUserStats(victim, attacker)
+	#endif
 }
 
 // Ham Player Killed Post Forward
@@ -3277,8 +3286,8 @@ public menu_zclass(id, menuid, item)
 	g_zombieclassnext[id] = classid
 	
 	// Show selected zombie class info and stats
-	zp_colored_print(id, "^x04[CSO]^x01 %L: %s", id, "ZOMBIE_SELECT", name)
-	zp_colored_print(id, "^x04[CSO]^x01 %L: %d %L: %d %L: %d %L: %d%%", id, "ZOMBIE_ATTRIB1", ArrayGetCell(g_zclass_hp, classid), id, "ZOMBIE_ATTRIB2", ArrayGetCell(g_zclass_spd, classid),
+	zp_colored_print(id, "^x04[CSO]^x01 %L: ^x04%s", id, "ZOMBIE_SELECT", name)
+	zp_colored_print(id, "^x04[CSO]^x01 %L: ^x04%d^x01 %L: ^x04%d^x01 %L: ^x04%d^x01 %L: ^x04%d%%", id, "ZOMBIE_ATTRIB1", ArrayGetCell(g_zclass_hp, classid), id, "ZOMBIE_ATTRIB2", ArrayGetCell(g_zclass_spd, classid),
 	id, "ZOMBIE_ATTRIB3", floatround(Float:ArrayGetCell(g_zclass_grav, classid) * 800.0), id, "ZOMBIE_ATTRIB4", floatround(Float:ArrayGetCell(g_zclass_kb, classid) * 100.0))
 	
 	menu_destroy(menuid)
@@ -4305,12 +4314,14 @@ public zombieme(id, infector, nemesis, silentmode, rewards)
 			emit_sound(id, CHAN_VOICE, sound, 1.0, ATTN_NORM, 0, PITCH_NORM)
 			
 			// Show Infection HUD notice
+			/*
 			set_dhudmessage(255, 0, 0, HUD_INFECT_X, HUD_INFECT_Y, 0, 0.00, 5.00, 1.00, 1.00);
 			
 			if (infector) // infected by someone?
 				show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_INFECT2", g_playername[id], g_playername[infector])
 			else
 				show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_INFECT", g_playername[id])
+			*/
 		}
 	}
 	else
@@ -5339,7 +5350,7 @@ public welcome_msg()
 	// Show mod info
 	zp_colored_print(0, "^x01**** ^x04ZOMBIE-PLAGUE | CSO Mod remade by Filiq_^x01 ****")
 	zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO1")
-	if (!get_pcvar_num(cvar_infammo)) zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
+	zp_colored_print(0, "^x04[CSO]^x01 %L", LANG_PLAYER, "NOTICE_INFO2")
 
 	client_print_color(0, 0, "^4[CSO] ^1This map we gonna playing ^4'%s'^1.", getChoiceName(gameplay_active()))
 	
@@ -8875,4 +8886,12 @@ stock setRandomAmbience(const sound[][][], sound_size)
 
 #if defined GAMEPLAYS_SYSTEM
 #include <gameplays>
+#endif
+
+#if defined TURNAMENT_SYSTEM
+#include <turnament>
+#endif
+
+#if defined STATS_SYSTEM
+#include <stats>
 #endif

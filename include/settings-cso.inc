@@ -1,6 +1,8 @@
 #define TAG_SYSTEM
 #define HUD_SYSTEM
 #define GAMEPLAYS_SYSTEM
+// #define TURNAMENT_SYSTEM
+#define STATS_SYSTEM
 
 #define NEWBIE_LEVEL_BONUS 2
 
