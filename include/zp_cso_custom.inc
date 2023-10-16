@@ -1,10 +1,5 @@
 #pragma compress 1
 
-#define host "188.212.103.196"
-#define user "u2545_bU3OodJK9O"
-#define pass "=4MGhi917Qv=hoC=3cu4zKjQ"
-#define db "s2545_csoeasy"
-
 enum 
 {
 	ginfinite,

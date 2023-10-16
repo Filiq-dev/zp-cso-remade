@@ -682,10 +682,7 @@ public plugin_natives()
 	register_native("zp_get_zombie_class_id", "native_get_zombie_class_id", 1)
 	register_native("zp_get_zombie_class_info", "native_get_zombie_class_info", 1)
 
-	#if defined HUD_SYSTEM
-		hud_natives()
-	#endif
-
+	hud_natives()
 	dbcso_natives()
 	
 	#if defined GAMEPLAYS_SYSTEM
@@ -873,9 +870,7 @@ public plugin_precache()
 	// Prevent hostage sounds from being precached
 	g_fwPrecacheSound = register_forward(FM_PrecacheSound, "fw_PrecacheSound")
 
-	#if defined HUD_SYSTEM
-		hud_precache()
-	#endif
+	hud_precache()
 }
 
 public plugin_init()
@@ -1219,9 +1214,7 @@ public plugin_init()
 		tags_init()
 	#endif
 
-	#if defined HUD_SYSTEM
-		hud_init()
-	#endif
+	hud_init()
 	
 	#if defined GAMEPLAYS_SYSTEM
 		gameplays_init()
@@ -1996,34 +1989,8 @@ public client_putinserver(id)
 			set_task(0.1, "register_ham_czbots", id)
 		}
 	}
-
-#if defined LOCATION_IN_CHAT
-
-	if(is_user_bot(id))
-		return 
-
-	new 
-		country[45],
-    	city[45],
-		who[10]
-		
-	who = "Player"
-
-	if(get_user_flags(id) & ADMIN_KICK)
-		who = "Admin"
-
-	if(get_user_flags(id) & ADMIN_RCON)
-		who = "Owner"
-
-	geoip_country_ex(getIP(id), country, charsmax(country));
-	geoip_city(getIP(id), city, charsmax(city));
-
-	zp_colored_print(0, "^x04[CSO] ^x01%s ^x04%s ^x01connected from [^x04%s^x01] [^x04%s^x01]", who, getName(id), country, city)
-#endif
-
-	#if defined HUD_SYSTEM
-		hud_putinserver(id)
-	#endif
+	
+	hud_putinserver(id)
 }
 
 // Client leaving
@@ -2058,9 +2025,7 @@ public fw_ClientDisconnect(id)
 	
 	amount[id] = 0
 
-	#if defined HUD_SYSTEM
-		hud_disconnected(id)
-	#endif
+	hud_disconnected(id)
 }
 
 // Emit Sound Forward
@@ -2628,18 +2593,6 @@ public show_menu_game(id)
 	// Title
 	len += formatex(menu[len], charsmax(menu) - len, "Main Menu | Zombie-Plague \w[\rCSO\w]^n^n")
 	
-	// 1. Buy weapons
-	// if (get_pcvar_num(cvar_buycustom))
-	// 	len += formatex(menu[len], charsmax(menu) - len, "\r1.\w %L^n", id, "MENU_BUY")
-	// else
-	// 	len += formatex(menu[len], charsmax(menu) - len, "\d1. %L^n", id, "MENU_BUY")
-	
-	// // 2. Extra items
-	// if (get_pcvar_num(cvar_extraitems) && GetBit(g_isalive, id))
-	// 	len += formatex(menu[len], charsmax(menu) - len, "\r2.\w %L^n", id, "MENU_EXTRABUY")
-	// else
-	// 	len += formatex(menu[len], charsmax(menu) - len, "\d2. %L^n", id, "MENU_EXTRABUY")
-	
 	// 1. Zombie class
 	if (get_pcvar_num(cvar_zclasses))
 		len += formatex(menu[len], charsmax(menu) - len, "\r1.\w %L^n", id,"MENU_ZCLASS")
@@ -2924,35 +2877,6 @@ public menu_game(id, key)
 	
 	switch (key)
 	{
-		// case 0: // Buy Weapons
-		// {
-		// 	// Custom buy menus enabled?
-		// 	if (get_pcvar_num(cvar_buycustom))
-		// 	{
-		// 		// Disable the remember selection setting
-		// 		WPN_AUTO_ON = 0
-		// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "BUY_ENABLED")
-				
-		// 		// Show menu if player hasn't yet bought anything
-		// 		if (g_canbuy[id]) show_menu_buy1(id)
-		// 	}
-		// 	else
-		// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
-		// }
-		// case 1: // Extra Items
-		// {
-		// 	// Extra items enabled?
-		// 	if (get_pcvar_num(cvar_extraitems))
-		// 	{
-		// 		// Check whether the player is able to buy anything
-		// 		if (GetBit(g_isalive, id))
-		// 			show_menu_extras(id)
-		// 		else
-		// 			zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
-		// 	}
-		// 	else
-		// 		zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT_EXTRAS")
-		// }
 		case 0: // Zombie Classes
 		{
 			// Zombie classes enabled?
@@ -3011,12 +2935,7 @@ public menu_game(id, key)
 				zp_colored_print(id, "^x04[CSO]^x01 %L", id, "CMD_NOT")
 		}
 		case 3: show_respawn_menu(id)
-		case 4: 
-		{
-			#if defined HUD_SYSTEM
-				hudMenu(id)
-			#endif	
-		}
+		case 4: hudMenu(id)
 		case 5,6: 
 		{
 			
@@ -8880,9 +8799,7 @@ stock setRandomAmbience(const sound[][][], sound_size)
 #include <tags>
 #endif 
 
-#if defined HUD_SYSTEM
 #include <hud>
-#endif
 
 #if defined GAMEPLAYS_SYSTEM
 #include <gameplays>
@@ -8894,4 +8811,8 @@ stock setRandomAmbience(const sound[][][], sound_size)
 
 #if defined STATS_SYSTEM
 #include <stats>
+#endif
+
+#if defined SKIN_SYSTEM
+#include <custom_skins>
 #endif

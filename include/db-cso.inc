@@ -55,23 +55,46 @@ public dbcso_putinserver(id)
 	zp_level_reset(id)
 	zp_money_reset(id)
 
-	// if(gameplay_active() != -1)
-	// 	loadFromSQL(id)
-
-	// if(gameplay_active() == -1 && !isDataLoading(id))
-	// 	loadFromSQL(id)
+	if(gameplay_active() != -1)
+		loadFromSQL(id)
 }
 
-public beginLoadDataSQL(id)
+public dbcso_disconnected(id)
 {
-	if(is_user_connected(id) && !is_user_bot(id)) 
+	if(is_user_bot(id))
+		return
+
+	if(task_exists(id+252525))
+		remove_task(id+252525)
+
+	if(zp_get_user_level(id) == 0)
+		return
+
+	saveData(id)
+}
+
+public beginLoadDataSQL()
+{
+	// Aragon*/DaNNe.
+	new Players[32], PlayersNum, id
+	get_players(Players, PlayersNum)
+
+	if(PlayersNum) 
 	{
-		switch(id) 
+		for(new i; i < PlayersNum; i++) 
 		{
-			case 1..7: set_task(1.0, "loadDataSQL", id+252525)
-			case 8..15: set_task(3.0, "loadDataSQL", id+252525)
-			case 16..23: set_task(6.0, "loadDataSQL", id+252525)
-			case 24..32: set_task(9.0, "loadDataSQL", id+252525)
+			id = Players[i]
+
+			if(GetBit(g_isconnected, id) && !is_user_bot(id)) 
+			{
+				switch(id) 
+				{
+					case 1..7: set_task(1.0, "loadDataSQL", id+252525)
+					case 8..15: set_task(3.0, "loadDataSQL", id+252525)
+					case 16..23: set_task(6.0, "loadDataSQL", id+252525)
+					case 24..32: set_task(9.0, "loadDataSQL", id+252525)
+				}
+			}
 		}
 	}
 }
@@ -92,17 +115,6 @@ public loadFromSQL(id)
 		formatex(gQuery, 65, "SELECT * FROM players WHERE name = '%s'", sql_getName(id))	
 		SQL_ThreadQuery(g_sqltuple, "checkAccount", gQuery, data, 2)
 	}
-}
-
-public dbcso_disconnected(id)
-{
-	if(is_user_bot(id))
-		return
-
-	if(zp_get_user_level(id) == 0)
-		return
-
-	saveData(id)
 }
 
 public saveData(id)

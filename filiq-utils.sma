@@ -38,7 +38,7 @@ public cmdSay(id) {
 
 			return PLUGIN_HANDLED_MAIN
 		}
-		ChatColor(id,"!g[CSO] !yStop !g[%d/2]",Count[id])
+		client_print_color(id, 0, "^4[CSO]^1 Stop !4[%d/2]",Count[id])
 		
 		return PLUGIN_HANDLED_MAIN
 	}
@@ -127,29 +127,4 @@ public fwTakeDamage(id, weapon, attacker, Float:damage)
 		if(get_user_armor(id) > 0 && zp_get_human_count() != 1) client_print(attacker, print_center, "Armor: %d", get_user_armor(id))
 		else client_print(attacker, print_center, "Health: %d", get_user_health(id))
 	}
-}
-
-stock ChatColor(const id, const input[], any:...) 
-{ 
-	new count = 1, players[32] 
-	static msg[191] 
-	vformat(msg, 190, input, 3) 
-
-	replace_all(msg, 190, "!g", "^4") 
-	replace_all(msg, 190, "!y", "^1") 
-	replace_all(msg, 190, "!t", "^3") 
-
-	if (id) players[0] = id; else get_players(players, count, "ch") 
-	{ 
-		for (new i = 0; i < count; i++) 
-		{ 
-			if (is_user_connected(players[i])) 
-			{ 
-				message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("SayText"), _, players[i]); 
-				write_byte(players[i]); 
-				write_string(msg); 
-				message_end(); 
-			} 
-		} 
-	} 
 }

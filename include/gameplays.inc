@@ -7,14 +7,13 @@
 static 
 	loadinData = 0,
 	votes[4],
-	bool:hasVoted[33] = false,
+	hasVoted,
 	menu,
 	gameplay = -1,
-	str[50],
-	bool:isDataLoadingForPlayer[33] = false
+	str[50]
 
 public gameplays_init() {
-	register_event("HLTV", "event_round_start", "a", "1=0", "2=0")
+
 }
 
 public gameplays_natives()
@@ -24,20 +23,15 @@ public gameplays_natives()
 
 public gameplays_putinserver(id)
 {
-	if(gameplay == -1) 
-		isDataLoadingForPlayer[id] = false
-
-	hasVoted[id] = false
+	ClearBit(hasVoted, id)
 }
 
 public gameplays_rounds_start()
 {
-	// we need to wait like 10 secound more to make this, for all players to connect
-
 	if(gameplay != -1)
-		cso_data_loaded()
+		cso_data_loaded() // daca este deja un gamplay ales, putem sa pornim jocul
 	else 
-		set_task(10.0, "wait")
+		set_task(SECOUNDS_WAITING_PLAYERS, "wait") // daca nu, pornim un timer in care asteptam x secunde pentru conectarea jucatoriilor
 }
 
 public wait()
@@ -46,7 +40,7 @@ public wait()
 		loadinData++
 		gameplay = -1
 		
-		set_task(SECOUNDS_TO_CHOOSE, "loadData")
+		set_task(SECOUNDS_TO_CHOOSE, "finishVote")
 		make_ScreenFade(0, SECOUNDS_TO_CHOOSE, 0, 0, 0, 255)
 
 		showChoiceMenu()
@@ -54,37 +48,26 @@ public wait()
 		if(loadinData == 1)
 			loadinData = -1
 	}
-
-	// Aragon*/DaNNe.
-	new Players[32], PlayersNum, id
-	get_players(Players, PlayersNum)
-
-	if(PlayersNum) 
-	{
-		for(new i; i < PlayersNum; i++) 
-		{
-			id = Players[i]
-			isDataLoadingForPlayer[id] = true
-
-			beginLoadDataSQL(id)
-		}
-	}
+			
+	beginLoadDataSQL()
 }
 
 public showChoiceMenu()
 {
-	static num, players[32]
+	new num, players[32], id
 	get_players(players, num)
 
 	for(new i = 0; i < num; i++)
 	{
-		if(!is_user_connected(players[i]))
+		id = players[i]
+
+		if(!GetBit(g_isconnected, id))
 			continue 
 
-		if(is_user_bot(players[i]))
+		if(is_user_bot(id))
 			continue
 		
-		showPlayerChoiceMenu(players[i])
+		showPlayerChoiceMenu(id)
 	}
 }
 
@@ -105,8 +88,8 @@ public showPlayerChoiceMenu(id)
 	formatex(str, charsmax(str), "x10 XP [\r%d Votes\w]", votes[gxp])
 	menu_additem(menu, str)
 
-	menu_addtext(menu, "^n^n^nPlease select what gameplay do you want to play on server.")
-	menu_addtext2(menu, "Be aware, your decision affects the entire game")
+	menu_addtext(menu, "^n^n^nPlease select what \rgameplay \ydo you want to play this \rmap\y.")
+	menu_addtext2(menu, "Be \raware\y, your decision affects the \rentire \ygame!")
 
 	menu_display(id, menu)
 
@@ -135,13 +118,13 @@ public choiceMenuHandler(id, menu2, item)
 	votes[item] ++
 	hasVoted[id] = true
 
-	client_print_color(0, id, "^4[CSO] %s ^1has voted ^4%s^1.", getName(id), getChoiceName(item))
-	showPlayerChoiceMenu(id)
+	client_print_color(0, id, "[^4CSO^1]^4 %s^1 has voted^4 %s^1.", getName(id), getChoiceName(item))
+	showChoiceMenu()
 
 	return PLUGIN_CONTINUE
 }
 
-public loadData()
+public finishVote()
 {
 	for(new i = 0; i < sizeof(votes); i++)
 		for(new j = 0; j < sizeof(votes); j++)
@@ -189,7 +172,7 @@ public make_ScreenFade(id, Float:fDuration, red, green, blue, alpha)
 	}
 
 	set_hudmessage(random_num(0, 255), random_num(0, 255), random_num(0, 255), -1.0, 0.50, random_num(0, 2), random_float(0.7, 0.9), 12.0, random_float(0.37, 0.4), random_float(0.37, 0.4), 4)
-	ShowSyncHudMsg(id, g_MsgSync, "          Your data is loading!^nPlease select what gameplay do you want to play this map")
+	ShowSyncHudMsg(id, g_MsgSync, "Your data is loading!^nPlease select what gameplay do you want to play this map")
 	
 	message_begin(id ? MSG_ONE : MSG_ALL, get_user_msgid("ScreenFade"), {0, 0, 0}, id)
 	write_short(floatround(4096.0 * fDuration, floatround_round))
@@ -224,8 +207,4 @@ public get_player()
 stock gameplay_active()
 {
 	return gameplay
-}
-stock isDataLoading(id)
-{
-	return isDataLoadingForPlayer[id]
 }

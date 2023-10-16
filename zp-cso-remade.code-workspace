@@ -4,7 +4,13 @@
 			"path": "."
 		},
 		{
-			"path": "E:/SteamLibrary/steamapps/common/Half-Life/cstrike/addons/amxmodx/configs"
+			"path": "D:/SteamLibrary/steamapps/common/Half-Life/cstrike/addons/amxmodx/configs"
+		},
+		{
+			"path": "D:/SteamLibrary/steamapps/common/Half-Life/cstrike/addons/amxmodx/data"
+		},
+		{
+			"path": "D:/SteamLibrary/steamapps/common/Half-Life/cstrike/addons/amxmodx/logs"
 		}
 	],
 	"settings": {
