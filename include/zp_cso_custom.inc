@@ -40,3 +40,12 @@ stock getIP(id)
 	get_user_ip(id, name, 63, 1)
 	return name
 }
+
+stock ExplodeString( p_szOutput[][], p_nMax, p_nSize, p_szInput[], p_szDelimiter ) // xeroblood
+{ 
+    new nIdx = 0, l = strlen(p_szInput) 
+    new nLen = (1 + copyc( p_szOutput[nIdx], p_nSize, p_szInput, p_szDelimiter )) 
+    while( (nLen < l) && (++nIdx < p_nMax) ) 
+        nLen += (1 + copyc( p_szOutput[nIdx], p_nSize, p_szInput[nLen], p_szDelimiter )) 
+    return nIdx
+}

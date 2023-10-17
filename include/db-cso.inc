@@ -149,6 +149,8 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 			loadStats(id, Query)
 		#endif
 
+		hud_sql_load(id, Query)
+
 		isUserLoaded[id] = true
 	}else{
 		formatex(gQuery, 90, "INSERT INTO players (name, lastip) VALUES ('%s', '%s')", sql_getName(id), getIP(id))	

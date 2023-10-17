@@ -1924,7 +1924,7 @@ public fw_AddPlayerItem(id, weapon_ent)
 
 // Ham Weapon Deploy Forward
 public fw_Item_Deploy_Post(weapon_ent)
-{
+{\
 	// Get weapon's owner
 	new owner
 	owner = fm_cs_get_weapon_ent_owner(weapon_ent)
@@ -1989,8 +1989,6 @@ public client_putinserver(id)
 			set_task(0.1, "register_ham_czbots", id)
 		}
 	}
-	
-	hud_putinserver(id)
 }
 
 // Client leaving
