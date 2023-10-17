@@ -13,7 +13,7 @@ new g_PlayerMoney[33], g_PlayerMoneyLimit[33],
 	pcvar_humans_reward_win, pcvar_humans_reward_lose, pcvar_humans_reward_no_one,
 	pcvar_humans_dmg_reward, pcvar_humans_kill_reward,
 	pcvar_zombies_reward_win, pcvar_zombies_reward_lose, pcvar_zombies_reward_no_one,
-	pcvar_zombies_kill_reward, g_MaxPlayers, g_First = 0, defaultmoney
+	pcvar_zombies_kill_reward, pcvar_zombies_infected_reward, g_MaxPlayers, g_First = 0, defaultmoney
 
 enum _:iNums
 {
@@ -39,20 +39,20 @@ public plugin_init()
 	RegisterHam(Ham_Killed, "player", "fwKilled", 1)
 	RegisterHam(Ham_Spawn, "player", "fwSpawn")
 	
-	defaultmoney = register_cvar("ms_default_money", "3200")
+	defaultmoney = register_cvar("money_default_money", "3200")
 	
-	pcvar_humans_reward_win = register_cvar("ms_human_win_reward", "3000")
-	pcvar_humans_reward_lose = register_cvar("ms_human_lose_reward", "1500")
-	pcvar_humans_reward_no_one = register_cvar("ms_human_no_one_reward", "2000")
-	pcvar_humans_dmg_reward = register_cvar("ms_human_damage_reward_divide", "2")
-	pcvar_humans_kill_reward = register_cvar("ms_human_kill_reward", "300")
+	pcvar_humans_reward_win = register_cvar("money_human_win_reward", "3000")
+	pcvar_humans_reward_lose = register_cvar("money_human_lose_reward", "1500")
+	pcvar_humans_reward_no_one = register_cvar("money_human_no_one_reward", "2000")
+	pcvar_humans_dmg_reward = register_cvar("money_human_damage_reward_divide", "2")
+	pcvar_humans_kill_reward = register_cvar("money_human_kill_reward", "300")
 	
-	pcvar_zombies_reward_win = register_cvar("ms_zombie_win_reward", "3000")
-	pcvar_zombies_reward_lose = register_cvar("ms_zombie_lose_reward", "1500")
-	pcvar_zombies_reward_no_one = register_cvar("ms_zombie_no_one_reward", "2000")	
-	pcvar_zombies_kill_reward = register_cvar("ms_zombie_kill_reward", "300")	
-
-	register_cvar("ms_money_allow_donate", "1")
+	pcvar_zombies_reward_win = register_cvar("money_zombie_win_reward", "3000")
+	pcvar_zombies_reward_lose = register_cvar("money_zombie_lose_reward", "1500")
+	pcvar_zombies_reward_no_one = register_cvar("money_zombie_no_one_reward", "2000")	
+	pcvar_zombies_kill_reward = register_cvar("money_zombie_kill_reward", "300")	
+	pcvar_zombies_infected_reward = register_cvar("money_zombie_infection_reward", "500")
+	register_cvar("money_money_allow_donate", "1")
 	
 	g_MaxPlayers=get_maxplayers()
 
@@ -172,7 +172,7 @@ public zp_user_infected_pre(id, infector)
 {
 	if(is_user_alive(infector)) {
 		static mny
-		mny = get_pcvar_num(pcvar_zombies_kill_reward)
+		mny = get_pcvar_num(pcvar_zombies_infected_reward)
 
 		if(cso_gameplay_active() == gmoney)
 			mny = mny * 3

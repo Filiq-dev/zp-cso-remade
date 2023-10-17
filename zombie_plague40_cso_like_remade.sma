@@ -8810,7 +8810,7 @@ stock setRandomAmbience(const sound[][][], sound_size)
 #endif
 
 #if defined STATS_SYSTEM
-#include <stats>
+#include <statss>
 #endif
 
 #if defined SKIN_SYSTEM

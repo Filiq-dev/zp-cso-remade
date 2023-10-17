@@ -34,7 +34,7 @@ static
 	currentInfections[MAX_PLAYERS + 1] = 0,
 	currentInfectedPlayers[MAX_PLAYERS + 1] = 0,
 	currentNemesisKills[MAX_PLAYERS + 1] = 0,
-	currentSurvivorKills[MAX_PLAYERS + 1] = 0,
+	currentSurvivorKills[MAX_PLAYERS + 1] = 0
 	
 public loadStats(id, Handle:Query)
 {

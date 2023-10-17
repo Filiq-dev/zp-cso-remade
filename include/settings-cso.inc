@@ -12,8 +12,3 @@
 #define SECOUNDS_WAITING_PLAYERS    15.0     // cate secunde asteptam pentru a se conecta jucatorii
 
 /* End Gameplays System Settings */
-
-#define host "191.96.94.200"
-#define user "u126_bDuPyF4XTy"
-#define pass "125hCgGLO.a6yBs0^bA5XE=H"
-#define db "s126_zmeasy"

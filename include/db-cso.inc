@@ -18,7 +18,7 @@ public dbcso_natives()
 
 public sql_precache()
 {
-	g_sqltuple = SQL_MakeDbTuple(host, user, pass, db)
+	g_sqltuple = SQL_MakeDbTuple("191.96.94.200", "u126_bDuPyF4XTy", "AyfzvFhmwsADRI@saa!NxRny", "s126_zmeasy")
 
 	if(!g_sqltuple)
 	{
@@ -149,8 +149,6 @@ public checkAccount(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 			loadStats(id, Query)
 		#endif
 
-		log_amx("loading data for %s", sql_getName(id))
-
 		isUserLoaded[id] = true
 	}else{
 		formatex(gQuery, 90, "INSERT INTO players (name, lastip) VALUES ('%s', '%s')", sql_getName(id), getIP(id))	
@@ -172,8 +170,6 @@ public insertPlayer(FailState, Handle:Query, Error[], Errcode, Data[], DataSize)
 	zp_set_user_level(id, 1)
 
 	isUserLoaded[id] = true
-
-	log_amx("inserting data for %s in db", sql_getName(id))
 
 	return PLUGIN_CONTINUE
 }

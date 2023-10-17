@@ -100,7 +100,7 @@ public choiceMenuHandler(id, menu2, item)
 {
 	if(item == MENU_EXIT)
 	{
-		if(!hasVoted[id]) 
+		if(!GetBit(hasVoted, id)) 
 			return showPlayerChoiceMenu(id)
 
 		if(gameplay != -1) 
@@ -112,11 +112,11 @@ public choiceMenuHandler(id, menu2, item)
 	if(gameplay != -1)
 		return PLUGIN_HANDLED
 	
-	if(hasVoted[id])
+	if(GetBit(hasVoted, id))
 		return showPlayerChoiceMenu(id)
 
 	votes[item] ++
-	hasVoted[id] = true
+	SetBit(hasVoted, id)
 
 	client_print_color(0, id, "[^4CSO^1]^4 %s^1 has voted^4 %s^1.", getName(id), getChoiceName(item))
 	showChoiceMenu()

@@ -19,22 +19,22 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	register_dictionary("cso.txt")
 
-	pcvar_lvl_system = register_cvar("ms_lvl_system_active", "1")
+	pcvar_lvl_system = register_cvar("level_system_active", "1")
 
 	if(!get_pcvar_num(pcvar_lvl_system))
 		return
 	
-	pcvar_lvl_for_zomb = register_cvar("ms_lvl_system_active_zombie", "1")
-	pcvar_lvl_for_nem = register_cvar("ms_lvl_system_active_nem", "0")
-	pcvar_lvl_for_surv = register_cvar("ms_lvl_system_active_surv", "0")
+	pcvar_lvl_for_zomb = register_cvar("level_system_active_zombie", "1")
+	pcvar_lvl_for_nem = register_cvar("level_system_active_nem", "0")
+	pcvar_lvl_for_surv = register_cvar("level_system_active_surv", "0")
 
-	pcvar_xp_given = register_cvar("ms_lvl_system_given_xp", "150")
-	pcvar_xp_given_nem = register_cvar("ms_lvl_system_given_xp_nem", "10")
-	pcvar_xp_given_surv = register_cvar("ms_lvl_system_given_xp_surv", "10")
-	pcvar_xp_given_infect = register_cvar("ms_lvl_system_given_xp_infect", "3")    
-	pcvar_xp_given_kill_lhuman = register_cvar("ms_lvl_system_given_xp_kill_lhuman", "5")    
-	pcvar_damage_for_xp = register_cvar("ms_lvl_system_damage_for_xp", "1000")
-	pcvar_xp_for_damage = register_cvar("ms_lvl_system_given_xp_damage", "2")
+	pcvar_xp_given = register_cvar("level_system_given_xp", "150")
+	pcvar_xp_given_nem = register_cvar("level_system_given_xp_nem", "10")
+	pcvar_xp_given_surv = register_cvar("level_system_given_xp_surv", "10")
+	pcvar_xp_given_infect = register_cvar("level_system_given_xp_infect", "3")    
+	pcvar_xp_given_kill_lhuman = register_cvar("level_system_given_xp_kill_lhuman", "5")    
+	pcvar_damage_for_xp = register_cvar("level_system_damage_for_xp", "1000")
+	pcvar_xp_for_damage = register_cvar("level_system_given_xp_damage", "2")
 
 	g_Levels=ArrayCreate(1)
 	

@@ -1,7 +1,7 @@
 {
     "amxxpawn.compiler.executablePath": "D:\\SteamLibrary\\steamapps\\common\\Half-Life\\cstrike\\addons\\amxmodx\\scripting\\amxxpc.exe",
     "amxxpawn.compiler.includePaths": [
-        "D:\\SteamLibrary\\steamapps\\common\\Half-Life\\cstrike\\addons\\amxmodx\\scripting\\include",
+        "C:\\Users\\filiq\\Downloads\\amxmodx-1.9.0-git5294-base-windows\\addons\\amxmodx\\scripting\\include",
         "E:\\zp-cso-remade\\include"
     ],
     "amxxpawn.compiler.outputPath": "E:\\zp-cso-remade\\compiled",

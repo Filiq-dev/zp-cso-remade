@@ -21,8 +21,8 @@
 #define HUD_LEVEL_Y 0.9
 
 static 
-	bool:hudScore[33], bool:hudStats[33],
-	bool:hudMessages[33], bool:hudDamage[33], bool:hudcInfo[33],
+	hudScore, hudStats,
+	hudMessages, hudDamage, hudcInfo,
 	Array:g_Messages, syncMsg, messageExist, timer = 0
 
 public hud_natives()
